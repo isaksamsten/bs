@@ -31,8 +31,8 @@ args(args(X, Y)) --> var(X), args(Y).
  *
  * Eg. [ x, y | x show(y) ]
  */
-expr(block(X, Y)) --> ['['], args(X), ['|'], expr_list(Y), [']'].
-expr(block(X)) -->  ['['], expr_list(X), [']'].
+expr(block(X, Y)) --> ['['], args(X), ['|'], statements(Y), [']'].
+expr(block(X)) -->  ['['], statements(X), [']'].
 
 
 /*
@@ -49,8 +49,8 @@ expr_list(exprs(X, Y)) --> expr(X), [','], expr_list(Y).
  *
  * Eg. message() or message(1,2,3)
  */
-message(message(X)) --> literal(X), ['('], [')'].
-message(message(X, Y)) --> literal(X), ['('], expr_list(Y), [')'].
+message(message(X)) --> var(X), ['('], [')'].
+message(message(X, Y)) --> var(X), ['('], expr_list(Y), [')'].
 
 /*
  * A message list is a message follwed by a list of messages
