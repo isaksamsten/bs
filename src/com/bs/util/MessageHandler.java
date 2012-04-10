@@ -17,6 +17,21 @@ public final class MessageHandler {
 	}
 
 	/**
+	 * Return the number of encountered errors.
+	 * @return
+	 */
+	public static int errors() {
+		return errors;
+	}
+
+	/**
+	 * Reset the error count
+	 */
+	public static void reset() {
+		errors = 0;
+	}
+
+	/**
 	 * 
 	 * @param message
 	 * @param scanner
@@ -36,7 +51,8 @@ public final class MessageHandler {
 	 */
 	public static void error(Token token, MessageType type, String message,
 			Object... args) {
-		error(null, type, token.line(), token.position(), message, args);
+		error(token.currentLine(), type, token.line(), token.position(),
+				message, args);
 	}
 
 	/**
@@ -61,7 +77,7 @@ public final class MessageHandler {
 			}
 			errors++;
 		} else {
-			fatal(currentLine, type, line, pos, MessageListener.TOO_MANY_ERRORS);
+			fatal(currentLine, type, line, pos, Message.TOO_MANY_ERRORS);
 		}
 	}
 

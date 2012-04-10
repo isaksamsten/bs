@@ -1,9 +1,10 @@
 package com.bs.parser;
 
 import com.bs.parser.token.Token;
+import com.bs.parser.token.TokenType;
 import com.bs.parser.tree.AssignNode;
 import com.bs.parser.tree.ExpressionNode;
-import com.bs.util.MessageListener;
+import com.bs.util.Message;
 import com.bs.util.MessageHandler;
 import com.bs.util.MessageType;
 
@@ -16,16 +17,24 @@ public class AssignmentParser extends BsParser<AssignNode> {
 	@Override
 	public AssignNode parse(Token start) {
 		AssignNode node = null;
-
-		ExpressionParser exprParser = new ExpressionParser(this);
-		ExpressionNode exprNode = exprParser.parse();
-		if (exprNode != null) {
-			node = nodeFactory().assignment(start);
-			node.expression(exprNode);
-			node.identifier(nodeFactory().variable(start));
+		Token next = tokenizer().next();
+		if (next.type() == TokenType.COLON_EQUAL) {
+			ExpressionParser exprParser = new ExpressionParser(this);
+			ExpressionNode exprNode = exprParser.parse();
+			if (exprNode != null) {
+				node = nodeFactory().assignment(start);
+				node.expression(exprNode);
+				node.identifier(nodeFactory().identifier(start));
+			} else {
+				MessageHandler.error(tokenizer().current(),
+						MessageType.SYNTAX_ERROR,
+						Message.UNEXPECTED_ASSIGNMENT, tokenizer().current()
+								.text());
+			}
 		} else {
-			MessageHandler.error(start, MessageType.SYNTAX_ERROR,
-					MessageListener.UNEXPECTED_ASSIGNMENT, start.text());
+			MessageHandler.error(tokenizer().current(),
+					MessageType.SYNTAX_ERROR, Message.UNEXPECTED_ASSIGNMENT,
+					tokenizer().current().text());
 		}
 
 		return node;

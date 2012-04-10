@@ -42,8 +42,9 @@ public class BlockNode extends ExpressionNode {
 
 	@Override
 	public String toTree() {
-		return "Block(arguments=" + arguments.toTree() + " statements="
-				+ statements.toTree() + ")";
+		return "Block(arguments="
+				+ (arguments != null ? arguments.toTree() : "[]")
+				+ " statements=" + statements.toTree() + ")";
 	}
 
 	@Override

@@ -6,6 +6,7 @@ public class Token {
 	private TokenType type;
 	private String text;
 	int line, position;
+	private String currentLine;
 
 	public int line() {
 		return line;
@@ -42,5 +43,13 @@ public class Token {
 
 	public Object value() {
 		return this.value;
+	}
+
+	public void currentLine(String currentLine) {
+		this.currentLine = currentLine;
+	}
+
+	public String currentLine() {
+		return currentLine;
 	}
 }

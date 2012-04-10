@@ -18,4 +18,9 @@ public class StatementsNode extends AbstractListNode<StatementNode> {
 		return visitor.visitStatements(this);
 	}
 
+	@Override
+	public String toTree() {
+		return "Statements(values=[" + super.toTree() + "])";
+	}
+
 }

@@ -5,7 +5,7 @@ import com.bs.parser.token.Token;
 import com.bs.parser.tree.Node;
 import com.bs.parser.tree.NodeFactory;
 
-public class BsParser<T extends Node> implements Parser<T> {
+public abstract class BsParser<T extends Node> implements Parser<T> {
 
 	private Tokenizer tokenizer;
 	private NodeFactory nodeFactory;
@@ -38,6 +38,7 @@ public class BsParser<T extends Node> implements Parser<T> {
 		return parse(tokenizer().next());
 	}
 
+	@Override
 	public T parse(Token start) {
 		return null;
 	}

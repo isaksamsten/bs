@@ -55,6 +55,6 @@ public class IdentifierNode extends LiteralNode {
 
 	@Override
 	public String toTree() {
-		return "Variable(value=" + variable + " state=" + state + ")";
+		return "Identifier(value=" + variable + " state=" + state + ")";
 	}
 }

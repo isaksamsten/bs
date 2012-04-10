@@ -9,7 +9,7 @@ public interface NodeFactory {
 	 * @param token
 	 * @return
 	 */
-	IdentifierNode variable(Token token);
+	IdentifierNode identifier(Token token);
 
 	/**
 	 * 
@@ -56,6 +56,13 @@ public interface NodeFactory {
 	CallNode call(Token token);
 
 	/**
+	 * 
+	 * @param token
+	 * @return
+	 */
+	ArgumentsNode arguments(Token token);
+
+	/**
 	 * A block node
 	 * 
 	 * @param token
@@ -84,4 +91,11 @@ public interface NodeFactory {
 	 * @return
 	 */
 	StatementsNode statements(Token token);
+
+	/**
+	 * String, Number or Identifier
+	 * @param start
+	 * @return
+	 */
+	LiteralNode literal(Token start);
 }

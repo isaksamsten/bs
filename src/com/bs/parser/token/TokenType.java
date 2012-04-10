@@ -29,7 +29,7 @@ public enum TokenType {
 	/*
 	 * List
 	 */
-	LEFT_BRACET("["), RIGHT_BRACET("]");
+	LEFT_BRACKET("["), RIGHT_BRACKET("]");
 
 	private static Map<String, TokenType> special = new HashMap<String, TokenType>();
 
@@ -47,7 +47,7 @@ public enum TokenType {
 
 	static {
 		TokenType[] types = TokenType.values();
-		for (int n = COLON.ordinal(); n <= RIGHT_BRACET.ordinal(); n++) {
+		for (int n = COLON.ordinal(); n <= RIGHT_BRACKET.ordinal(); n++) {
 			special.put(types[n].text(), types[n]);
 		}
 	}

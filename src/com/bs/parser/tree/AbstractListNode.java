@@ -34,7 +34,9 @@ public abstract class AbstractListNode<T extends Node> extends AbstractNode {
 			builder.append(t.toTree());
 			builder.append(", ");
 		}
-		builder.replace(builder.length() - 3, builder.length(), "");
+		if (nodes.size() > 1) {
+			builder.replace(builder.length() - 2, builder.length(), "");
+		}
 
 		return builder.toString();
 	}

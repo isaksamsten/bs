@@ -6,12 +6,12 @@ import com.bs.parser.tree.BlockNode;
 import com.bs.parser.tree.CallNode;
 import com.bs.parser.tree.ExpressionNode;
 import com.bs.parser.tree.ExpressionsNode;
+import com.bs.parser.tree.IdentifierNode;
 import com.bs.parser.tree.MessageNode;
 import com.bs.parser.tree.MessagesNode;
 import com.bs.parser.tree.NumberNode;
 import com.bs.parser.tree.StatementsNode;
 import com.bs.parser.tree.StringNode;
-import com.bs.parser.tree.IdentifierNode;
 
 public interface Interpreter {
 

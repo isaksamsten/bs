@@ -1,13 +1,21 @@
 package com.bs.parser;
 
+import java.util.EnumSet;
+
 import com.bs.parser.token.Token;
 import com.bs.parser.token.TokenType;
 import com.bs.parser.tree.StatementNode;
-import com.bs.util.MessageListener;
+import com.bs.util.Message;
 import com.bs.util.MessageHandler;
 import com.bs.util.MessageType;
 
 public class StatementParser extends BsParser<StatementNode> {
+
+	public static final EnumSet<TokenType> START = EnumSet.of(
+			TokenType.IDENTIFIER, TokenType.NUMBER, TokenType.STRING,
+			TokenType.LEFT_BRACKET);
+
+	public static final EnumSet<TokenType> END = EnumSet.of(TokenType.DOT);
 
 	public StatementParser(BsParser<?> parser) {
 		super(parser);
@@ -16,22 +24,33 @@ public class StatementParser extends BsParser<StatementNode> {
 	@Override
 	public StatementNode parse(Token start) {
 		StatementNode node = null;
-		if (start.type() == TokenType.IDENTIFIER) {
-			Token current = tokenizer().next();
+		if (START.contains(start.type())) {
+			Token next = tokenizer().peek();
 
-			if (current.type() == TokenType.COLON_EQUAL) {
+			if (start.type() == TokenType.IDENTIFIER
+					&& next.type() == TokenType.COLON_EQUAL) {
 				AssignmentParser assignmentParser = new AssignmentParser(this);
 				node = assignmentParser.parse(start);
-			} else if (current.type() == TokenType.IDENTIFIER) {
+			} else {
 				ExpressionParser expressionParser = new ExpressionParser(this);
 				node = expressionParser.parse(start);
+			}
+
+			start = tokenizer().current();
+			if (!END.contains(start.type())) {
+				MessageHandler.error(tokenizer().current(),
+						MessageType.SYNTAX_ERROR,
+						Message.UNEXPECTED_END_OF_STATEMENT, tokenizer()
+								.current().text());
+
+				node = null;
 			} else {
-				MessageHandler.error(current, MessageType.SYNTAX_ERROR,
-						MessageListener.UNEXPECTED_STATEMENT, current.text());
+				tokenizer().next(); // consume ending dot
 			}
 		} else {
-			MessageHandler.error(start, MessageType.SYNTAX_ERROR,
-					MessageListener.UNEXPECTED_STATEMENT, start.text());
+			MessageHandler.error(tokenizer().current(),
+					MessageType.SYNTAX_ERROR, Message.UNEXPECTED_STATEMENT,
+					tokenizer().current().text());
 		}
 
 		return node;

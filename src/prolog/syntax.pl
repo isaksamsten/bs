@@ -1,4 +1,4 @@
-num(num(X)) --> [X], {number(X)}.
+ num(num(X)) --> [X], {number(X)}.
 var(var(X)) --> [X], {atom(X), X \== '(', X \== ')', X \== ']', X \== '['}.
 str(str(X)) --> ['"'], atom(X), ['"'].
 
@@ -29,10 +29,10 @@ args(args(X, Y)) --> var(X), args(Y).
 /*
  * A block is an argument list followed by a pipe and statement list
  *
- * Eg. [ x, y | x show(y) ]
+ * Eg. [ | x, y | x show(y) ]
  */
 expr(block(X, Y)) --> ['['], args(X), ['|'], statements(Y), [']'].
-expr(block(X)) -->  ['['], statements(X), [']'].
+expr(block(X)) -->  ['['], ['|'], statements(X), [']'].
 
 
 /*

@@ -3,7 +3,7 @@ package com.bs.parser.source;
 import com.bs.parser.token.Token;
 import com.bs.parser.token.TokenFactory;
 import com.bs.parser.token.TokenType;
-import com.bs.util.MessageListener;
+import com.bs.util.Message;
 import com.bs.util.MessageHandler;
 import com.bs.util.MessageType;
 
@@ -52,24 +52,30 @@ public class BsTokenizer implements Tokenizer {
 	}
 
 	protected Token extract() {
+		Token token = null;
 		consumeWhitespace();
 		char current = scanner.current();
+		int line = scanner.line();
 		if (current == Scanner.EOF) {
-			return factory.eof();
+			token = factory.eof();
+			line -= 1;
 		} else if (validIdentifierStart(current)) {
-			return extractIdentifier();
+			token = extractIdentifier();
 		} else if (Character.isDigit(current)) {
-			return extractNumber();
+			token = extractNumber();
 		} else if (TokenType.isSpecial(current)) {
-			return extractSpecial();
+			token = extractSpecial();
 		} else if (current == '"') {
-			return extractString();
+			token = extractString();
 		} else {
 			MessageHandler.error(scanner(), MessageType.SYNTAX_ERROR,
-					MessageListener.UNEXPECTED_TOKEN, String.valueOf(current));
+					Message.UNEXPECTED_TOKEN, String.valueOf(current));
 			scanner().next(); // skip.. (and recover?)
-			return factory.error(scanner().line(), scanner().position());
+			token = factory.error(scanner().line(), scanner().position());
+
 		}
+		token.currentLine(scanner.line(line - 1));
+		return token;
 	}
 
 	protected Token extractString() {
@@ -104,7 +110,8 @@ public class BsTokenizer implements Tokenizer {
 		StringBuilder builder = new StringBuilder();
 		char c = scanner().current();
 		boolean hasDot = false;
-		while (Character.isDigit(c) || (c == '.' && !hasDot)) {
+		while (Character.isDigit(c)
+				|| (c == '.' && Character.isDigit(scanner.peek()) && !hasDot)) {
 			if (c == '.') {
 				hasDot = true;
 			}

@@ -48,7 +48,7 @@ public class MessageNode extends AbstractNode {
 	@Override
 	public String toTree() {
 		return "Message(identifier=" + identifier.toTree() + " expressions="
-				+ expressions.toTree() + ")";
+				+ (expressions != null ? expressions.toTree() : "[]") + ")";
 	}
 
 }

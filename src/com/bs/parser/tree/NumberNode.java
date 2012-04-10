@@ -37,7 +37,7 @@ public class NumberNode extends LiteralNode {
 
 	@Override
 	public String toTree() {
-		return "Number( " + number + ")";
+		return "Number(" + number + ")";
 	}
 
 }
