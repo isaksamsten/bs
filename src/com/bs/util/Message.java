@@ -1,17 +1,43 @@
 package com.bs.util;
 
-public interface Message {
+public class Message {
+	private int line, position;
+	private String currentLine, message;
+	private MessageType type;
+	private Object[] args;
 
-	String TOO_MANY_ERRORS = "To many errors encountered";
-	String UNEXPECTED_TOKEN = "Unexpected token at '%s'";
-	String UNEXPECTED_STATEMENT = "Unexpected statement at '%s'";
-	String UNEXPECTED_ASSIGNMENT = "Unexpected assignment at '%s'";
+	public Message(String currentLine, MessageType type, int line,
+			int position, String message, Object[] args) {
+		this.currentLine = currentLine;
+		this.type = type;
+		this.line = line;
+		this.position = position;
+		this.message = message;
+		this.args = args;
+	}
 
-	void error(String currentLine, int line, int pos, String message,
-			Object... args);
+	public int line() {
+		return line;
+	}
 
-	void fatal(String currentLine, int line, int pos, String message,
-			Object... args);
+	public int position() {
+		return position;
+	}
 
-	void fatal(Throwable t);
+	public String currentLine() {
+		return currentLine;
+	}
+
+	public String message() {
+		return message;
+	}
+
+	public MessageType type() {
+		return type;
+	}
+
+	public Object[] args() {
+		return args;
+	}
+
 }

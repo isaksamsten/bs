@@ -3,8 +3,9 @@ package com.bs.parser;
 import com.bs.parser.token.Token;
 import com.bs.parser.token.TokenType;
 import com.bs.parser.tree.StatementNode;
-import com.bs.util.Message;
+import com.bs.util.MessageListener;
 import com.bs.util.MessageHandler;
+import com.bs.util.MessageType;
 
 public class StatementParser extends BsParser<StatementNode> {
 
@@ -25,12 +26,12 @@ public class StatementParser extends BsParser<StatementNode> {
 				ExpressionParser expressionParser = new ExpressionParser(this);
 				node = expressionParser.parse(start);
 			} else {
-				MessageHandler.error(current, Message.UNEXPECTED_STATEMENT,
-						current.text());
+				MessageHandler.error(current, MessageType.SYNTAX_ERROR,
+						MessageListener.UNEXPECTED_STATEMENT, current.text());
 			}
 		} else {
-			MessageHandler.error(start, Message.UNEXPECTED_STATEMENT,
-					start.text());
+			MessageHandler.error(start, MessageType.SYNTAX_ERROR,
+					MessageListener.UNEXPECTED_STATEMENT, start.text());
 		}
 
 		return node;

@@ -3,8 +3,9 @@ package com.bs.parser.source;
 import com.bs.parser.token.Token;
 import com.bs.parser.token.TokenFactory;
 import com.bs.parser.token.TokenType;
-import com.bs.util.Message;
+import com.bs.util.MessageListener;
 import com.bs.util.MessageHandler;
+import com.bs.util.MessageType;
 
 public class BsTokenizer implements Tokenizer {
 
@@ -61,12 +62,26 @@ public class BsTokenizer implements Tokenizer {
 			return extractNumber();
 		} else if (TokenType.isSpecial(current)) {
 			return extractSpecial();
+		} else if (current == '"') {
+			return extractString();
 		} else {
-			MessageHandler.error(scanner(), Message.UNEXPECTED_TOKEN,
-					String.valueOf(current));
+			MessageHandler.error(scanner(), MessageType.SYNTAX_ERROR,
+					MessageListener.UNEXPECTED_TOKEN, String.valueOf(current));
 			scanner().next(); // skip.. (and recover?)
 			return factory.error(scanner().line(), scanner().position());
 		}
+	}
+
+	protected Token extractString() {
+		StringBuilder builder = new StringBuilder();
+		char c = scanner().next();
+		while (c != '"') {
+			builder.append(c);
+			c = scanner().next();
+		}
+		scanner.next(); // consume "
+		return factory.string(builder.toString(), scanner.line(),
+				scanner.position());
 	}
 
 	protected Token extractSpecial() {

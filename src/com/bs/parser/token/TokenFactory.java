@@ -8,6 +8,8 @@ public interface TokenFactory {
 
 	Token special(String value, int line, int position);
 
+	Token string(String value, int line, int position);
+
 	Token guess(String value, int line, int position);
 
 	Token error(int line, int position);
