@@ -22,7 +22,7 @@ public class IdentifierNode extends LiteralNode {
 	}
 
 	private String variable;
-	private IdentifierNode.State state;
+	private IdentifierNode.State state = State.LOAD;
 
 	public IdentifierNode(int line, int position) {
 		super(line, position);

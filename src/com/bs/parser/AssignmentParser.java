@@ -4,6 +4,8 @@ import com.bs.parser.token.Token;
 import com.bs.parser.token.TokenType;
 import com.bs.parser.tree.AssignNode;
 import com.bs.parser.tree.ExpressionNode;
+import com.bs.parser.tree.IdentifierNode;
+import com.bs.parser.tree.IdentifierNode.State;
 import com.bs.util.Message;
 import com.bs.util.MessageHandler;
 import com.bs.util.MessageType;
@@ -24,7 +26,10 @@ public class AssignmentParser extends BsParser<AssignNode> {
 			if (exprNode != null) {
 				node = nodeFactory().assignment(start);
 				node.expression(exprNode);
-				node.identifier(nodeFactory().identifier(start));
+
+				IdentifierNode identifier = nodeFactory().identifier(start);
+				identifier.state(State.STORE);
+				node.identifier(identifier);
 			} else {
 				MessageHandler.error(tokenizer().current(),
 						MessageType.SYNTAX_ERROR,

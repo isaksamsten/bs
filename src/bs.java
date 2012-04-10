@@ -45,7 +45,7 @@ public class bs {
 		});
 
 		Scanner sc = new BsScanner(new StringReader(
-				"isak := 10 +() *()." +
+				"isak := 10 +() *() toString()." +
 				"lisa." +
 				"[ | x, y | " +
 				"  isak. " +
