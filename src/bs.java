@@ -1,17 +1,12 @@
-import java.io.File;
-import java.io.FileReader;
 import java.io.StringReader;
 
 import com.bs.parser.BsParser;
 import com.bs.parser.Parser;
-import com.bs.parser.source.Scanner;
 import com.bs.parser.source.BsScanner;
 import com.bs.parser.source.BsTokenizer;
+import com.bs.parser.source.Scanner;
 import com.bs.parser.source.Tokenizer;
 import com.bs.parser.token.DefaultTokenFactory;
-import com.bs.parser.token.Token;
-import com.bs.parser.token.TokenFactory;
-import com.bs.parser.token.TokenType;
 import com.bs.util.Message;
 import com.bs.util.MessageHandler;
 
@@ -27,16 +22,18 @@ public class bs {
 			}
 
 			@Override
-			public void fatal(String message, Scanner scanner, Object... args) {
+			public void fatal(String currentLine, int line, int pos,
+					String message, Object... args) {
 				System.out.format(message + "\n", args);
 				System.exit(-1);
 			}
 
 			@Override
-			public void error(String message, Scanner scanner, Object... args) {
-				System.out.println(scanner.currentLine());
-				System.out.format(message + " at line " + scanner.line() + ":"
-						+ scanner.position() + "\n", args);
+			public void error(String currentLine, int line, int position,
+					String message, Object... args) {
+				System.out.println(currentLine);
+				System.out.format(message + " at line " + line + ":" + position
+						+ "\n", args);
 			}
 		});
 

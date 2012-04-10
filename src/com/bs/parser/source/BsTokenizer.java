@@ -62,7 +62,7 @@ public class BsTokenizer implements Tokenizer {
 		} else if (TokenType.isSpecial(current)) {
 			return extractSpecial();
 		} else {
-			MessageHandler.error(Message.INVALID_TOKEN, scanner(),
+			MessageHandler.error(scanner(), Message.UNEXPECTED_TOKEN,
 					String.valueOf(current));
 			scanner().next(); // skip.. (and recover?)
 			return factory.error(scanner().line(), scanner().position());

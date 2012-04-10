@@ -5,13 +5,13 @@ import com.bs.parser.token.Token;
 import com.bs.parser.tree.Node;
 import com.bs.parser.tree.NodeFactory;
 
-public interface Parser {
+public interface Parser<T extends Node> {
 
 	NodeFactory nodeFactory();
 
 	Tokenizer tokenizer();
 
-	Node parse();
+	T parse();
 
-	Node parse(Token start);
+	T parse(Token start);
 }

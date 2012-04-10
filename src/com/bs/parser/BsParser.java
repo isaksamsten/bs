@@ -5,7 +5,7 @@ import com.bs.parser.token.Token;
 import com.bs.parser.tree.Node;
 import com.bs.parser.tree.NodeFactory;
 
-public class BsParser implements Parser {
+public class BsParser<T extends Node> implements Parser<T> {
 
 	private Tokenizer tokenizer;
 	private NodeFactory nodeFactory;
@@ -15,7 +15,7 @@ public class BsParser implements Parser {
 		this.nodeFactory = nodeFactory;
 	}
 
-	public BsParser(BsParser parser) {
+	public BsParser(BsParser<?> parser) {
 		this(parser.tokenizer, parser.nodeFactory);
 	}
 
@@ -34,12 +34,11 @@ public class BsParser implements Parser {
 	 * <code>return parse(tokenizer().next())</code>
 	 */
 	@Override
-	public Node parse() {
+	public T parse() {
 		return parse(tokenizer().next());
 	}
 
-	public Node parse(Token start) {
-
+	public T parse(Token start) {
 		return null;
 	}
 
