@@ -9,6 +9,8 @@ public class Message {
 	public static final String UNEXPECTED_END_OF_STATEMENT = "Unexpected end of statement '%s' (are you missing a dot?)";
 	public static final String UNEXPECTED_BLOCK = "Unexpected block '%s'";
 	public static final String UNEXPECTED_MESSAGE = "Unexpected message '%s'";
+	public static final String UNEXPECTED_ARGUMENT = "Unexpected argument '%s' (are you missing a comma?)";
+	public static final String UNEXPECTED_CALL = "Unexpected call '%s' (are you missing a message?)";
 
 	private int line, position;
 	private String currentLine, message;

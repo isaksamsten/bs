@@ -44,14 +44,7 @@ public class bs {
 			}
 		});
 
-		Scanner sc = new BsScanner(new StringReader(
-				"isak := 10 +() *() toString()." +
-				"lisa." +
-				"[ | x, y | " +
-				"  isak. " +
-				"  lisa. " +
-				"  23." +
-				"]."));
+		Scanner sc = new BsScanner(new StringReader("lol := 10 + [isak.]."));
 		Tokenizer tz = new BsTokenizer(sc, new DefaultTokenFactory(), '#');
 		StatementsParser parser = new StatementsParser(tz,
 				new DefaultNodeFactory());

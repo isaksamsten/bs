@@ -47,10 +47,11 @@ expr_list(exprs(X, Y)) --> expr(X), [','], expr_list(Y).
  * A message is a literal followed by starting and ending parentheses,
  * with or without an expression list in between.
  *
- * Eg. message() or message(1,2,3)
+ * Eg. message() or message(1,2,3), +(3), or + 3
  */
 message(message(X)) --> var(X), ['('], [')'].
 message(message(X, Y)) --> var(X), ['('], expr_list(Y), [')'].
+message(message(X, Y)) --> var(X), expr_list(Y).
 
 /*
  * A message list is a message follwed by a list of messages
@@ -84,3 +85,4 @@ statements(statements(X, Y)) --> statement(X), statements(Y).
 %  
 %
 % a = Object clone(10, 10) clone() clone()
+

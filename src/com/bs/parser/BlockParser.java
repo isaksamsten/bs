@@ -21,6 +21,10 @@ public class BlockParser extends BsParser<BlockNode> {
 		if (start.type() == TokenType.LEFT_BRACKET) {
 			node = nodeFactory().block(start);
 			Token next = tokenizer().next();
+			
+			/*
+			 * Parse the argument list
+			 */
 			if (next.type() == TokenType.PIPE) {
 				ArgumentsParser args = new ArgumentsParser(this);
 				ArgumentsNode arguments = args.parse();
