@@ -22,14 +22,19 @@ public enum TokenType {
 	PIPE("|"),
 
 	/*
-	 * Tuple
+	 * Calls
 	 */
 	LEFT_PAREN("("), RIGHT_PAREN(")"),
 
 	/*
-	 * List
+	 * Lists
 	 */
-	LEFT_BRACKET("["), RIGHT_BRACKET("]");
+	LEFT_BRACKET("["), RIGHT_BRACKET("]"),
+
+	/*
+	 * Blocks
+	 */
+	LEFT_BRACE("{"), RIGHT_BRACE("}");
 
 	private static Map<String, TokenType> special = new HashMap<String, TokenType>();
 
@@ -47,7 +52,7 @@ public enum TokenType {
 
 	static {
 		TokenType[] types = TokenType.values();
-		for (int n = COLON.ordinal(); n <= RIGHT_BRACKET.ordinal(); n++) {
+		for (int n = COLON.ordinal(); n <= RIGHT_BRACE.ordinal(); n++) {
 			special.put(types[n].text(), types[n]);
 		}
 	}

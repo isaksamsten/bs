@@ -11,6 +11,8 @@ public class Message {
 	public static final String UNEXPECTED_MESSAGE = "Unexpected message '%s'";
 	public static final String UNEXPECTED_ARGUMENT = "Unexpected argument '%s' (are you missing a comma?)";
 	public static final String UNEXPECTED_CALL = "Unexpected call '%s' (are you missing a message?)";
+	public static final String UNEXPECTED_LIST = "Unexpected list '%s'";
+	public static final String UNEXPECTED_END_OF_LIST = "Unexpected end of list '%s' (are you missing ]?)";
 
 	private int line, position;
 	private String currentLine, message;

@@ -24,26 +24,30 @@ public class ExpressionParser extends BsParser<ExpressionNode> {
 		Token next = tokenizer().peek();
 		if (START.contains(start.type()) && next.type() == TokenType.IDENTIFIER) {
 			next = tokenizer().next();
-			if (next.type() == TokenType.IDENTIFIER) {
-				CallParser parser = new CallParser(this);
-				node = parser.parse(start);
-			}
+			CallParser parser = new CallParser(this);
+			node = parser.parse(start);
 		} else if (start.type() == TokenType.IDENTIFIER) {
 			node = nodeFactory().expression(start);
-			node.literal(nodeFactory().identifier(start));
+			node.left(nodeFactory().identifier(start));
 
 			tokenizer().next();
+		} else if (start.type() == TokenType.LEFT_PAREN) {
+			CallParser parser = new CallParser(this);
+			node = parser.parse(start);
 		} else if (start.type() == TokenType.LEFT_BRACKET) {
+			ListParser parser = new ListParser(this);
+			node = parser.parse(start);
+		} else if (start.type() == TokenType.LEFT_BRACE) {
 			BlockParser parser = new BlockParser(this);
 			node = parser.parse(start);
 		} else if (start.type() == TokenType.NUMBER) {
 			node = nodeFactory().expression(start);
-			node.literal(nodeFactory().number(start));
+			node.left(nodeFactory().number(start));
 
 			tokenizer().next();
 		} else if (start.type() == TokenType.STRING) {
 			node = nodeFactory().expression(start);
-			node.literal(nodeFactory().string(start));
+			node.left(nodeFactory().string(start));
 
 			tokenizer().next();
 		} else {

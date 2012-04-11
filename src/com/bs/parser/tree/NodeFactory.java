@@ -71,6 +71,14 @@ public interface NodeFactory {
 	BlockNode block(Token token);
 
 	/**
+	 * A List node
+	 * 
+	 * @param token
+	 * @return
+	 */
+	ListNode list(Token token);
+
+	/**
 	 * A list of expression
 	 * 
 	 * @param token
@@ -94,6 +102,7 @@ public interface NodeFactory {
 
 	/**
 	 * String, Number or Identifier
+	 * 
 	 * @param start
 	 * @return
 	 */

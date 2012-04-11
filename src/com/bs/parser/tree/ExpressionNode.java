@@ -6,9 +6,9 @@ import java.util.List;
 import com.bs.interpreter.Interpreter;
 import com.bs.parser.token.Token;
 
-public class ExpressionNode extends StatementNode {
+public class ExpressionNode extends StatementNode implements LiteralNode {
 
-	private LiteralNode literal;
+	private LiteralNode left;
 
 	public ExpressionNode(int line, int position) {
 		super(line, position);
@@ -20,25 +20,30 @@ public class ExpressionNode extends StatementNode {
 
 	@Override
 	public List<Node> childrens() {
-		return Arrays.<Node> asList(literal);
+		return Arrays.<Node> asList(left);
 	}
 
-	public LiteralNode literal() {
-		return literal;
+	public LiteralNode left() {
+		return left;
 	}
 
-	public void literal(LiteralNode node) {
-		this.literal = node;
+	public void left(LiteralNode node) {
+		this.left = node;
 	}
 
 	@Override
 	public String toTree() {
-		return "Expr(literal=" + literal.toTree() + ")";
+		return "Expr(literal=" + left.toTree() + ")";
 	}
 
 	@Override
 	public Object visit(Interpreter visitor) {
 		return visitor.visitExpression(this);
+	}
+
+	@Override
+	public Object value() {
+		return null;
 	}
 
 }

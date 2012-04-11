@@ -44,7 +44,13 @@ public class bs {
 			}
 		});
 
-		Scanner sc = new BsScanner(new StringReader("lol := 10 + [isak.]."));
+		Scanner sc = new BsScanner(new StringReader(
+				"[].left := [30, isak + lisa, [1] len()]." +
+				"(10 > left) ifTrue {" +
+				"  Transcript show(10, 10)." +
+				"}, {" +
+				"  Transcript dontShow." +
+				"}."));
 		Tokenizer tz = new BsTokenizer(sc, new DefaultTokenFactory(), '#');
 		StatementsParser parser = new StatementsParser(tz,
 				new DefaultNodeFactory());

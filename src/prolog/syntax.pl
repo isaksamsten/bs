@@ -1,11 +1,26 @@
  num(num(X)) --> [X], {number(X)}.
-var(var(X)) --> [X], {atom(X), X \== '(', X \== ')', X \== ']', X \== '['}.
+var(var(X)) --> [X], {atom(X),
+		      X \== '(',
+		      X \== ')',
+		      X \== ']',
+		      X \== '[',
+		      X \== '{',
+		      X \== '}',
+		      X \== ','}.
 str(str(X)) --> ['"'], atom(X), ['"'].
+
+/*
+ * Arguments are a list of names
+ */ 
+args(args(X)) --> var(X).
+args(args(X, Y)) --> var(X), args(Y).
+
 
 /*
  * A literal is a string, number or a variable.
  */
 literal(X) --> var(X); num(X); str(X).
+literal(X) --> ['('], expr(X), [')'].
 
 /*
  * An expression can be a literal
@@ -20,11 +35,6 @@ expr(expr(X)) --> literal(X).
  */
 expr(call(X, Y)) --> literal(X), message_list(Y).
 
-/*
- * Arguments are a list of names
- */ 
-args(args(X)) --> var(X).
-args(args(X, Y)) --> var(X), args(Y).
 
 /*
  * A block is an argument list followed by a pipe and statement list
@@ -33,6 +43,7 @@ args(args(X, Y)) --> var(X), args(Y).
  */
 expr(block(X, Y)) --> ['['], args(X), ['|'], statements(Y), [']'].
 expr(block(X)) -->  ['['], ['|'], statements(X), [']'].
+expr(list(X)) --> ['{'], expr_list(X), ['}'].
 
 
 /*

@@ -1,5 +1,7 @@
 package com.bs.parser.tree;
 
+import java.util.List;
+
 import com.bs.interpreter.Interpreter;
 import com.bs.parser.token.Token;
 
@@ -9,7 +11,7 @@ import com.bs.parser.token.Token;
  * @author Isak Karlsson
  * 
  */
-public class IdentifierNode extends LiteralNode {
+public class IdentifierNode extends AbstractNode implements LiteralNode {
 
 	/**
 	 * The state of a variable
@@ -56,5 +58,15 @@ public class IdentifierNode extends LiteralNode {
 	@Override
 	public String toTree() {
 		return "Identifier(value=" + variable + " state=" + state + ")";
+	}
+
+	@Override
+	public List<Node> childrens() {
+		return null;
+	}
+
+	@Override
+	public Object value() {
+		return variable;
 	}
 }

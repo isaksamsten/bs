@@ -18,7 +18,7 @@ public class BlockParser extends BsParser<BlockNode> {
 	@Override
 	public BlockNode parse(Token start) {
 		BlockNode node = null;
-		if (start.type() == TokenType.LEFT_BRACKET) {
+		if (start.type() == TokenType.LEFT_BRACE) {
 			node = nodeFactory().block(start);
 			Token next = tokenizer().next();
 			
@@ -42,7 +42,7 @@ public class BlockParser extends BsParser<BlockNode> {
 			StatementsParser parser = new StatementsParser(this);
 			StatementsNode statements = parser.parse(tokenizer().current());
 			if (statements != null
-					&& tokenizer().current().type() == TokenType.RIGHT_BRACKET) {
+					&& tokenizer().current().type() == TokenType.RIGHT_BRACE) {
 				node.statements(statements);
 				tokenizer().next(); // consume right bracket
 			} else {

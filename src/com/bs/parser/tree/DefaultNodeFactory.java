@@ -1,7 +1,6 @@
 package com.bs.parser.tree;
 
 import com.bs.parser.token.Token;
-import com.bs.parser.token.TokenType;
 
 public class DefaultNodeFactory implements NodeFactory {
 
@@ -81,6 +80,11 @@ public class DefaultNodeFactory implements NodeFactory {
 		default:
 			return null;
 		}
+	}
+
+	@Override
+	public ListNode list(Token token) {
+		return new ListNode(token);
 	}
 
 }

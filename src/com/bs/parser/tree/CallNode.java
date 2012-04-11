@@ -28,13 +28,13 @@ public class CallNode extends ExpressionNode {
 
 	@Override
 	public String toTree() {
-		return "Call(literal=" + literal().toTree() + " messages="
+		return "Call(literal=" + left().toTree() + " messages="
 				+ messages.toTree() + ")";
 	}
 
 	@Override
 	public List<Node> childrens() {
-		return Arrays.<Node> asList(literal());
+		return Arrays.<Node> asList(left());
 	}
 
 	@Override
