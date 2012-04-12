@@ -1,5 +1,12 @@
 import java.io.StringReader;
 
+import com.bs.interpreter.BsInterpreter;
+import com.bs.interpreter.Interpreter;
+import com.bs.interpreter.stack.BsStack;
+import com.bs.interpreter.stack.Stack;
+import com.bs.lang.Bs;
+import com.bs.lang.BsModule;
+import com.bs.lang.BsObject;
 import com.bs.parser.StatementsParser;
 import com.bs.parser.source.BsScanner;
 import com.bs.parser.source.BsTokenizer;
@@ -44,18 +51,27 @@ public class bs {
 			}
 		});
 
-		Scanner sc = new BsScanner(new StringReader(
-				"[].left := [30, isak + lisa, [1] len()]." +
-				"(10 > left) ifTrue {" +
-				"  Transcript show(10, 10)." +
-				"}, {" +
-				"  Transcript dontShow." +
-				"}."));
+		BsObject module = BsModule.create();
+		module.var(Bs.Proto);
+		module.var(Bs.String);
+		module.var(Bs.List);
+		module.var(Bs.Number);
+		module.var(Bs.Module);
+
+		Stack stack = BsStack.instance();
+		stack.push(module);
+
+		Scanner sc = new BsScanner(new StringReader("left := (10 * 10) + 10." +
+				"right := (\"isak\" length() + 10) * 10."));
 		Tokenizer tz = new BsTokenizer(sc, new DefaultTokenFactory(), '#');
 		StatementsParser parser = new StatementsParser(tz,
 				new DefaultNodeFactory());
 
 		Node n = parser.parse();
 		System.out.println(n.toTree());
+
+		Interpreter interpreter = new BsInterpreter(stack);
+		Object value = interpreter.visit(n);
+		System.out.println(value);
 	}
 }

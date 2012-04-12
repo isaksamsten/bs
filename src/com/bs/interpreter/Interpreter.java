@@ -7,13 +7,17 @@ import com.bs.parser.tree.CallNode;
 import com.bs.parser.tree.ExpressionNode;
 import com.bs.parser.tree.ExpressionsNode;
 import com.bs.parser.tree.IdentifierNode;
+import com.bs.parser.tree.ListNode;
 import com.bs.parser.tree.MessageNode;
 import com.bs.parser.tree.MessagesNode;
+import com.bs.parser.tree.Node;
 import com.bs.parser.tree.NumberNode;
 import com.bs.parser.tree.StatementsNode;
 import com.bs.parser.tree.StringNode;
 
 public interface Interpreter {
+
+	Object visit(Node node);
 
 	Object visitNumber(NumberNode numberNode);
 
@@ -38,5 +42,7 @@ public interface Interpreter {
 	Object visitBlock(BlockNode blockNode);
 
 	Object visitArguments(ArgumentsNode argumentsNode);
+
+	Object visitList(ListNode listNode);
 
 }

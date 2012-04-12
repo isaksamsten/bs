@@ -3,6 +3,7 @@ package com.bs.parser.tree;
 import java.util.Arrays;
 import java.util.List;
 
+import com.bs.interpreter.Interpreter;
 import com.bs.parser.token.Token;
 
 public class ListNode extends ExpressionNode {
@@ -34,6 +35,11 @@ public class ListNode extends ExpressionNode {
 	@Override
 	public List<Node> childrens() {
 		return Arrays.<Node> asList(expressions);
+	}
+
+	@Override
+	public Object visit(Interpreter visitor) {
+		return visitor.visitList(this);
 	}
 
 }

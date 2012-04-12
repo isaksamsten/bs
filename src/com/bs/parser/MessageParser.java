@@ -3,6 +3,8 @@ package com.bs.parser;
 import com.bs.parser.token.Token;
 import com.bs.parser.token.TokenType;
 import com.bs.parser.tree.ExpressionsNode;
+import com.bs.parser.tree.IdentifierNode;
+import com.bs.parser.tree.IdentifierNode.State;
 import com.bs.parser.tree.MessageNode;
 import com.bs.util.Message;
 import com.bs.util.MessageHandler;
@@ -20,7 +22,9 @@ public class MessageParser extends BsParser<MessageNode> {
 		Token next = tokenizer().next();
 		if (next.type() == TokenType.LEFT_PAREN) {
 			node = nodeFactory().message(start);
-			node.identifier(nodeFactory().identifier(start));
+			IdentifierNode identifier = nodeFactory().identifier(start);
+			identifier.state(State.MESSAGE);
+			node.identifier(identifier);
 
 			next = tokenizer().next();
 			if (StatementParser.START.contains(next.type())) {
@@ -42,7 +46,9 @@ public class MessageParser extends BsParser<MessageNode> {
 			}
 		} else if (StatementParser.START.contains(next.type())) {
 			node = nodeFactory().message(start);
-			node.identifier(nodeFactory().identifier(start));
+			IdentifierNode identifier = nodeFactory().identifier(start);
+			identifier.state(State.MESSAGE);
+			node.identifier(identifier);
 
 			ExpressionsParser parser = new ExpressionsParser(this);
 			ExpressionsNode expressions = parser.parse(next);

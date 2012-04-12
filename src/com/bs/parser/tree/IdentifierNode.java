@@ -20,7 +20,7 @@ public class IdentifierNode extends AbstractNode implements LiteralNode {
 	 * 
 	 */
 	public enum State {
-		LOAD, STORE;
+		LOAD, STORE, MESSAGE;
 	}
 
 	private String variable;
