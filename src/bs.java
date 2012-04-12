@@ -62,7 +62,7 @@ public class bs {
 		stack.push(module);
 
 		Scanner sc = new BsScanner(new StringReader("left := (10 * 10) + 10." +
-				"right := (\"isak\" length() + 10) * 10."));
+				"right := (\"isak\" length() + left) * 10."));
 		Tokenizer tz = new BsTokenizer(sc, new DefaultTokenFactory(), '#');
 		StatementsParser parser = new StatementsParser(tz,
 				new DefaultNodeFactory());
@@ -72,6 +72,7 @@ public class bs {
 
 		Interpreter interpreter = new BsInterpreter(stack);
 		Object value = interpreter.visit(n);
-		System.out.println(value);
+		System.out.println(module.var("right"));
+		System.out.println(module.var("left"));
 	}
 }

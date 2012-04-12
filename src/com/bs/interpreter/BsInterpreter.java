@@ -78,12 +78,12 @@ public class BsInterpreter implements Interpreter {
 
 	@Override
 	public Object visitMessage(MessageNode messageNode) {
-		throw new UnsupportedOperationException();
+		throw new UnsupportedOperationException("Handled in overriden method.");
 	}
 
 	@Override
 	public Object visitMessages(MessagesNode messagesNode) {
-		throw new UnsupportedOperationException();
+		throw new UnsupportedOperationException("Handled in overriden method.");
 	}
 
 	@Override
