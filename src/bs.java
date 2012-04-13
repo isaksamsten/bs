@@ -57,12 +57,15 @@ public class bs {
 		module.var(Bs.List);
 		module.var(Bs.Number);
 		module.var(Bs.Module);
+		module.var(Bs.Enumerable);
+		module.var(Bs.True);
+		module.var(Bs.False);
 
 		Stack stack = BsStack.instance();
 		stack.push(module);
 
-		Scanner sc = new BsScanner(new StringReader("left := (10 * 10) + 10." +
-				"right := (\"isak\" length() + left) * 10."));
+		Scanner sc = new BsScanner(new StringReader(
+				"left := [10, 10 + 10] each {| x | x * 10.}."));
 		Tokenizer tz = new BsTokenizer(sc, new DefaultTokenFactory(), '#');
 		StatementsParser parser = new StatementsParser(tz,
 				new DefaultNodeFactory());

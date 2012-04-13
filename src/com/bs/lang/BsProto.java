@@ -12,7 +12,7 @@ public class BsProto extends BsObject {
 		if (self.value() != null) {
 			value = self.value();
 		}
-		return BsObject.value(Bs.String, value);
+		return BsObject.value(Bs.String, value.toString());
 	}
 
 	@BsRuntimeMessage(name = "clone", arity = 0)

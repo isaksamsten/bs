@@ -4,7 +4,10 @@ import java.util.EnumSet;
 
 import com.bs.parser.token.Token;
 import com.bs.parser.token.TokenType;
+import com.bs.parser.tree.CallNode;
 import com.bs.parser.tree.ExpressionNode;
+import com.bs.parser.tree.LiteralNode;
+import com.bs.parser.tree.MessagesNode;
 import com.bs.util.Message;
 import com.bs.util.MessageHandler;
 import com.bs.util.MessageType;
@@ -37,9 +40,31 @@ public class ExpressionParser extends BsParser<ExpressionNode> {
 		} else if (start.type() == TokenType.LEFT_BRACKET) {
 			ListParser parser = new ListParser(this);
 			node = parser.parse(start);
+
+			/*
+			 * There is a message after the list literal
+			 */
+			if (START.contains(tokenizer().current().type())) {
+				LiteralNode tmp = node;
+				MessagesParser msgParser = new MessagesParser(this);
+				MessagesNode msgs = msgParser.parse(tokenizer().current());
+
+				if (msgs != null) {
+					CallNode cnode = nodeFactory().call(start);
+					cnode.left(tmp);
+					cnode.messages(msgs);
+
+					node = cnode;
+				}
+
+			}
 		} else if (start.type() == TokenType.LEFT_BRACE) {
 			BlockParser parser = new BlockParser(this);
 			node = parser.parse(start);
+
+			if (START.contains(tokenizer().current().type())) {
+				// its a call on the block
+			}
 		} else if (start.type() == TokenType.NUMBER) {
 			node = nodeFactory().expression(start);
 			node.left(nodeFactory().number(start));

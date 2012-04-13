@@ -3,7 +3,10 @@ package com.bs.interpreter;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.bs.interpreter.stack.BsStack;
 import com.bs.interpreter.stack.Stack;
+import com.bs.lang.Bs;
+import com.bs.lang.BsBlock;
 import com.bs.lang.BsNumber;
 import com.bs.lang.BsObject;
 import com.bs.lang.BsString;
@@ -29,6 +32,10 @@ public class BsInterpreter implements Interpreter {
 
 	public BsInterpreter(Stack stack) {
 		this.stack = stack;
+	}
+
+	public BsInterpreter() {
+		this(BsStack.instance());
 	}
 
 	public BsInterpreter(BsInterpreter inter) {
@@ -105,16 +112,26 @@ public class BsInterpreter implements Interpreter {
 		return value;
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public Object visitBlock(BlockNode blockNode) {
-		// TODO Auto-generated method stub
-		return null;
+		List<String> args = (List<String>) visit(blockNode.arguments());
+		if (args == null) {
+			args = new ArrayList<String>();
+		}
+		BsObject block = BsBlock.create(args, blockNode.statements());
+		return block;
 	}
 
 	@Override
 	public Object visitArguments(ArgumentsNode argumentsNode) {
-		// TODO Auto-generated method stub
-		return null;
+		List<String> args = new ArrayList<String>();
+		for (Node n : argumentsNode.childrens()) {
+			String arg = (String) visit(n);
+			args.add(arg);
+		}
+
+		return args;
 	}
 
 	@Override
@@ -125,10 +142,12 @@ public class BsInterpreter implements Interpreter {
 		return null;
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
-	public Object visitList(ListNode listNode) {
-		// TODO Auto-generated method stub
-		return null;
+	public Object visitList(ListNode node) {
+		List<BsObject> objects = (List<BsObject>) visit(node.expressions());
+		BsObject list = BsObject.value(Bs.List, objects);
+		return list;
 	}
 
 }

@@ -21,9 +21,9 @@ public class BlockParser extends BsParser<BlockNode> {
 		if (start.type() == TokenType.LEFT_BRACE) {
 			node = nodeFactory().block(start);
 			Token next = tokenizer().next();
-			
+
 			/*
-			 * Parse the argument list
+			 * Parse the argument list, if there are one
 			 */
 			if (next.type() == TokenType.PIPE) {
 				ArgumentsParser args = new ArgumentsParser(this);
@@ -44,6 +44,7 @@ public class BlockParser extends BsParser<BlockNode> {
 			if (statements != null
 					&& tokenizer().current().type() == TokenType.RIGHT_BRACE) {
 				node.statements(statements);
+
 				tokenizer().next(); // consume right bracket
 			} else {
 				MessageHandler.error(tokenizer().current(),

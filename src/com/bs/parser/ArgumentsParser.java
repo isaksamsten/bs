@@ -3,6 +3,8 @@ package com.bs.parser;
 import com.bs.parser.token.Token;
 import com.bs.parser.token.TokenType;
 import com.bs.parser.tree.ArgumentsNode;
+import com.bs.parser.tree.IdentifierNode;
+import com.bs.parser.tree.IdentifierNode.State;
 import com.bs.util.Message;
 import com.bs.util.MessageHandler;
 import com.bs.util.MessageType;
@@ -18,12 +20,17 @@ public class ArgumentsParser extends BsParser<ArgumentsNode> {
 		ArgumentsNode node = null;
 		if (start.type() == TokenType.IDENTIFIER) {
 			node = nodeFactory().arguments(start);
-			node.add(nodeFactory().identifier(start));
+
+			IdentifierNode id = nodeFactory().identifier(start);
+			id.state(State.STORE);
+			node.add(id);
 
 			Token next = tokenizer().next();
 			while (next.type() == TokenType.COMMA) {
 				next = tokenizer().next();
-				node.add(nodeFactory().identifier(next));
+				id = nodeFactory().identifier(next);
+				id.state(State.STORE);
+				node.add(id);
 				next = tokenizer().next();
 			}
 
@@ -35,5 +42,4 @@ public class ArgumentsParser extends BsParser<ArgumentsNode> {
 
 		return node;
 	}
-
 }

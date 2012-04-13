@@ -4,6 +4,9 @@ import com.bs.parser.token.Token;
 import com.bs.parser.token.TokenType;
 import com.bs.parser.tree.MessageNode;
 import com.bs.parser.tree.MessagesNode;
+import com.bs.util.Message;
+import com.bs.util.MessageHandler;
+import com.bs.util.MessageType;
 
 public class MessagesParser extends BsParser<MessagesNode> {
 
@@ -26,7 +29,9 @@ public class MessagesParser extends BsParser<MessagesNode> {
 			}
 
 		} else {
-
+			MessageHandler.error(tokenizer().current(),
+					MessageType.SYNTAX_ERROR, Message.UNEXPECTED_MESSAGE,
+					tokenizer().current().text());
 		}
 
 		return node;

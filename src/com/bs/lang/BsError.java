@@ -8,6 +8,9 @@ public class BsError extends RuntimeException {
 	private static final long serialVersionUID = 1L;
 	public static BsError NO_SUCH_METHOD = new BsError("No such method");
 	public static final BsError INVALID_ARITY = new BsError("Invalid arity");
+	public static final BsError CANT_CLONE = new BsError("Can't clone");
+	public static final BsError SUBCLASS_RESPONSIBILITY = new BsError(
+			"Sub class responsibility");
 
 	public BsError() {
 		super();
