@@ -7,11 +7,11 @@ import com.bs.parser.tree.MessageNode;
 import com.bs.parser.tree.MessagesNode;
 import com.bs.parser.tree.Node;
 
-public class BsCall extends BsInterpreter {
+public class BsCallInterpreter extends BsInterpreter {
 
 	private BsObject receiver;
 
-	public BsCall(BsInterpreter inter, BsObject receiver) {
+	public BsCallInterpreter(BsInterpreter inter, BsObject receiver) {
 		super(inter);
 		this.receiver = receiver;
 	}

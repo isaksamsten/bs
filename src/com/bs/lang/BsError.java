@@ -1,41 +1,31 @@
 package com.bs.lang;
 
-public class BsError extends RuntimeException {
 
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
-	public static BsError NO_SUCH_METHOD = new BsError("No such method");
-	public static final BsError INVALID_ARITY = new BsError("Invalid arity");
-	public static final BsError CANT_CLONE = new BsError("Can't clone");
-	public static final BsError SUBCLASS_RESPONSIBILITY = new BsError(
-			"Sub class responsibility");
+public class BsError extends BsObject {
+
+	public static BsObject raise(String message, Object... args) {
+		BsObject obj = BsObject.clone(BsConst.Error);
+		obj.var("message",
+				BsObject.value(BsConst.String, String.format(message, args)));
+		return obj;
+	}
+
+	public static BsObject nameError(String name) {
+		return raise("name '%s' not defined", name);
+	}
 
 	public BsError() {
-		super();
-		// TODO Auto-generated constructor stub
+		super(BsConst.Proto, "Error", BsError.class);
 	}
 
-	public BsError(String message, Throwable cause, boolean enableSuppression,
-			boolean writableStackTrace) {
-		super(message, cause, enableSuppression, writableStackTrace);
-		// TODO Auto-generated constructor stub
+	@BsRuntimeMessage(name = "getMessage", arity = 0)
+	public BsObject getMessage(BsObject self, BsObject... args) {
+		return self.var("message");
 	}
 
-	public BsError(String message, Throwable cause) {
-		super(message, cause);
-		// TODO Auto-generated constructor stub
+	@BsRuntimeMessage(name = "setMessage", arity = 1)
+	public BsObject setMessage(BsObject self, BsObject... args) {
+		self.var("message", args[0]);
+		return self;
 	}
-
-	public BsError(String message) {
-		super(message);
-		// TODO Auto-generated constructor stub
-	}
-
-	public BsError(Throwable cause) {
-		super(cause);
-		// TODO Auto-generated constructor stub
-	}
-
 }

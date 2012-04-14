@@ -5,7 +5,7 @@ import java.util.List;
 public class BsList extends BsObject {
 
 	public BsList() {
-		super(Bs.Enumerable, "List", BsList.class);
+		super(BsConst.Enumerable, "List", BsList.class);
 	}
 
 	@BsRuntimeMessage(name = "each", arity = 1)
@@ -13,7 +13,7 @@ public class BsList extends BsObject {
 		List<BsObject> data = self.value();
 		BsObject block = args[0];
 
-		BsObject last = Bs.False;
+		BsObject last = BsConst.False;
 		for (BsObject obj : data) {
 			last = block.invoke("call", obj);
 		}

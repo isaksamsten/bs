@@ -12,6 +12,11 @@ public class BsObject {
 		return obj;
 	}
 
+	public static BsObject clone(BsObject proto) {
+		BsObject obj = new BsObject(proto);
+		return obj;
+	}
+
 	private static long ID = 0;
 
 	private long id;
@@ -56,6 +61,20 @@ public class BsObject {
 		return value;
 	}
 
+	public BsObject prototype() {
+		return prototype;
+	}
+
+	public boolean instanceOf(BsObject obj) {
+		if (equals(obj)) {
+			return true;
+		} else if (prototype != null) {
+			return prototype.instanceOf(obj);
+		} else {
+			return false;
+		}
+	}
+
 	@SuppressWarnings("unchecked")
 	public <T> T value() {
 		return (T) safeValue();
@@ -94,7 +113,7 @@ public class BsObject {
 		if (msg != null) {
 			return msg.invoke(this, args);
 		} else {
-			throw BsError.NO_SUCH_METHOD;
+			return BsError.raise("No method " + message);
 		}
 	}
 

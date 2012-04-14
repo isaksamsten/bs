@@ -18,7 +18,7 @@ public class BsJavaProxy implements BsCode {
 			return (BsObject) method.invoke(invoker, self, args);
 		} catch (Exception e) {
 			e.printStackTrace();
-			throw BsError.NO_SUCH_METHOD;
+			return BsError.raise("Invalid java method invokation... Fail!!!");
 		}
 	}
 }

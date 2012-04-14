@@ -3,6 +3,7 @@ package com.bs.util;
 import java.util.LinkedList;
 import java.util.List;
 
+import com.bs.lang.BsObject;
 import com.bs.parser.source.Scanner;
 import com.bs.parser.token.Token;
 
@@ -18,6 +19,7 @@ public final class MessageHandler {
 
 	/**
 	 * Return the number of encountered errors.
+	 * 
 	 * @return
 	 */
 	public static int errors() {
@@ -53,6 +55,12 @@ public final class MessageHandler {
 			Object... args) {
 		error(token.currentLine(), type, token.line(), token.position(),
 				message, args);
+	}
+
+	public static void error(BsObject object, MessageType type, int line,
+			int position, String name) {
+		error("", MessageType.NAME_ERROR, line, position,
+				"name '%s' not defined in '%s'", name, object.name());
 	}
 
 	/**

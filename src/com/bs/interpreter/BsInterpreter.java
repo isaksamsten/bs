@@ -5,8 +5,9 @@ import java.util.List;
 
 import com.bs.interpreter.stack.BsStack;
 import com.bs.interpreter.stack.Stack;
-import com.bs.lang.Bs;
 import com.bs.lang.BsBlock;
+import com.bs.lang.BsConst;
+import com.bs.lang.BsError;
 import com.bs.lang.BsNumber;
 import com.bs.lang.BsObject;
 import com.bs.lang.BsString;
@@ -50,7 +51,12 @@ public class BsInterpreter implements Interpreter {
 	@Override
 	public Object visitVariable(IdentifierNode node) {
 		if (node.state() == State.LOAD) {
-			return stack.lookup(node.variable());
+			Object value = stack.lookup(node.variable());
+			if (value == null) {
+				return BsError.nameError(node.variable());
+			} else {
+				return value;
+			}
 		}
 
 		return node.variable();
@@ -69,7 +75,7 @@ public class BsInterpreter implements Interpreter {
 	@Override
 	public Object visitCall(CallNode node) {
 		BsObject lhs = (BsObject) visit(node.left());
-		Interpreter interpreter = new BsCall(this, lhs);
+		Interpreter interpreter = new BsCallInterpreter(this, lhs);
 		return interpreter.visit(node.messages());
 	}
 
@@ -146,8 +152,13 @@ public class BsInterpreter implements Interpreter {
 	@Override
 	public Object visitList(ListNode node) {
 		List<BsObject> objects = (List<BsObject>) visit(node.expressions());
-		BsObject list = BsObject.value(Bs.List, objects);
+		BsObject list = BsObject.value(BsConst.List, objects);
 		return list;
+	}
+
+	protected boolean isError(BsObject obj) {
+		BsObject proto = obj.prototype();
+		return proto != null && proto.instanceOf(BsConst.Error);
 	}
 
 }

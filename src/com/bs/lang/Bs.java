@@ -2,15 +2,28 @@ package com.bs.lang;
 
 public final class Bs {
 
-	public static final BsObject Proto = new BsProto();
-	public static final BsObject String = new BsString();
-	public static final BsObject Number = new BsNumber();
-	public static final BsObject Module = new BsModule();
-	public static final BsObject Enumerable = new BsEnumerable();
-	public static final BsObject True = new BsTrue();
-	public static final BsObject False = new BsFalse();
+	/**
+	 * Check is obj is the same object (reference) as BsConst.True
+	 * 
+	 * @param obj
+	 *            - any BsObject or null
+	 * @return
+	 */
+	public static boolean isTrue(BsObject obj) {
+		return obj != null && obj == BsConst.True;
+	}
 
-	public static final BsObject Block = new BsBlock();
-	public static final BsObject List = new BsList();
+	/**
+	 * Return the value of a BsNumber
+	 * 
+	 * @param obj
+	 * @return
+	 */
+	public static Number getNumber(BsObject obj) {
+		return obj.instanceOf(BsConst.Number) ? (Number) obj.value() : null;
+	}
 
+	public static String getString(BsObject obj) {
+		return obj.instanceOf(BsConst.String) ? (String) obj.value() : null;
+	}
 }

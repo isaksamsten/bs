@@ -3,7 +3,7 @@ package com.bs.lang;
 public class BsTrue extends BsObject {
 
 	public BsTrue() {
-		super(Bs.Proto, "True", BsTrue.class);
+		super(BsConst.Proto, "True", BsTrue.class);
 	}
 
 	@BsRuntimeMessage(name = "isTrue", arity = -1)
@@ -20,6 +20,6 @@ public class BsTrue extends BsObject {
 
 	@BsRuntimeMessage(name = "clone", arity = 0)
 	public BsObject clone(BsObject self, BsObject... args) {
-		throw BsError.CANT_CLONE;
+		return BsError.raise("Cant clone");
 	}
 }

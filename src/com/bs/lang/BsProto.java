@@ -12,12 +12,18 @@ public class BsProto extends BsObject {
 		if (self.value() != null) {
 			value = self.value();
 		}
-		return BsObject.value(Bs.String, value.toString());
+		return BsObject.value(BsConst.String, value.toString());
 	}
 
-	@BsRuntimeMessage(name = "clone", arity = 0)
+	@BsRuntimeMessage(name = "init", arity = 0)
+	public BsObject init(BsObject self, BsObject... args) {
+		return self;
+	}
+
+	@BsRuntimeMessage(name = "clone", arity = -1)
 	public BsObject clone(BsObject self, BsObject... args) {
-		return new BsObject(self);
+		BsObject obj = new BsObject(self);
+		obj.invoke("init", args);
+		return obj;
 	}
-
 }

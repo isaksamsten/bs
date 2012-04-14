@@ -6,19 +6,37 @@ import com.bs.interpreter.BsInterpreter;
 import com.bs.interpreter.stack.BsStack;
 import com.bs.parser.tree.StatementsNode;
 
-public class BsBlock extends BsObject {
+public class BsBlock extends BsObject implements BsCode {
 
 	public static BsObject create(List<String> args, StatementsNode statements) {
-		return BsObject.value(Bs.Block, new Object[] { args, statements });
+		return BsObject.value(BsConst.Block, new Object[] { args, statements });
 	}
 
 	public BsBlock() {
-		super(Bs.Proto, "Block", BsBlock.class);
+		super(BsConst.Proto, "Block", BsBlock.class);
+	}
+
+	@BsRuntimeMessage(name = "call", arity = -1)
+	public BsObject call(BsObject self, BsObject... args) {
+		return execute(self, args);
+	}
+
+	@BsRuntimeMessage(name = "whileTrue", arity = 1)
+	public BsObject whileTrue(BsObject self, BsObject... args) {
+		BsObject w = self.invoke("call");
+
+		BsObject last = BsConst.False;
+		while (Bs.isTrue(w)) {
+			last = args[0].invoke("call");
+			w = self.invoke("call");
+		}
+
+		return last;
 	}
 
 	@SuppressWarnings("unchecked")
-	@BsRuntimeMessage(name = "call", arity = -1)
-	public BsObject call(BsObject self, BsObject... args) {
+	@Override
+	public BsObject execute(BsObject self, BsObject... args) {
 		Object[] data = self.value();
 		List<String> arguments = (List<String>) data[0];
 		StatementsNode node = (StatementsNode) data[1];
@@ -35,7 +53,7 @@ public class BsBlock extends BsObject {
 
 			return ret;
 		} else {
-			throw BsError.INVALID_ARITY;
+			return BsError.raise("Invalid arity");
 		}
 	}
 }

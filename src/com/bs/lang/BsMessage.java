@@ -11,7 +11,7 @@ public class BsMessage extends BsObject {
 	 *            -1 unkown
 	 */
 	public BsMessage(String name, int arity, BsCode code) {
-		super(Bs.Proto, name, BsMessage.class);
+		super(BsConst.Proto, name, BsMessage.class);
 		this.arity = arity;
 		this.code = code;
 	}
@@ -29,7 +29,7 @@ public class BsMessage extends BsObject {
 	 */
 	public BsObject invoke(BsObject self, BsObject... args) {
 		if (arity > 0 && arity != args.length) {
-			throw BsError.INVALID_ARITY;
+			return BsError.raise("Invalid arity");
 		}
 
 		return code.execute(self, args);

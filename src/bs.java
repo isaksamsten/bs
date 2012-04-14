@@ -4,7 +4,7 @@ import com.bs.interpreter.BsInterpreter;
 import com.bs.interpreter.Interpreter;
 import com.bs.interpreter.stack.BsStack;
 import com.bs.interpreter.stack.Stack;
-import com.bs.lang.Bs;
+import com.bs.lang.BsConst;
 import com.bs.lang.BsModule;
 import com.bs.lang.BsObject;
 import com.bs.parser.StatementsParser;
@@ -52,14 +52,14 @@ public class bs {
 		});
 
 		BsObject module = BsModule.create();
-		module.var(Bs.Proto);
-		module.var(Bs.String);
-		module.var(Bs.List);
-		module.var(Bs.Number);
-		module.var(Bs.Module);
-		module.var(Bs.Enumerable);
-		module.var(Bs.True);
-		module.var(Bs.False);
+		module.var(BsConst.Proto);
+		module.var(BsConst.String);
+		module.var(BsConst.List);
+		module.var(BsConst.Number);
+		module.var(BsConst.Module);
+		module.var(BsConst.Enumerable);
+		module.var(BsConst.True);
+		module.var(BsConst.False);
 
 		Stack stack = BsStack.instance();
 		stack.push(module);
