@@ -20,6 +20,10 @@ public class BsMessage extends BsObject {
 		this(name, -1, code);
 	}
 
+	public boolean isJavaCode() {
+		return code instanceof BsJavaProxy;
+	}
+
 	/**
 	 * Executes using the supplied BsCode object
 	 * 

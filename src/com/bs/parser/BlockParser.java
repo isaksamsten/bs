@@ -6,7 +6,6 @@ import com.bs.parser.tree.ArgumentsNode;
 import com.bs.parser.tree.BlockNode;
 import com.bs.parser.tree.StatementsNode;
 import com.bs.util.Message;
-import com.bs.util.MessageHandler;
 import com.bs.util.MessageType;
 
 public class BlockParser extends BsParser<BlockNode> {
@@ -31,7 +30,7 @@ public class BlockParser extends BsParser<BlockNode> {
 
 				node.arguments(arguments);
 				if (tokenizer().current().type() != TokenType.PIPE) {
-					MessageHandler.error(tokenizer().current(),
+					messageHandler().error(tokenizer().current(),
 							MessageType.SYNTAX_ERROR, Message.UNEXPECTED_BLOCK,
 							tokenizer().current().text());
 				} else {
@@ -47,12 +46,12 @@ public class BlockParser extends BsParser<BlockNode> {
 
 				tokenizer().next(); // consume right bracket
 			} else {
-				MessageHandler.error(tokenizer().current(),
+				messageHandler().error(tokenizer().current(),
 						MessageType.SYNTAX_ERROR, Message.UNEXPECTED_BLOCK,
 						tokenizer().current().text());
 			}
 		} else {
-			MessageHandler.error(tokenizer().current(),
+			messageHandler().error(tokenizer().current(),
 					MessageType.SYNTAX_ERROR, Message.UNEXPECTED_BLOCK,
 					tokenizer().current().text());
 		}

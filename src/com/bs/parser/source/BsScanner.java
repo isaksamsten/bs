@@ -5,8 +5,6 @@ import java.io.IOException;
 import java.io.Reader;
 import java.util.ArrayList;
 
-import com.bs.util.MessageHandler;
-
 public class BsScanner implements Scanner {
 
 	private BufferedReader in;
@@ -28,7 +26,7 @@ public class BsScanner implements Scanner {
 			line++;
 			data.add(str);
 		} catch (IOException e) {
-			MessageHandler.fatal(e);
+			e.printStackTrace();
 		}
 
 	}

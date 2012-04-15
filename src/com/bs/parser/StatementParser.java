@@ -6,7 +6,6 @@ import com.bs.parser.token.Token;
 import com.bs.parser.token.TokenType;
 import com.bs.parser.tree.StatementNode;
 import com.bs.util.Message;
-import com.bs.util.MessageHandler;
 import com.bs.util.MessageType;
 
 public class StatementParser extends BsParser<StatementNode> {
@@ -38,17 +37,17 @@ public class StatementParser extends BsParser<StatementNode> {
 
 			start = tokenizer().current();
 			if (!END.contains(start.type())) {
-				MessageHandler.error(tokenizer().current(),
+				messageHandler().error(tokenizer().current(),
 						MessageType.SYNTAX_ERROR,
-						Message.UNEXPECTED_END_OF_STATEMENT, tokenizer()
-								.current().text());
+						Message.UNEXPECTED_END_OF_STATEMENT,
+						tokenizer().current().text());
 
 				node = null;
 			} else {
 				tokenizer().next(); // consume ending dot
 			}
 		} else {
-			MessageHandler.error(tokenizer().current(),
+			messageHandler().error(tokenizer().current(),
 					MessageType.SYNTAX_ERROR, Message.UNEXPECTED_STATEMENT,
 					tokenizer().current().text());
 		}

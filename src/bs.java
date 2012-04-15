@@ -4,6 +4,7 @@ import com.bs.interpreter.BsInterpreter;
 import com.bs.interpreter.Interpreter;
 import com.bs.interpreter.stack.BsStack;
 import com.bs.interpreter.stack.Stack;
+import com.bs.lang.Bs;
 import com.bs.lang.BsConst;
 import com.bs.lang.BsModule;
 import com.bs.lang.BsObject;
@@ -22,7 +23,8 @@ import com.bs.util.MessageListener;
 public class bs {
 
 	public static void main(String[] args) {
-		MessageHandler.add(new MessageListener() {
+		MessageHandler handler = new MessageHandler();
+		handler.add(new MessageListener() {
 
 			@Override
 			public void fatal(Throwable t) {
@@ -51,30 +53,27 @@ public class bs {
 			}
 		});
 
-		BsObject module = BsModule.create();
-		module.var(BsConst.Proto);
-		module.var(BsConst.String);
-		module.var(BsConst.List);
-		module.var(BsConst.Number);
-		module.var(BsConst.Module);
-		module.var(BsConst.Enumerable);
-		module.var(BsConst.True);
-		module.var(BsConst.False);
+		BsObject module = Bs.builtin();
 
 		Stack stack = BsStack.instance();
 		stack.push(module);
 
-		Scanner sc = new BsScanner(new StringReader(
-				"left := [10, 10 + 10] each {| x | x * 10.}."));
-		Tokenizer tz = new BsTokenizer(sc, new DefaultTokenFactory(), '#');
+		Scanner sc = new BsScanner(
+				new StringReader(
+						"left := Proto try { [10, 10 + 10] each {| x | x * 10.}.}. left catch \"Error\", { 10. }."));
+		Tokenizer tz = new BsTokenizer(sc, new DefaultTokenFactory(), handler,
+				'#');
 		StatementsParser parser = new StatementsParser(tz,
-				new DefaultNodeFactory());
+				new DefaultNodeFactory(), handler);
 
 		Node n = parser.parse();
 		System.out.println(n.toTree());
 
 		Interpreter interpreter = new BsInterpreter(stack);
-		Object value = interpreter.visit(n);
+		BsObject value = (BsObject) interpreter.visit(n);
+
+		System.out.println(value.isError() + " ->" + value);
+
 		System.out.println(module.var("right"));
 		System.out.println(module.var("left"));
 	}

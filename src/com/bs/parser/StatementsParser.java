@@ -5,6 +5,7 @@ import com.bs.parser.token.Token;
 import com.bs.parser.tree.NodeFactory;
 import com.bs.parser.tree.StatementNode;
 import com.bs.parser.tree.StatementsNode;
+import com.bs.util.MessageHandler;
 
 public class StatementsParser extends BsParser<StatementsNode> {
 
@@ -12,8 +13,9 @@ public class StatementsParser extends BsParser<StatementsNode> {
 		super(parser);
 	}
 
-	public StatementsParser(Tokenizer tokenizer, NodeFactory nodeFactory) {
-		super(tokenizer, nodeFactory);
+	public StatementsParser(Tokenizer tokenizer, NodeFactory nodeFactory,
+			MessageHandler messageHandler) {
+		super(tokenizer, nodeFactory, messageHandler);
 	}
 
 	@Override

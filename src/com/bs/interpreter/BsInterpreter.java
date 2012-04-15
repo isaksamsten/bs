@@ -75,6 +75,10 @@ public class BsInterpreter implements Interpreter {
 	@Override
 	public Object visitCall(CallNode node) {
 		BsObject lhs = (BsObject) visit(node.left());
+		if (lhs.isError()) {
+			return lhs;
+		}
+
 		Interpreter interpreter = new BsCallInterpreter(this, lhs);
 		return interpreter.visit(node.messages());
 	}
@@ -83,7 +87,11 @@ public class BsInterpreter implements Interpreter {
 	public Object visitExpressions(ExpressionsNode node) {
 		List<BsObject> objects = new ArrayList<BsObject>();
 		for (Node expr : node.childrens()) {
-			objects.add((BsObject) visit(expr));
+			BsObject obj = (BsObject) visit(expr);
+			if (obj.isError()) {
+				return obj;
+			}
+			objects.add(obj);
 		}
 
 		return objects;
@@ -104,6 +112,9 @@ public class BsInterpreter implements Interpreter {
 		BsObject last = null;
 		for (Node n : statementsNode.childrens()) {
 			last = (BsObject) visit(n);
+			if (last.isError()) {
+				return last;
+			}
 		}
 		return last;
 	}
@@ -113,6 +124,9 @@ public class BsInterpreter implements Interpreter {
 		String var = (String) visit(node.identifier());
 		BsObject value = (BsObject) visit(node.expression());
 
+		if (value.isError()) {
+			return value;
+		}
 		stack.local().var(var, value);
 
 		return value;
@@ -154,11 +168,6 @@ public class BsInterpreter implements Interpreter {
 		List<BsObject> objects = (List<BsObject>) visit(node.expressions());
 		BsObject list = BsObject.value(BsConst.List, objects);
 		return list;
-	}
-
-	protected boolean isError(BsObject obj) {
-		BsObject proto = obj.prototype();
-		return proto != null && proto.instanceOf(BsConst.Error);
 	}
 
 }

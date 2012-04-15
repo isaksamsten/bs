@@ -4,24 +4,32 @@ import com.bs.parser.source.Tokenizer;
 import com.bs.parser.token.Token;
 import com.bs.parser.tree.Node;
 import com.bs.parser.tree.NodeFactory;
+import com.bs.util.MessageHandler;
 
 public abstract class BsParser<T extends Node> implements Parser<T> {
 
 	private Tokenizer tokenizer;
 	private NodeFactory nodeFactory;
+	private MessageHandler messageHandler;
 
-	public BsParser(Tokenizer tokenizer, NodeFactory nodeFactory) {
+	public BsParser(Tokenizer tokenizer, NodeFactory nodeFactory,
+			MessageHandler handler) {
 		this.tokenizer = tokenizer;
 		this.nodeFactory = nodeFactory;
+		this.messageHandler = handler;
 	}
 
 	public BsParser(BsParser<?> parser) {
-		this(parser.tokenizer, parser.nodeFactory);
+		this(parser.tokenizer, parser.nodeFactory, parser.messageHandler);
 	}
 
 	@Override
 	public NodeFactory nodeFactory() {
 		return nodeFactory;
+	}
+
+	public MessageHandler messageHandler() {
+		return messageHandler;
 	}
 
 	@Override

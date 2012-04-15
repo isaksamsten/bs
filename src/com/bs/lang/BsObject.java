@@ -6,6 +6,12 @@ import java.util.Map;
 
 public class BsObject {
 
+	private class BsMessageData {
+		public BsCode code;
+		public int arity;
+		public String name;
+	}
+
 	public static BsObject value(BsObject proto, Object value) {
 		BsObject obj = new BsObject(proto);
 		obj.value(value);
@@ -25,7 +31,7 @@ public class BsObject {
 	private String name;
 	private Object value;
 
-	private Map<String, BsMessage> messages = new HashMap<String, BsMessage>();
+	private Map<String, BsMessageData> messages = new HashMap<String, BsMessageData>();
 	private Map<String, BsObject> instVars = new HashMap<String, BsObject>();
 
 	private Class<?> klass;
@@ -75,15 +81,22 @@ public class BsObject {
 		}
 	}
 
+	public boolean isError() {
+		BsObject proto = prototype();
+		return proto != null && proto.instanceOf(BsConst.Error)
+				&& !Bs.isTrue(var("ignore"));
+	}
+
 	@SuppressWarnings("unchecked")
 	public <T> T value() {
 		return (T) safeValue();
 	}
 
 	public BsMessage message(String name) {
-		BsMessage msg = messages.get(name);
-		if (msg != null) {
-			return msg;
+		BsMessage msg = null;
+		BsMessageData data = messages.get(name);
+		if (data != null) {
+			msg = new BsBoundMessage(data.name, data.arity, data.code, this);
 		}
 		if ((msg = javaMethod(name)) != null) {
 			return msg;
@@ -113,7 +126,7 @@ public class BsObject {
 		if (msg != null) {
 			return msg.invoke(this, args);
 		} else {
-			return BsError.raise("No method " + message);
+			return BsError.raise("No method '%s' for '%s'", message, this);
 		}
 	}
 
@@ -136,6 +149,6 @@ public class BsObject {
 		if (str.value() != null) {
 			return (String) str.value();
 		}
-		return name + "@" + id;
+		return (name != null ? name : "anonymous") + "@" + id;
 	}
 }

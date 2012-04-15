@@ -9,7 +9,6 @@ import com.bs.parser.tree.ExpressionNode;
 import com.bs.parser.tree.LiteralNode;
 import com.bs.parser.tree.MessagesNode;
 import com.bs.util.Message;
-import com.bs.util.MessageHandler;
 import com.bs.util.MessageType;
 
 public class ExpressionParser extends BsParser<ExpressionNode> {
@@ -76,7 +75,7 @@ public class ExpressionParser extends BsParser<ExpressionNode> {
 
 			tokenizer().next();
 		} else {
-			MessageHandler.error(tokenizer().current(),
+			messageHandler().error(tokenizer().current(),
 					MessageType.SYNTAX_ERROR, Message.UNEXPECTED_EXPRESSION,
 					tokenizer().current().text());
 		}

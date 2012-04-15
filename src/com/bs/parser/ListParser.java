@@ -5,7 +5,6 @@ import com.bs.parser.token.TokenType;
 import com.bs.parser.tree.ExpressionsNode;
 import com.bs.parser.tree.ListNode;
 import com.bs.util.Message;
-import com.bs.util.MessageHandler;
 import com.bs.util.MessageType;
 
 public class ListParser extends BsParser<ListNode> {
@@ -31,16 +30,16 @@ public class ListParser extends BsParser<ListNode> {
 
 					tokenizer().next();
 				} else {
-					MessageHandler.error(tokenizer().current(),
+					messageHandler().error(tokenizer().current(),
 							MessageType.SYNTAX_ERROR,
-							Message.UNEXPECTED_END_OF_LIST, tokenizer()
-									.current().text());
+							Message.UNEXPECTED_END_OF_LIST,
+							tokenizer().current().text());
 				}
 			} else {
 				tokenizer().next(); // consume ]
 			}
 		} else {
-			MessageHandler.error(tokenizer().current(),
+			messageHandler().error(tokenizer().current(),
 					MessageType.SYNTAX_ERROR, Message.UNEXPECTED_LIST,
 					tokenizer().current().text());
 		}

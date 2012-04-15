@@ -2,13 +2,12 @@ package com.bs.lang;
 
 import java.util.List;
 
-import com.bs.interpreter.BsInterpreter;
 import com.bs.interpreter.stack.BsStack;
-import com.bs.parser.tree.StatementsNode;
+import com.bs.parser.tree.Node;
 
 public class BsBlock extends BsObject implements BsCode {
 
-	public static BsObject create(List<String> args, StatementsNode statements) {
+	public static BsObject create(List<String> args, Node statements) {
 		return BsObject.value(BsConst.Block, new Object[] { args, statements });
 	}
 
@@ -39,7 +38,7 @@ public class BsBlock extends BsObject implements BsCode {
 	public BsObject execute(BsObject self, BsObject... args) {
 		Object[] data = self.value();
 		List<String> arguments = (List<String>) data[0];
-		StatementsNode node = (StatementsNode) data[1];
+		Node node = (Node) data[1];
 
 		if (arguments.size() == args.length) {
 			for (int n = 0; n < args.length; n++) {
@@ -47,8 +46,7 @@ public class BsBlock extends BsObject implements BsCode {
 			}
 
 			BsStack.instance().push(self);
-			BsInterpreter interpreter = new BsInterpreter();
-			BsObject ret = (BsObject) interpreter.visit(node);
+			BsObject ret = Bs.eval(node);
 			BsStack.instance().pop();
 
 			return ret;

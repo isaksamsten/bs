@@ -7,7 +7,6 @@ import com.bs.parser.tree.ExpressionNode;
 import com.bs.parser.tree.IdentifierNode;
 import com.bs.parser.tree.IdentifierNode.State;
 import com.bs.util.Message;
-import com.bs.util.MessageHandler;
 import com.bs.util.MessageType;
 
 public class AssignmentParser extends BsParser<AssignNode> {
@@ -31,13 +30,13 @@ public class AssignmentParser extends BsParser<AssignNode> {
 				identifier.state(State.STORE);
 				node.identifier(identifier);
 			} else {
-				MessageHandler.error(tokenizer().current(),
+				messageHandler().error(tokenizer().current(),
 						MessageType.SYNTAX_ERROR,
 						Message.UNEXPECTED_ASSIGNMENT, tokenizer().current()
 								.text());
 			}
 		} else {
-			MessageHandler.error(tokenizer().current(),
+			messageHandler().error(tokenizer().current(),
 					MessageType.SYNTAX_ERROR, Message.UNEXPECTED_ASSIGNMENT,
 					tokenizer().current().text());
 		}

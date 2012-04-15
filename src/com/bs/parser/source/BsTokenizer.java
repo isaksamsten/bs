@@ -14,11 +14,14 @@ public class BsTokenizer implements Tokenizer {
 	private TokenFactory factory;
 
 	private char comment;
+	private MessageHandler messageHandler;
 
-	public BsTokenizer(Scanner s, TokenFactory factory, char comment) {
+	public BsTokenizer(Scanner s, TokenFactory factory, MessageHandler handler,
+			char comment) {
 		this.scanner = s;
 		this.comment = comment;
 		this.factory = factory;
+		this.messageHandler = handler;
 	}
 
 	public Scanner scanner() {
@@ -68,7 +71,7 @@ public class BsTokenizer implements Tokenizer {
 		} else if (current == '"') {
 			token = extractString();
 		} else {
-			MessageHandler.error(scanner(), MessageType.SYNTAX_ERROR,
+			messageHandler().error(scanner(), MessageType.SYNTAX_ERROR,
 					Message.UNEXPECTED_TOKEN, String.valueOf(current));
 			scanner().next(); // skip.. (and recover?)
 			token = factory.error(scanner().line(), scanner().position());
@@ -76,6 +79,10 @@ public class BsTokenizer implements Tokenizer {
 		}
 		token.currentLine(scanner.line(line - 1));
 		return token;
+	}
+
+	public MessageHandler messageHandler() {
+		return messageHandler;
 	}
 
 	protected Token extractString() {

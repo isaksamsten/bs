@@ -15,6 +15,13 @@ public class BsString extends BsObject {
 		return BsObject.value(BsConst.Number, self.value().toString().length());
 	}
 
+	@BsRuntimeMessage(name = "+", arity = 1)
+	public BsObject concat(BsObject self, BsObject... args) {
+		String me = Bs.asString(self);
+		String other = Bs.asString(args[0]);
+		return BsString.clone(me + other);
+	}
+
 	@BsRuntimeMessage(name = "toString", arity = 0)
 	public BsObject toString(BsObject self, BsObject... args) {
 		return self;

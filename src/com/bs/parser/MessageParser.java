@@ -7,7 +7,6 @@ import com.bs.parser.tree.IdentifierNode;
 import com.bs.parser.tree.IdentifierNode.State;
 import com.bs.parser.tree.MessageNode;
 import com.bs.util.Message;
-import com.bs.util.MessageHandler;
 import com.bs.util.MessageType;
 
 public class MessageParser extends BsParser<MessageNode> {
@@ -38,7 +37,7 @@ public class MessageParser extends BsParser<MessageNode> {
 
 			next = tokenizer().current();
 			if (next.type() != TokenType.RIGHT_PAREN) {
-				MessageHandler.error(tokenizer().current(),
+				messageHandler().error(tokenizer().current(),
 						MessageType.SYNTAX_ERROR, Message.UNEXPECTED_MESSAGE,
 						tokenizer().current().text());
 			} else {
@@ -55,7 +54,7 @@ public class MessageParser extends BsParser<MessageNode> {
 			if (expressions != null) {
 				node.expressions(expressions);
 			} else {
-				MessageHandler.error(tokenizer().current(),
+				messageHandler().error(tokenizer().current(),
 						MessageType.SYNTAX_ERROR, Message.UNEXPECTED_MESSAGE,
 						tokenizer().current().text());
 			}

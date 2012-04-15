@@ -6,7 +6,6 @@ import com.bs.parser.tree.ArgumentsNode;
 import com.bs.parser.tree.IdentifierNode;
 import com.bs.parser.tree.IdentifierNode.State;
 import com.bs.util.Message;
-import com.bs.util.MessageHandler;
 import com.bs.util.MessageType;
 
 public class ArgumentsParser extends BsParser<ArgumentsNode> {
@@ -35,7 +34,7 @@ public class ArgumentsParser extends BsParser<ArgumentsNode> {
 			}
 
 		} else {
-			MessageHandler.error(tokenizer().current(),
+			messageHandler().error(tokenizer().current(),
 					MessageType.SYNTAX_ERROR, Message.UNEXPECTED_ARGUMENT,
 					tokenizer().current().text());
 		}

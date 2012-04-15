@@ -7,13 +7,13 @@ import com.bs.lang.BsObject;
 import com.bs.parser.source.Scanner;
 import com.bs.parser.token.Token;
 
-public final class MessageHandler {
+public class MessageHandler {
 	private static final int MAX_ERRORS = 15;
 
 	private static List<MessageListener> messages = new LinkedList<MessageListener>();
 	private static int errors = 0;
 
-	public static void add(MessageListener message) {
+	public void add(MessageListener message) {
 		messages.add(message);
 	}
 
@@ -22,14 +22,14 @@ public final class MessageHandler {
 	 * 
 	 * @return
 	 */
-	public static int errors() {
+	public int errors() {
 		return errors;
 	}
 
 	/**
 	 * Reset the error count
 	 */
-	public static void reset() {
+	public void reset() {
 		errors = 0;
 	}
 
@@ -39,7 +39,7 @@ public final class MessageHandler {
 	 * @param scanner
 	 * @param args
 	 */
-	public static void error(Scanner scanner, MessageType type, String message,
+	public void error(Scanner scanner, MessageType type, String message,
 			Object... args) {
 		error(scanner.currentLine(), type, scanner.line(), scanner.position(),
 				message, args);
@@ -51,13 +51,13 @@ public final class MessageHandler {
 	 * @param token
 	 * @param args
 	 */
-	public static void error(Token token, MessageType type, String message,
+	public void error(Token token, MessageType type, String message,
 			Object... args) {
 		error(token.currentLine(), type, token.line(), token.position(),
 				message, args);
 	}
 
-	public static void error(BsObject object, MessageType type, int line,
+	public void error(BsObject object, MessageType type, int line,
 			int position, String name) {
 		error("", MessageType.NAME_ERROR, line, position,
 				"name '%s' not defined in '%s'", name, object.name());
@@ -77,8 +77,8 @@ public final class MessageHandler {
 	 * @param args
 	 *            - Object[] of arguments to message
 	 */
-	public static void error(String currentLine, MessageType type, int line,
-			int pos, String message, Object... args) {
+	public void error(String currentLine, MessageType type, int line, int pos,
+			String message, Object... args) {
 		if (errors <= MAX_ERRORS) {
 			for (MessageListener m : messages) {
 				m.error(new Message(currentLine, type, line, pos, message, args));
@@ -89,14 +89,14 @@ public final class MessageHandler {
 		}
 	}
 
-	public static void fatal(String currentLine, MessageType type, int line,
-			int pos, String message, Object... args) {
+	public void fatal(String currentLine, MessageType type, int line, int pos,
+			String message, Object... args) {
 		for (MessageListener m : messages) {
 			m.fatal(new Message(currentLine, type, line, pos, message, args));
 		}
 	}
 
-	public static void fatal(Throwable t) {
+	public void fatal(Throwable t) {
 		for (MessageListener m : messages) {
 			m.fatal(t);
 		}

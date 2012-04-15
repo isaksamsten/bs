@@ -6,7 +6,6 @@ import com.bs.parser.tree.CallNode;
 import com.bs.parser.tree.ExpressionNode;
 import com.bs.parser.tree.MessagesNode;
 import com.bs.util.Message;
-import com.bs.util.MessageHandler;
 import com.bs.util.MessageType;
 
 public class CallParser extends BsParser<CallNode> {
@@ -28,7 +27,7 @@ public class CallParser extends BsParser<CallNode> {
 				node.left(expression);
 				tokenizer().next();
 			} else {
-				MessageHandler.error(tokenizer().current(),
+				messageHandler().error(tokenizer().current(),
 						MessageType.SYNTAX_ERROR, Message.UNEXPECTED_CALL,
 						tokenizer().current().text());
 			}
@@ -41,7 +40,7 @@ public class CallParser extends BsParser<CallNode> {
 		if (messages != null) {
 			node.messages(messages);
 		} else {
-			MessageHandler.error(tokenizer().current(),
+			messageHandler().error(tokenizer().current(),
 					MessageType.SYNTAX_ERROR, Message.UNEXPECTED_CALL,
 					tokenizer().current().text());
 		}
