@@ -1,7 +1,9 @@
 import static org.junit.Assert.assertEquals;
 
+import org.junit.Before;
 import org.junit.Test;
 
+import com.bs.interpreter.stack.BsStack;
 import com.bs.lang.Bs;
 import com.bs.lang.BsConst;
 import com.bs.lang.BsNumber;
@@ -9,8 +11,11 @@ import com.bs.lang.BsObject;
 import com.bs.lang.BsString;
 
 public class BsObjectTests {
-	
-	
+
+	@Before
+	public void setUp() {
+		BsStack.instance().push(Bs.builtin());
+	}
 
 	@Test
 	public void testIsTrue() {
@@ -57,14 +62,20 @@ public class BsObjectTests {
 		BsObject obj = Bs.eval("10 + 10 + 10.");
 		assertEquals(30, Bs.asNumber(obj));
 
+		obj = Bs.eval("10 + 10");
+		assertEquals(true, obj.instanceOf(BsConst.SyntaxError));
+
 		BsObject block = BsConst.Proto.invoke("compile",
 				BsString.clone("10+10+10."));
 
 		obj = block.invoke("call");
 		assertEquals(30, Bs.asNumber(obj));
 
-		block = Bs.eval("Proto compile(\"10+10+10.\")");
+		block = Bs.eval("Proto compile(\"10+10+10.\").");
 		obj = block.invoke("call");
+		assertEquals(30, Bs.asNumber(obj));
+
+		obj = Bs.eval("Proto eval \"10+10+10.\".");
 		assertEquals(30, Bs.asNumber(obj));
 	}
 }
