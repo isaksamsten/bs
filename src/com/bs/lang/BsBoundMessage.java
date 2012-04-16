@@ -10,11 +10,10 @@ public class BsBoundMessage extends BsMessage {
 		super(name, arity, code);
 		this.binder = binder;
 	}
-	
+
 	@Override
 	public BsObject invoke(BsObject self, BsObject... args) {
-		args = ArrayUtils.add(args, binder);
+		args = ArrayUtils.add(args, 0, binder);
 		return super.invoke(self, args);
 	}
-
 }

@@ -12,6 +12,7 @@ import com.bs.lang.proto.BsNumber;
 import com.bs.lang.proto.BsProto;
 import com.bs.lang.proto.BsRange;
 import com.bs.lang.proto.BsString;
+import com.bs.lang.proto.BsSymbol;
 import com.bs.lang.proto.BsSystem;
 import com.bs.lang.proto.BsTrue;
 
@@ -38,5 +39,6 @@ public final class BsConst {
 	public static final BsObject TypeError = BsError.clone("TypeError");
 	public static final BsObject NameError = BsError.clone("NameError");
 	public static final BsObject SyntaxError = BsError.clone("SyntaxError");
+	public static final BsObject Symbol = new BsSymbol();
 
 }

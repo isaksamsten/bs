@@ -14,7 +14,8 @@ import com.bs.util.MessageType;
 public class ExpressionParser extends BsParser<ExpressionNode> {
 
 	public static final EnumSet<TokenType> START = EnumSet.of(
-			TokenType.IDENTIFIER, TokenType.STRING, TokenType.NUMBER);
+			TokenType.IDENTIFIER, TokenType.STRING, TokenType.NUMBER,
+			TokenType.SYMBOL);
 
 	public ExpressionParser(BsParser<?> parser) {
 		super(parser);
@@ -82,6 +83,11 @@ public class ExpressionParser extends BsParser<ExpressionNode> {
 		} else if (start.type() == TokenType.STRING) {
 			node = nodeFactory().expression(start);
 			node.left(nodeFactory().string(start));
+
+			tokenizer().next();
+		} else if (start.type() == TokenType.SYMBOL) {
+			node = nodeFactory().expression(start);
+			node.left(nodeFactory().symbol(start));
 
 			tokenizer().next();
 		} else {

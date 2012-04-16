@@ -14,6 +14,7 @@ import com.bs.parser.tree.Node;
 import com.bs.parser.tree.NumberNode;
 import com.bs.parser.tree.StatementsNode;
 import com.bs.parser.tree.StringNode;
+import com.bs.parser.tree.SymbolNode;
 
 public interface Interpreter {
 
@@ -44,5 +45,7 @@ public interface Interpreter {
 	Object visitArguments(ArgumentsNode argumentsNode);
 
 	Object visitList(ListNode listNode);
+
+	Object visitSymbol(SymbolNode symbolNode);
 
 }

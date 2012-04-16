@@ -13,6 +13,7 @@ import com.bs.lang.proto.BsBlock;
 import com.bs.lang.proto.BsError;
 import com.bs.lang.proto.BsNumber;
 import com.bs.lang.proto.BsString;
+import com.bs.lang.proto.BsSymbol;
 import com.bs.parser.tree.ArgumentsNode;
 import com.bs.parser.tree.AssignNode;
 import com.bs.parser.tree.BlockNode;
@@ -28,6 +29,7 @@ import com.bs.parser.tree.Node;
 import com.bs.parser.tree.NumberNode;
 import com.bs.parser.tree.StatementsNode;
 import com.bs.parser.tree.StringNode;
+import com.bs.parser.tree.SymbolNode;
 
 public class BsInterpreter implements Interpreter {
 
@@ -173,5 +175,10 @@ public class BsInterpreter implements Interpreter {
 		List<BsObject> objects = (List<BsObject>) visit(node.expressions());
 		BsObject list = BsObject.value(BsConst.List, objects);
 		return list;
+	}
+
+	@Override
+	public Object visitSymbol(SymbolNode node) {
+		return BsSymbol.get(node.string());
 	}
 }

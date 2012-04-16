@@ -1,5 +1,7 @@
 package com.bs.lang.proto;
 
+import org.apache.commons.lang3.ArrayUtils;
+
 import com.bs.lang.Bs;
 import com.bs.lang.BsCodeData;
 import com.bs.lang.BsConst;
@@ -66,13 +68,23 @@ public class BsProto extends BsObject {
 		return Bs.compile(Bs.asString(args[0]));
 	}
 
-	@BsRuntimeMessage(name = "getSlot", arity = 1)
+	@BsRuntimeMessage(name = "getSlot", arity = 1, aliases = { "->" })
 	public BsObject getSlot(BsObject self, BsObject... args) {
-		if (!args[0].instanceOf(BsConst.String)) {
+		if (!args[0].instanceOf(BsConst.Symbol)) {
 			return BsError.typeError("getSlot", args[0].prototype(),
-					BsConst.String);
+					BsConst.Symbol);
 		}
 		return self.slot(Bs.asString(args[0]));
+	}
+
+	@BsRuntimeMessage(name = "setSlot", arity = 2, aliases = { "<-" })
+	public BsObject setSlot(BsObject self, BsObject... args) {
+		if (!args[0].instanceOf(BsConst.Symbol)) {
+			return BsError.typeError("setSlot", args[0].prototype(),
+					BsConst.Symbol);
+		}
+		self.slot(Bs.asString(args[0]), args[1]);
+		return self;
 	}
 
 	@BsRuntimeMessage(name = "isNil?", arity = 0)
@@ -98,27 +110,20 @@ public class BsProto extends BsObject {
 		return BsError.typeError("ifNonNil", args[0], BsConst.Block);
 	}
 
-	@BsRuntimeMessage(name = "setSlot", arity = 1)
-	public BsObject setSlot(BsObject self, BsObject... args) {
-		if (!args[0].instanceOf(BsConst.String)) {
-			return BsError.typeError("getSlot", args[0].prototype(),
-					BsConst.String);
-		}
-		return self.slot(Bs.asString(args[0]));
-	}
-
 	@BsRuntimeMessage(name = "pass", arity = 0)
 	public BsObject pass(BsObject self, BsObject... args) {
 		return self;
 	}
 
-	@BsRuntimeMessage(name = "<-", arity = 2)
+	@BsRuntimeMessage(name = "setMethod", arity = 2, aliases = { "<<=" })
 	public BsObject addMethod(BsObject self, BsObject... args) {
-		if (!args[0].instanceOf(BsConst.String)) {
-			return BsError.typeError("<-", args[0].prototype(), BsConst.String);
+		if (!args[0].instanceOf(BsConst.Symbol)) {
+			return BsError.typeError("method", args[0].prototype(),
+					BsConst.String);
 		}
 		if (!args[1].instanceOf(BsConst.Block)) {
-			return BsError.typeError("<-", args[0].prototype(), BsConst.Block);
+			return BsError.typeError("method", args[0].prototype(),
+					BsConst.Block);
 		}
 		BsCodeData data = args[1].value();
 		self.message(Bs.asString(args[0]), data);
@@ -132,14 +137,21 @@ public class BsProto extends BsObject {
 		return args[0];
 	}
 
-	@BsRuntimeMessage(name = "init", arity = 0)
+	@BsRuntimeMessage(name = "init", arity = 1)
 	public BsObject init(BsObject self, BsObject... args) {
 		return self;
 	}
 
 	@BsRuntimeMessage(name = "clone", arity = -1)
 	public BsObject clone(BsObject self, BsObject... args) {
-		BsObject obj = new BsObject(self);
+		BsObject obj = null;
+		if (args.length > 0 && args[0].instanceOf(BsConst.Symbol)) {
+			obj = new BsObject(self, Bs.asString(args[0]));
+		} else {
+			obj = new BsObject(self);
+		}
+
+		args = ArrayUtils.add(args, 0, obj);
 		obj.invoke("init", args);
 		return obj;
 	}

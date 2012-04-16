@@ -10,6 +10,11 @@ public class BsNil extends BsObject {
 		super(BsConst.Proto, "Nil", BsNil.class);
 	}
 
+	@BsRuntimeMessage(name = "toString", arity = 0)
+	public BsObject toString(BsObject self, BsObject... args) {
+		return BsString.clone("Nil");
+	}
+
 	@BsRuntimeMessage(name = "ifNil", arity = 1)
 	public BsObject ifNil(BsObject self, BsObject... args) {
 		if (args[0].instanceOf(BsConst.Block)) {

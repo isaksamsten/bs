@@ -80,8 +80,8 @@ public class BsError extends BsObject {
 
 	@BsRuntimeMessage(name = "catch", arity = 2)
 	public BsObject catchit(BsObject self, BsObject... args) {
-		if (!args[0].instanceOf(BsConst.String)) {
-			return typeError("catch", args[0], BsConst.String);
+		if (!args[0].instanceOf(BsConst.Symbol)) {
+			return typeError("catch", args[0], BsConst.Symbol);
 		}
 
 		if (!args[1].instanceOf(BsConst.Block)) {
@@ -118,9 +118,9 @@ public class BsError extends BsObject {
 
 	@BsRuntimeMessage(name = "clone", arity = 1)
 	public BsObject clone(BsObject self, BsObject... args) {
-		if (!args[0].instanceOf(BsConst.String)) {
+		if (!args[0].instanceOf(BsConst.Symbol)) {
 			return BsError.typeError("clone", args[0].prototype(),
-					BsConst.String);
+					BsConst.Symbol);
 		}
 
 		return clone(Bs.asString(args[0]));

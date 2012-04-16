@@ -1,0 +1,10 @@
+Person := Proto clone :Person.
+Person <<= :init, { | self, name | 
+	System puts self.
+}.
+Person <<= :setName, { | self, name |
+	self <- :name, name.
+}.
+Person <<= :getName, { | self |
+	self -> :name.
+}.

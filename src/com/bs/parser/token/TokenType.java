@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public enum TokenType {
-	IDENTIFIER, NUMBER, STRING, EOF, ERROR,
+	IDENTIFIER, NUMBER, STRING, SYMBOL, EOF, ERROR,
 
 	/*
 	 * Assignment

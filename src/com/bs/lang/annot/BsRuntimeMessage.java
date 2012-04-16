@@ -8,4 +8,6 @@ public @interface BsRuntimeMessage {
 	String name();
 
 	int arity();
+
+	String[] aliases() default {};
 }

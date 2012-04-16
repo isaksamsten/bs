@@ -1,6 +1,7 @@
 package com.bs.lang;
 
 import java.lang.reflect.Method;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -132,7 +133,7 @@ public class BsObject {
 		}
 	}
 
-	public void message(String asString, BsCodeData data) {
+	public void message(String name, BsCodeData data) {
 		messages.put(name, new BsMessageData(new BsMessageProxy(data),
 				data.arguments.size(), name));
 	}
@@ -141,9 +142,12 @@ public class BsObject {
 		Method[] methods = klass.getMethods();
 		for (Method m : methods) {
 			BsRuntimeMessage brm = m.getAnnotation(BsRuntimeMessage.class);
-			if (brm != null && brm.name().equals(name)) {
-				return new BsMessage(brm.name(), brm.arity(), new BsJavaProxy(
-						this, m));
+			if (brm != null
+					&& (brm.name().equals(name) || Arrays.binarySearch(
+							brm.aliases(), name) >= 0)) {
+
+				return new BsMessage(name, brm.arity(),
+						new BsJavaProxy(this, m));
 			}
 		}
 		return null;

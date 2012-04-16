@@ -11,15 +11,23 @@ import com.bs.lang.annot.BsRuntimeMessage;
 
 public class BsModule extends BsObject {
 
+	private static final String FILE_NAME = "fileName";
+
 	public static BsObject create(String string) {
 		BsObject obj = BsObject.value(BsConst.Module, null);
-		obj.slot("setName", BsString.clone(string));
+		obj.slot(FILE_NAME, BsString.clone(string));
 
 		return obj;
 	}
 
 	public BsModule() {
 		super(BsConst.Proto, "Module", BsModule.class);
+	}
+
+	@BsRuntimeMessage(name = "toString", arity = 0)
+	public BsObject toString(BsObject self, BsObject... args) {
+		return BsString.clone("Module: <" + Bs.asString(self.slot(FILE_NAME))
+				+ ">");
 	}
 
 	@BsRuntimeMessage(name = "load", arity = 1)
@@ -30,8 +38,7 @@ public class BsModule extends BsObject {
 		if (error.isError()) {
 			return error;
 		}
-		stack.root().invoke("setName", args[0]);
-		return self;
+		return stack.root();
 	}
 
 }

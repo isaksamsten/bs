@@ -12,7 +12,8 @@ public class StatementParser extends BsParser<StatementNode> {
 
 	public static final EnumSet<TokenType> START = EnumSet.of(
 			TokenType.IDENTIFIER, TokenType.NUMBER, TokenType.STRING,
-			TokenType.LEFT_BRACE, TokenType.LEFT_PAREN, TokenType.LEFT_BRACKET);
+			TokenType.SYMBOL, TokenType.LEFT_BRACE, TokenType.LEFT_PAREN,
+			TokenType.LEFT_BRACKET);
 
 	public static final EnumSet<TokenType> END = EnumSet.of(TokenType.DOT);
 

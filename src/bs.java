@@ -61,7 +61,11 @@ public class bs {
 		Scanner sc = new BsScanner(
 				new StringReader(
 						"a := Module load \"test.bs\"." +
-						"System puts a getSlot \"b\"."
+						"pp := a ->(:person) ->(:Person) clone()." +
+						"pp setName \"isak\"." +
+						"System puts pp getName()."
+								+ "System puts a."
+								+ "System puts a -> :b."
 								+ "x := 30--40."
 								+ "x := x map { | d | "
 								+ "	Proto return d * 10."
@@ -89,7 +93,7 @@ public class bs {
 								+ "   	System puts xy * 10."
 								+ "   }."
 								+ "}. "
-								+ "e catch \"NameError\", { | e |"
+								+ "e catch :NameError, { | e |"
 								+ "  	System puts \"Caught NameError: \" + e getMessage()."
 								+ "}." + "e pass()." + "System puts 210."));
 

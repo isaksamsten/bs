@@ -66,6 +66,8 @@ public class BsTokenizer implements Tokenizer {
 			token = extractIdentifier();
 		} else if (Character.isDigit(current)) {
 			token = extractNumber();
+		} else if (current == ':' && scanner.peek() != '=') {
+			token = extractSymbol();
 		} else if (TokenType.isSpecial(current)) {
 			token = extractSpecial();
 		} else if (current == '"') {
@@ -79,6 +81,18 @@ public class BsTokenizer implements Tokenizer {
 		}
 		token.currentLine(scanner.line(line - 1));
 		return token;
+	}
+
+	protected Token extractSymbol() {
+		StringBuilder builder = new StringBuilder();
+		char c = scanner().next();
+		while (validIdentifierStart(c)) {
+			builder.append(c);
+			c = scanner().next();
+		}
+
+		return factory.symbol(builder.toString(), scanner.line(),
+				scanner.position());
 	}
 
 	public MessageHandler messageHandler() {
@@ -157,6 +171,7 @@ public class BsTokenizer implements Tokenizer {
 			case '/':
 			case '<':
 			case '>':
+			case '=':
 				return true;
 			default:
 				return false;

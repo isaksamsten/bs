@@ -15,4 +15,6 @@ public interface TokenFactory {
 	Token error(int line, int position);
 
 	Token eof();
+
+	Token symbol(String string, int line, int position);
 }

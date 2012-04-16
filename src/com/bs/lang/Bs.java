@@ -15,6 +15,7 @@ import static com.bs.lang.BsConst.System;
 import static com.bs.lang.BsConst.True;
 import static com.bs.lang.BsConst.TypeError;
 import static com.bs.lang.BsConst.Nil;
+import static com.bs.lang.BsConst.Symbol;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -41,6 +42,7 @@ public final class Bs {
 		/*
 		 * Literal types
 		 */
+		builtin.slot(Symbol);
 		builtin.slot(String);
 		builtin.slot(List);
 		builtin.slot(Number);
@@ -97,7 +99,8 @@ public final class Bs {
 	 * @return
 	 */
 	public static String asString(BsObject obj) {
-		return obj.instanceOf(String) ? (String) obj.value() : null;
+		return obj.instanceOf(String) || obj.instanceOf(Symbol) ? (String) obj
+				.value() : null;
 	}
 
 	/**

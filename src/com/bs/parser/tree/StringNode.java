@@ -17,12 +17,10 @@ public class StringNode extends AbstractNode implements LiteralNode {
 
 	public StringNode(int line, int position) {
 		super(line, position);
-		// TODO Auto-generated constructor stub
 	}
 
 	public StringNode(Token token) {
 		super(token);
-		// TODO Auto-generated constructor stub
 	}
 
 	public void string(String string) {

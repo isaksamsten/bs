@@ -101,10 +101,17 @@ public interface NodeFactory {
 	StatementsNode statements(Token token);
 
 	/**
-	 * String, Number or Identifier
+	 * String, Number, Symbol or Identifier
 	 * 
 	 * @param start
 	 * @return
 	 */
 	LiteralNode literal(Token start);
+
+	/**
+	 * 
+	 * @param start
+	 * @return
+	 */
+	LiteralNode symbol(Token start);
 }

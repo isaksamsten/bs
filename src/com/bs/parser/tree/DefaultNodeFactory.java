@@ -77,6 +77,8 @@ public class DefaultNodeFactory implements NodeFactory {
 			return string(start);
 		case IDENTIFIER:
 			return identifier(start);
+		case SYMBOL:
+			return symbol(start);
 		default:
 			return null;
 		}
@@ -85,6 +87,11 @@ public class DefaultNodeFactory implements NodeFactory {
 	@Override
 	public ListNode list(Token token) {
 		return new ListNode(token);
+	}
+
+	@Override
+	public LiteralNode symbol(Token start) {
+		return new SymbolNode(start);
 	}
 
 }
