@@ -1,6 +1,11 @@
-package com.bs.lang;
+package com.bs.lang.proto;
 
-import java.util.ArrayList;
+import com.bs.lang.Bs;
+import com.bs.lang.BsCodeData;
+import com.bs.lang.BsConst;
+import com.bs.lang.BsMessageProxy;
+import com.bs.lang.BsObject;
+import com.bs.lang.annot.BsRuntimeMessage;
 
 public class BsProto extends BsObject {
 
@@ -23,7 +28,7 @@ public class BsProto extends BsObject {
 		BsObject block = args[0];
 		BsObject ret = block.invoke("call");
 		if (ret.isError()) {
-			ret.var("ignore", BsConst.True);
+			ret.slot("ignore", BsConst.True);
 		}
 
 		return ret;
@@ -68,7 +73,7 @@ public class BsProto extends BsObject {
 			return BsError.typeError("getSlot", args[0].prototype(),
 					BsConst.String);
 		}
-		return self.var(Bs.asString(args[0]));
+		return self.slot(Bs.asString(args[0]));
 	}
 
 	@BsRuntimeMessage(name = "setSlot", arity = 1)
@@ -77,7 +82,33 @@ public class BsProto extends BsObject {
 			return BsError.typeError("getSlot", args[0].prototype(),
 					BsConst.String);
 		}
-		return self.var(Bs.asString(args[0]));
+		return self.slot(Bs.asString(args[0]));
+	}
+	
+	@BsRuntimeMessage(name = "pass", arity = 0)
+	public BsObject pass(BsObject self, BsObject... args) {
+		return self;
+	}
+
+	@BsRuntimeMessage(name = "<-", arity = 2)
+	public BsObject addMethod(BsObject self, BsObject... args) {
+		if (!args[0].instanceOf(BsConst.String)) {
+			return BsError.typeError("<-", args[0].prototype(), BsConst.String);
+		}
+		if (!args[1].instanceOf(BsConst.Block)) {
+			return BsError.typeError("<-", args[0].prototype(), BsConst.Block);
+		}
+		BsCodeData data = args[1].value();
+		self.message(Bs.asString(args[0]), data.arguments.size(),
+				new BsMessageProxy(data));
+
+		return self;
+	}
+
+	@BsRuntimeMessage(name = "return", arity = 1)
+	public BsObject returnit(BsObject self, BsObject... args) {
+		args[0].setReturn(true);
+		return args[0];
 	}
 
 	@BsRuntimeMessage(name = "init", arity = 0)

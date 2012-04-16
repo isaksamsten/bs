@@ -4,13 +4,10 @@ import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 
-public class BsObject {
+import com.bs.lang.annot.BsRuntimeMessage;
+import com.bs.lang.proto.BsError;
 
-	private class BsMessageData {
-		public BsCode code;
-		public int arity;
-		public String name;
-	}
+public class BsObject {
 
 	public static BsObject value(BsObject proto, Object value) {
 		BsObject obj = new BsObject(proto);
@@ -36,6 +33,8 @@ public class BsObject {
 
 	private Class<?> klass;
 
+	private boolean returnMe;
+
 	public BsObject(BsObject prototype, String name) {
 		this(prototype, name, BsObject.class);
 	}
@@ -48,6 +47,7 @@ public class BsObject {
 		this.name = name;
 		this.prototype = prototype;
 		this.klass = me;
+		this.returnMe = false;
 		id = ID++;
 	}
 
@@ -81,10 +81,32 @@ public class BsObject {
 		}
 	}
 
+	public boolean isBreak() {
+		return isError() || isReturn();
+	}
+
 	public boolean isError() {
 		BsObject proto = prototype();
 		return proto != null && proto.instanceOf(BsConst.Error)
-				&& !Bs.isTrue(var("ignore"));
+				&& !Bs.asBoolean(slot(BsError.IGNORE));
+	}
+
+	/**
+	 * Set if this object should be returned from the currently executing
+	 * statementslist
+	 * 
+	 * @param b
+	 */
+	public void setReturn(boolean b) {
+		this.returnMe = b;
+	}
+
+	/**
+	 * 
+	 * @return
+	 */
+	public boolean isReturn() {
+		return this.returnMe;
 	}
 
 	@SuppressWarnings("unchecked")
@@ -97,6 +119,7 @@ public class BsObject {
 		BsMessageData data = messages.get(name);
 		if (data != null) {
 			msg = new BsBoundMessage(data.name, data.arity, data.code, this);
+			return msg;
 		}
 		if ((msg = javaMethod(name)) != null) {
 			return msg;
@@ -107,6 +130,19 @@ public class BsObject {
 		} else {
 			return null;
 		}
+	}
+
+	public void message(String name, int arity, BsCode code) {
+		messages.put(name, new BsMessageData(code, arity, name));
+	}
+
+	public BsCode getCode() {
+		if (!instanceOf(BsConst.Block)) {
+			return null;
+		}
+
+		BsCodeData data = value();
+		return new BsMessageProxy(data);
 	}
 
 	private BsMessage javaMethod(String name) {
@@ -126,19 +162,19 @@ public class BsObject {
 		if (msg != null) {
 			return msg.invoke(this, args);
 		} else {
-			return BsError.raise("No method '%s' for '%s'", message, this);
+			return BsError.nameError(message, this);
 		}
 	}
 
-	public BsObject var(String key) {
+	public BsObject slot(String key) {
 		return instVars.get(key);
 	}
 
-	public void var(String key, BsObject value) {
+	public void slot(String key, BsObject value) {
 		instVars.put(key, value);
 	}
 
-	public void var(BsObject value) {
+	public void slot(BsObject value) {
 		if (value.name() != null)
 			instVars.put(value.name(), value);
 	}

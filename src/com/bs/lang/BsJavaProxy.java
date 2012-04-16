@@ -2,6 +2,8 @@ package com.bs.lang;
 
 import java.lang.reflect.Method;
 
+import com.bs.lang.proto.BsError;
+
 public class BsJavaProxy implements BsCode {
 
 	private Method method;

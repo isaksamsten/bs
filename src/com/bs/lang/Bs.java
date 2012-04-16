@@ -2,7 +2,10 @@ package com.bs.lang;
 
 import com.bs.interpreter.BsCompiler;
 import com.bs.interpreter.BsInterpreter;
+import com.bs.lang.proto.BsModule;
 import com.bs.parser.tree.Node;
+
+import static com.bs.lang.BsConst.*;
 
 public final class Bs {
 
@@ -10,15 +13,29 @@ public final class Bs {
 
 	static {
 		builtin = BsModule.create();
-		builtin.var(BsConst.Proto);
-		builtin.var(BsConst.String);
-		builtin.var(BsConst.List);
-		builtin.var(BsConst.Number);
-		builtin.var(BsConst.Module);
-		builtin.var(BsConst.Enumerable);
-		builtin.var(BsConst.True);
-		builtin.var(BsConst.False);
-		builtin.var(BsConst.Error);
+		builtin.slot(Proto);
+		builtin.slot(System);
+
+		/*
+		 * Literal types
+		 */
+		builtin.slot(String);
+		builtin.slot(List);
+		builtin.slot(Number);
+		builtin.slot(Bool);
+		builtin.slot(True);
+		builtin.slot(False);
+
+		builtin.slot(Module);
+		builtin.slot(Enumerable);
+
+		/*
+		 * Errors
+		 */
+		builtin.slot(Error);
+		builtin.slot(SyntaxError);
+		builtin.slot(NameError);
+		builtin.slot(TypeError);
 	}
 
 	/**
@@ -28,7 +45,7 @@ public final class Bs {
 	 *            - any BsObject or null
 	 * @return
 	 */
-	public static boolean isTrue(BsObject obj) {
+	public static boolean asBoolean(BsObject obj) {
 		return obj != null && obj == BsConst.True;
 	}
 
@@ -46,12 +63,24 @@ public final class Bs {
 		return obj.instanceOf(BsConst.Number) ? (Number) obj.value() : null;
 	}
 
+	/**
+	 * Return an instance of BsConst.String to its java String value
+	 * 
+	 * @param obj
+	 * @return
+	 */
 	public static String asString(BsObject obj) {
 		return obj.instanceOf(BsConst.String) ? (String) obj.value() : null;
 	}
 
+	/**
+	 * Negate a boolean
+	 * 
+	 * @param invoke
+	 * @return
+	 */
 	public static BsObject negate(BsObject invoke) {
-		return isTrue(invoke) ? BsConst.False : BsConst.True;
+		return asBoolean(invoke) ? BsConst.False : BsConst.True;
 	}
 
 	public static BsObject builtin() {

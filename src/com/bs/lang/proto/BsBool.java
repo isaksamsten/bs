@@ -1,4 +1,9 @@
-package com.bs.lang;
+package com.bs.lang.proto;
+
+import com.bs.lang.Bs;
+import com.bs.lang.BsConst;
+import com.bs.lang.BsObject;
+import com.bs.lang.annot.BsRuntimeMessage;
 
 public class BsBool extends BsObject {
 
@@ -8,7 +13,7 @@ public class BsBool extends BsObject {
 
 	@BsRuntimeMessage(name = "isTrue", arity = -1)
 	public BsObject isTrue(BsObject self, BsObject... args) {
-		if (args.length > 0 && Bs.isTrue(self)) {
+		if (args.length > 0 && Bs.asBoolean(self)) {
 			return args[0].invoke("call");
 		} else if (args.length > 1) {
 			return args[1].invoke("call");
@@ -19,7 +24,7 @@ public class BsBool extends BsObject {
 
 	@BsRuntimeMessage(name = "isFalse", arity = -1)
 	public BsObject isFalse(BsObject self, BsObject... args) {
-		if (args.length > 0 && !Bs.isTrue(self)) {
+		if (args.length > 0 && !Bs.asBoolean(self)) {
 			return args[0].invoke("call");
 		} else if (args.length > 1) {
 			return args[1].invoke("call");

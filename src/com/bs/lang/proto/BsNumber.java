@@ -1,4 +1,9 @@
-package com.bs.lang;
+package com.bs.lang.proto;
+
+import com.bs.lang.Bs;
+import com.bs.lang.BsConst;
+import com.bs.lang.BsObject;
+import com.bs.lang.annot.BsRuntimeMessage;
 
 public class BsNumber extends BsObject {
 
@@ -8,11 +13,6 @@ public class BsNumber extends BsObject {
 
 	public BsNumber() {
 		super(BsConst.Proto, "Number", BsNumber.class);
-	}
-
-	@BsRuntimeMessage(name = "toString", arity = 0)
-	public BsObject toString(BsObject self, BsObject... args) {
-		return BsObject.value(BsConst.String, self.value().toString());
 	}
 
 	@BsRuntimeMessage(name = "+", arity = 1)
@@ -58,6 +58,15 @@ public class BsNumber extends BsObject {
 
 		Number result = modulo(lhs, rhs);
 		return clone(result);
+	}
+
+	@BsRuntimeMessage(name = "--", arity = 1)
+	public BsObject range(BsObject self, BsObject... args) {
+		if (!args[0].instanceOf(BsConst.Number)) {
+			return BsError.typeError("--", args[0], BsConst.Number);
+		}
+
+		return BsRange.clone(Bs.asNumber(self), Bs.asNumber(args[0]));
 	}
 
 	/**

@@ -8,6 +8,8 @@ public interface Stack {
 
 	BsObject local();
 
+	BsObject enter(String key, BsObject value);
+
 	BsObject push(BsObject obj);
 
 	BsObject pop();

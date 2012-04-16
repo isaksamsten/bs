@@ -62,7 +62,17 @@ public class ExpressionParser extends BsParser<ExpressionNode> {
 			node = parser.parse(start);
 
 			if (START.contains(tokenizer().current().type())) {
-				// its a call on the block
+				LiteralNode tmp = node;
+				MessagesParser msgParser = new MessagesParser(this);
+				MessagesNode msgs = msgParser.parse(tokenizer().current());
+
+				if (msgs != null) {
+					CallNode cnode = nodeFactory().call(start);
+					cnode.left(tmp);
+					cnode.messages(msgs);
+
+					node = cnode;
+				}
 			}
 		} else if (start.type() == TokenType.NUMBER) {
 			node = nodeFactory().expression(start);

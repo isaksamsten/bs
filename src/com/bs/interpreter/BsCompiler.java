@@ -4,10 +4,10 @@ import java.io.Reader;
 import java.io.StringReader;
 import java.util.ArrayList;
 
-import com.bs.lang.BsBlock;
 import com.bs.lang.BsConst;
-import com.bs.lang.BsError;
 import com.bs.lang.BsObject;
+import com.bs.lang.proto.BsBlock;
+import com.bs.lang.proto.BsError;
 import com.bs.parser.StatementsParser;
 import com.bs.parser.source.BsScanner;
 import com.bs.parser.source.BsTokenizer;

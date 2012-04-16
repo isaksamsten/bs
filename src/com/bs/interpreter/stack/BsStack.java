@@ -2,13 +2,14 @@ package com.bs.interpreter.stack;
 
 import java.util.ArrayList;
 
+import com.bs.lang.BsConst;
 import com.bs.lang.BsObject;
 
 public class BsStack implements Stack {
 
 	private static final BsStack instance = new BsStack();
 
-	public static BsStack instance() {
+	public static BsStack getDefault() {
 		return instance;
 	}
 
@@ -45,9 +46,22 @@ public class BsStack implements Stack {
 	public BsObject lookup(String key) {
 		BsObject found = null;
 		for (int i = current; i >= 0 && found == null; i--) {
-			found = stack.get(i).var(key);
+			found = stack.get(i).slot(key);
 		}
 		return found;
+	}
+
+	@Override
+	public BsObject enter(String key, BsObject value) {
+		for (int i = current; i >= 0; i--) {
+			if (!stack.get(i).instanceOf(BsConst.Block)) {
+				stack.get(i).slot(key, value);
+				return value;
+			}
+		}
+
+		return null;
+
 	}
 
 }

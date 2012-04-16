@@ -1,4 +1,7 @@
-package com.bs.lang;
+package com.bs.lang.proto;
+
+import com.bs.lang.BsConst;
+import com.bs.lang.BsObject;
 
 public class BsFalse extends BsObject {
 

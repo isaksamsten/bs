@@ -1,6 +1,8 @@
 package com.bs.lang;
 
-public class BsMessage extends BsObject {
+import com.bs.lang.proto.BsError;
+
+public class BsMessage {
 	private int arity;
 
 	private BsCode code;
@@ -11,7 +13,6 @@ public class BsMessage extends BsObject {
 	 *            -1 unkown
 	 */
 	public BsMessage(String name, int arity, BsCode code) {
-		super(BsConst.Proto, name, BsMessage.class);
 		this.arity = arity;
 		this.code = code;
 	}

@@ -5,26 +5,27 @@ import org.junit.Test;
 
 import com.bs.interpreter.stack.BsStack;
 import com.bs.lang.Bs;
+import com.bs.lang.BsCodeData;
 import com.bs.lang.BsConst;
-import com.bs.lang.BsNumber;
 import com.bs.lang.BsObject;
-import com.bs.lang.BsString;
+import com.bs.lang.proto.BsNumber;
+import com.bs.lang.proto.BsString;
 
 public class BsObjectTests {
 
 	@Before
 	public void setUp() {
-		BsStack.instance().push(Bs.builtin());
+		BsStack.getDefault().push(Bs.builtin());
 	}
 
 	@Test
 	public void testIsTrue() {
-		assertEquals(true, Bs.isTrue(BsConst.True));
-		assertEquals(false, Bs.isTrue(null));
-		assertEquals(false, Bs.isTrue(BsConst.False));
-		assertEquals(false, Bs.isTrue(BsConst.Proto));
-		assertEquals(true, Bs.isTrue(BsConst.False.invoke("negate")));
-		assertEquals(false, Bs.isTrue(BsConst.True.invoke("negate")));
+		assertEquals(true, Bs.asBoolean(BsConst.True));
+		assertEquals(false, Bs.asBoolean(null));
+		assertEquals(false, Bs.asBoolean(BsConst.False));
+		assertEquals(false, Bs.asBoolean(BsConst.Proto));
+		assertEquals(true, Bs.asBoolean(BsConst.False.invoke("negate")));
+		assertEquals(false, Bs.asBoolean(BsConst.True.invoke("negate")));
 	}
 
 	@Test
@@ -51,10 +52,53 @@ public class BsObjectTests {
 	}
 
 	@Test
+	public void testMethods() {
+		BsObject obj = BsConst.Proto.invoke("clone");
+		BsObject block = Bs.compile("self return 10.");
+
+		BsCodeData data = block.value();
+		data.arguments.add("self"); // a method always take one arg
+
+		BsConst.Proto.invoke("<-", BsString.clone("test2"), block);
+		obj.invoke("<-", BsString.clone("test"), block);
+
+		obj = obj.invoke("test");
+		assertEquals(10, Bs.asNumber(obj));
+
+		obj = obj.invoke("test2");
+		assertEquals(10, Bs.asNumber(obj));
+
+		obj = BsConst.Proto.invoke("test2");
+		assertEquals(10, Bs.asNumber(obj));
+
+		obj = BsConst.Proto.invoke("test");
+		assertEquals(true, obj.instanceOf(BsConst.NameError));
+	}
+
+	@Test
+	public void testCompare() {
+		assertEquals(true,
+				Bs.asBoolean(BsConst.Proto.invoke("=", BsConst.Proto)));
+	}
+
+	@Test
 	public void testString() {
 		BsObject str = BsString.clone("Hello");
 		assertEquals(5, Bs.asNumber(str.invoke("length")));
+		assertEquals("Hello world",
+				Bs.asString(str.invoke("+", BsString.clone(" world"))));
 		assertEquals("Hello", Bs.asString(str));
+	}
+
+	@Test
+	public void testReturn() {
+		BsObject obj = BsConst.Proto.invoke("return",
+				BsString.clone("Hello world"));
+		assertEquals(true, obj.isReturn() && obj.isBreak());
+
+		obj = Bs.eval("10. Proto return 30. 20.");
+		assertEquals(30, Bs.asNumber(obj));
+		assertEquals(false, obj.isReturn() && obj.isBreak());
 	}
 
 	@Test

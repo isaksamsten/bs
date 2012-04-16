@@ -1,4 +1,4 @@
-package com.bs.lang;
+package com.bs.lang.annot;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;

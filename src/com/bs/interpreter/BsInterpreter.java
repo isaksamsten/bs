@@ -5,12 +5,12 @@ import java.util.List;
 
 import com.bs.interpreter.stack.BsStack;
 import com.bs.interpreter.stack.Stack;
-import com.bs.lang.BsBlock;
 import com.bs.lang.BsConst;
-import com.bs.lang.BsError;
-import com.bs.lang.BsNumber;
 import com.bs.lang.BsObject;
-import com.bs.lang.BsString;
+import com.bs.lang.proto.BsBlock;
+import com.bs.lang.proto.BsError;
+import com.bs.lang.proto.BsNumber;
+import com.bs.lang.proto.BsString;
 import com.bs.parser.tree.ArgumentsNode;
 import com.bs.parser.tree.AssignNode;
 import com.bs.parser.tree.BlockNode;
@@ -36,7 +36,7 @@ public class BsInterpreter implements Interpreter {
 	}
 
 	public BsInterpreter() {
-		this(BsStack.instance());
+		this(BsStack.getDefault());
 	}
 
 	public BsInterpreter(BsInterpreter inter) {
@@ -75,7 +75,7 @@ public class BsInterpreter implements Interpreter {
 	@Override
 	public Object visitCall(CallNode node) {
 		BsObject lhs = (BsObject) visit(node.left());
-		if (lhs.isError()) {
+		if (lhs.isBreak()) {
 			return lhs;
 		}
 
@@ -88,7 +88,7 @@ public class BsInterpreter implements Interpreter {
 		List<BsObject> objects = new ArrayList<BsObject>();
 		for (Node expr : node.childrens()) {
 			BsObject obj = (BsObject) visit(expr);
-			if (obj.isError()) {
+			if (obj.isBreak()) {
 				return obj;
 			}
 			objects.add(obj);
@@ -112,7 +112,8 @@ public class BsInterpreter implements Interpreter {
 		BsObject last = null;
 		for (Node n : statementsNode.childrens()) {
 			last = (BsObject) visit(n);
-			if (last.isError()) {
+			if (last.isBreak()) {
+				last.setReturn(false);
 				return last;
 			}
 		}
@@ -127,7 +128,7 @@ public class BsInterpreter implements Interpreter {
 		if (value.isError()) {
 			return value;
 		}
-		stack.local().var(var, value);
+		stack.enter(var, value);
 
 		return value;
 	}
@@ -169,5 +170,4 @@ public class BsInterpreter implements Interpreter {
 		BsObject list = BsObject.value(BsConst.List, objects);
 		return list;
 	}
-
 }

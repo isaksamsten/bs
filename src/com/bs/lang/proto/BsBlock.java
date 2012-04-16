@@ -1,18 +1,33 @@
-package com.bs.lang;
+package com.bs.lang.proto;
 
 import java.util.List;
 
 import com.bs.interpreter.stack.BsStack;
+import com.bs.lang.Bs;
+import com.bs.lang.BsCodeData;
+import com.bs.lang.BsConst;
+import com.bs.lang.BsObject;
+import com.bs.lang.annot.BsRuntimeMessage;
 import com.bs.parser.tree.Node;
 
-public class BsBlock extends BsObject implements BsCode {
+public class BsBlock extends BsObject {
 
 	public static BsObject create(List<String> args, Node statements) {
-		return BsObject.value(BsConst.Block, new Object[] { args, statements });
+		BsObject obj = BsObject.value(BsConst.Block, new BsCodeData(args,
+				statements));
+		obj.slot(ARITY, BsNumber.clone(args.size()));
+		return obj;
 	}
+
+	public static final String ARITY = "arity";
 
 	public BsBlock() {
 		super(BsConst.Proto, "Block", BsBlock.class);
+	}
+
+	@BsRuntimeMessage(name = "arity", arity = 0)
+	public BsObject arity(BsObject self, BsObject... args) {
+		return slot(ARITY);
 	}
 
 	@BsRuntimeMessage(name = "call", arity = -1)
@@ -25,7 +40,7 @@ public class BsBlock extends BsObject implements BsCode {
 		BsObject w = self.invoke("call");
 
 		BsObject last = BsConst.False;
-		while (Bs.isTrue(w)) {
+		while (Bs.asBoolean(w)) {
 			last = args[0].invoke("call");
 			w = self.invoke("call");
 		}
@@ -33,21 +48,17 @@ public class BsBlock extends BsObject implements BsCode {
 		return last;
 	}
 
-	@SuppressWarnings("unchecked")
-	@Override
 	public BsObject execute(BsObject self, BsObject... args) {
-		Object[] data = self.value();
-		List<String> arguments = (List<String>) data[0];
-		Node node = (Node) data[1];
+		BsCodeData data = self.value();
 
-		if (arguments.size() == args.length) {
+		if (data.arguments.size() == args.length) {
 			for (int n = 0; n < args.length; n++) {
-				self.var(arguments.get(n), args[n]);
+				self.slot(data.arguments.get(n), args[n]);
 			}
 
-			BsStack.instance().push(self);
-			BsObject ret = Bs.eval(node);
-			BsStack.instance().pop();
+			BsStack.getDefault().push(self);
+			BsObject ret = Bs.eval(data.code);
+			BsStack.getDefault().pop();
 
 			return ret;
 		} else {
