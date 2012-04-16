@@ -113,7 +113,6 @@ public class BsInterpreter implements Interpreter {
 		for (Node n : statementsNode.childrens()) {
 			last = (BsObject) visit(n);
 			if (last.isBreak()) {
-				last.setReturn(false);
 				return last;
 			}
 		}

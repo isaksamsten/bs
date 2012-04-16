@@ -58,19 +58,26 @@ public class bs {
 
 		Scanner sc = new BsScanner(
 				new StringReader(
-						"x := 1--10." +
-						"System puts((1--10) each { | y |" +
+						"x := 30--40." +
+						"x := x map { | d | " +
+						"	d * 10. " +
+						"}." +
+						"System puts x." +
+						"System puts [1,2,3] map { | d |" +
+						"	d * 10." +
+						"}." +
+						"(1--10) each { | y |" +
 						"   System puts y." +
-						"	Proto return y." +
-						"	x each { | z |" +
-						"		System puts y + z." +
+						"	b := x each { | z |" +
+						"		System puts z." +
+						"		Proto return y." +
 						"   }." +
-						"  	System puts y." +
-						"})." +
+						"  	Proto return b." +
+						"}." +
 						"x := True." +
 						"{x.} whileTrue {" +
 						"	System puts \"While true\"." +
-						"  	x := False." +
+						"  	Proto return()." +
 						"}." +
 						"e := Proto try { " +
 						"	[10, 10 + 10] each {| x | " +

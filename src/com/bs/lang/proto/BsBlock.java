@@ -20,14 +20,33 @@ public class BsBlock extends BsObject {
 	}
 
 	public static final String ARITY = "arity";
+	public static final String HAS_RETURNED = "hasReturned";
 
 	public BsBlock() {
 		super(BsConst.Proto, "Block", BsBlock.class);
 	}
+	
+	public BsBlock(Class<?> c) {
+		super(BsConst.Proto, "Block", c);
+	}
 
 	@BsRuntimeMessage(name = "arity", arity = 0)
 	public BsObject arity(BsObject self, BsObject... args) {
-		return slot(ARITY);
+		return self.slot(ARITY);
+	}
+
+	@BsRuntimeMessage(name = "hasReturned", arity = 0)
+	public BsObject hasReturned(BsObject self, BsObject... args) {
+		return self.slot(HAS_RETURNED);
+	}
+
+	@BsRuntimeMessage(name = "setReturned", arity = 1)
+	public BsObject setReturned(BsObject self, BsObject... args) {
+		if (!args[0].instanceOf(BsConst.Bool)) {
+			return BsError.typeError("setReturned", args[0], BsConst.Bool);
+		}
+		self.slot(HAS_RETURNED, args[0]);
+		return self;
 	}
 
 	@BsRuntimeMessage(name = "call", arity = -1)
@@ -40,9 +59,12 @@ public class BsBlock extends BsObject {
 		BsObject w = self.invoke("call");
 
 		BsObject last = BsConst.False;
-		while (Bs.asBoolean(w)) {
+		while (Bs.asBoolean(w) && !Bs.asBoolean(args[0].slot(HAS_RETURNED))) {
 			last = args[0].invoke("call");
 			w = self.invoke("call");
+			if(last.isBreak()) {
+				return last;
+			}
 		}
 
 		return last;
@@ -57,7 +79,11 @@ public class BsBlock extends BsObject {
 			}
 
 			BsStack.getDefault().push(self);
-			BsObject ret = Bs.blockEval(data.code);
+			BsObject ret = Bs.eval(data.code);
+			if (ret.isReturn()) {
+				ret.setReturn(false);
+				self.slot(HAS_RETURNED, BsConst.True);
+			}
 			BsStack.getDefault().pop();
 
 			return ret;

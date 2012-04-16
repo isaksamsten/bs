@@ -7,12 +7,15 @@ public class BsMessage {
 
 	private BsCode code;
 
+	private String name;
+
 	/**
 	 * 
 	 * @param arity
 	 *            -1 unkown
 	 */
 	public BsMessage(String name, int arity, BsCode code) {
+		this.name = name;
 		this.arity = arity;
 		this.code = code;
 	}
@@ -34,7 +37,7 @@ public class BsMessage {
 	 */
 	public BsObject invoke(BsObject self, BsObject... args) {
 		if (arity > 0 && arity != args.length) {
-			return BsError.raise("Invalid arity");
+			return BsError.typeError(self, name, args.length, arity);
 		}
 
 		return code.execute(self, args);

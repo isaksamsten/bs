@@ -1,5 +1,7 @@
 package com.bs.lang.proto;
 
+import com.bs.lang.Bs;
+import com.bs.lang.BsCodeData;
 import com.bs.lang.BsConst;
 import com.bs.lang.BsObject;
 import com.bs.lang.annot.BsRuntimeMessage;
@@ -13,5 +15,27 @@ public class BsEnumerable extends BsObject {
 	@BsRuntimeMessage(name = "each", arity = 1)
 	public BsObject each(BsObject self, BsObject... args) {
 		return BsError.raise("Subclass implementation");
+	}
+
+	@BsRuntimeMessage(name = "map", arity = 1)
+	public BsObject map(BsObject self, final BsObject... args) {
+		if (!args[0].instanceOf(BsConst.Block)) {
+			return BsError.typeError("map", args[0], BsConst.Block);
+		}
+
+		BsObject list = BsList.create();
+
+		BsObject each = Bs.compile("list << block call e.");
+		each.slot("list", list);
+		each.slot("block", args[0]);
+		BsCodeData data = each.value();
+		data.arguments.add("e");
+
+		BsObject ret = self.invoke("each", each);
+		if(ret.isError()) {
+			return ret;
+		}
+
+		return list;
 	}
 }

@@ -1,12 +1,24 @@
 package com.bs.lang;
 
-import com.bs.interpreter.BsBlockInterpreter;
+import static com.bs.lang.BsConst.Bool;
+import static com.bs.lang.BsConst.Enumerable;
+import static com.bs.lang.BsConst.Error;
+import static com.bs.lang.BsConst.False;
+import static com.bs.lang.BsConst.List;
+import static com.bs.lang.BsConst.Module;
+import static com.bs.lang.BsConst.NameError;
+import static com.bs.lang.BsConst.Number;
+import static com.bs.lang.BsConst.Proto;
+import static com.bs.lang.BsConst.String;
+import static com.bs.lang.BsConst.SyntaxError;
+import static com.bs.lang.BsConst.System;
+import static com.bs.lang.BsConst.True;
+import static com.bs.lang.BsConst.TypeError;
+
 import com.bs.interpreter.BsCompiler;
 import com.bs.interpreter.BsInterpreter;
 import com.bs.lang.proto.BsModule;
 import com.bs.parser.tree.Node;
-
-import static com.bs.lang.BsConst.*;
 
 public final class Bs {
 
@@ -102,10 +114,4 @@ public final class Bs {
 		BsInterpreter i = new BsInterpreter();
 		return (BsObject) i.visit(node);
 	}
-
-	public static BsObject blockEval(Node node) {
-		BsBlockInterpreter i = new BsBlockInterpreter();
-		return (BsObject) i.visit(node);
-	}
-
 }

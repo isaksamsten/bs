@@ -96,9 +96,13 @@ public class BsObjectTests {
 				BsString.clone("Hello world"));
 		assertEquals(true, obj.isReturn() && obj.isBreak());
 
+		obj = Bs.compile("10. Proto return 30. 20.");
+		assertEquals(true, obj.instanceOf(BsConst.Block));
+		assertEquals(30, Bs.asNumber(obj.invoke("call")));
+		assertEquals(true, Bs.asBoolean(obj.invoke("hasReturned")));
+		
 		obj = Bs.eval("10. Proto return 30. 20.");
 		assertEquals(30, Bs.asNumber(obj));
-		assertEquals(true, obj.isReturn() && obj.isBreak());
 	}
 
 	@Test

@@ -36,11 +36,9 @@ public class BsRange extends BsObject {
 		int min = Bs.asNumber(self.slot(MIN)).intValue(), max = Bs.asNumber(
 				self.slot(MAX)).intValue();
 
-		for (int n = min; n < max; n++) {
+		for (int n = min; n < max
+				&& !Bs.asBoolean(args[0].slot(BsBlock.HAS_RETURNED)); n++) {
 			value = args[0].invoke("call", BsNumber.clone(n));
-			if(value.isBreak()) {
-				return value;
-			}
 		}
 
 		return value;
