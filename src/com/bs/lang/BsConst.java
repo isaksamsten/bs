@@ -7,6 +7,7 @@ import com.bs.lang.proto.BsError;
 import com.bs.lang.proto.BsFalse;
 import com.bs.lang.proto.BsList;
 import com.bs.lang.proto.BsModule;
+import com.bs.lang.proto.BsNil;
 import com.bs.lang.proto.BsNumber;
 import com.bs.lang.proto.BsProto;
 import com.bs.lang.proto.BsRange;
@@ -21,6 +22,7 @@ public final class BsConst {
 
 	public static final BsObject System = new BsSystem();
 
+	public static final BsObject Nil = new BsNil();
 	public static final BsObject Bool = new BsBool();
 	public static final BsObject True = new BsTrue();
 	public static final BsObject False = new BsFalse();

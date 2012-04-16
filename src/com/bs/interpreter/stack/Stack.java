@@ -10,9 +10,15 @@ public interface Stack {
 
 	BsObject enter(String key, BsObject value);
 
+	BsObject enterGlobal(String key, BsObject value);
+	
 	BsObject push(BsObject obj);
 
 	BsObject pop();
+	
+	BsObject global();
+	
+	BsObject root();
 
 	BsObject lookup(String key);
 }

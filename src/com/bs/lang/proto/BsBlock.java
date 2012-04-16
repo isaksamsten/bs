@@ -3,6 +3,7 @@ package com.bs.lang.proto;
 import java.util.List;
 
 import com.bs.interpreter.stack.BsStack;
+import com.bs.interpreter.stack.Stack;
 import com.bs.lang.Bs;
 import com.bs.lang.BsCodeData;
 import com.bs.lang.BsConst;
@@ -25,7 +26,7 @@ public class BsBlock extends BsObject {
 	public BsBlock() {
 		super(BsConst.Proto, "Block", BsBlock.class);
 	}
-	
+
 	public BsBlock(Class<?> c) {
 		super(BsConst.Proto, "Block", c);
 	}
@@ -62,7 +63,7 @@ public class BsBlock extends BsObject {
 		while (Bs.asBoolean(w) && !Bs.asBoolean(args[0].slot(HAS_RETURNED))) {
 			last = args[0].invoke("call");
 			w = self.invoke("call");
-			if(last.isBreak()) {
+			if (last.isBreak()) {
 				return last;
 			}
 		}
@@ -78,13 +79,14 @@ public class BsBlock extends BsObject {
 				self.slot(data.arguments.get(n), args[n]);
 			}
 
-			BsStack.getDefault().push(self);
-			BsObject ret = Bs.eval(data.code);
+			Stack stack = data.stack;
+			stack.push(self);
+			BsObject ret = Bs.eval(data.code, stack);
+			stack.pop();
 			if (ret.isReturn()) {
 				ret.setReturn(false);
 				self.slot(HAS_RETURNED, BsConst.True);
 			}
-			BsStack.getDefault().pop();
 
 			return ret;
 		} else {

@@ -11,7 +11,7 @@ public class BsBool extends BsObject {
 		super(BsConst.Proto, "Bool", BsBool.class);
 	}
 
-	@BsRuntimeMessage(name = "isTrue", arity = -1)
+	@BsRuntimeMessage(name = "ifTrue", arity = -1)
 	public BsObject isTrue(BsObject self, BsObject... args) {
 		if (args.length > 0 && Bs.asBoolean(self)) {
 			return args[0].invoke("call");
@@ -22,7 +22,7 @@ public class BsBool extends BsObject {
 		}
 	}
 
-	@BsRuntimeMessage(name = "isFalse", arity = -1)
+	@BsRuntimeMessage(name = "ifFalse", arity = -1)
 	public BsObject isFalse(BsObject self, BsObject... args) {
 		if (args.length > 0 && !Bs.asBoolean(self)) {
 			return args[0].invoke("call");

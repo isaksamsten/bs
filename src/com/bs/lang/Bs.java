@@ -14,9 +14,17 @@ import static com.bs.lang.BsConst.SyntaxError;
 import static com.bs.lang.BsConst.System;
 import static com.bs.lang.BsConst.True;
 import static com.bs.lang.BsConst.TypeError;
+import static com.bs.lang.BsConst.Nil;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 
 import com.bs.interpreter.BsCompiler;
 import com.bs.interpreter.BsInterpreter;
+import com.bs.interpreter.stack.BsStack;
+import com.bs.interpreter.stack.Stack;
+import com.bs.lang.proto.BsError;
 import com.bs.lang.proto.BsModule;
 import com.bs.parser.tree.Node;
 
@@ -25,8 +33,9 @@ public final class Bs {
 	private static BsObject builtin;
 
 	static {
-		builtin = BsModule.create();
+		builtin = BsModule.create("builtin");
 		builtin.slot(Proto);
+		builtin.slot(Nil);
 		builtin.slot(System);
 
 		/*
@@ -62,8 +71,13 @@ public final class Bs {
 		return obj != null && obj == BsConst.True;
 	}
 
+	/**
+	 * 
+	 * @param bool
+	 * @return
+	 */
 	public static BsObject bool(boolean bool) {
-		return bool ? BsConst.True : BsConst.False;
+		return bool ? True : False;
 	}
 
 	/**
@@ -73,7 +87,7 @@ public final class Bs {
 	 * @return
 	 */
 	public static Number asNumber(BsObject obj) {
-		return obj.instanceOf(BsConst.Number) ? (Number) obj.value() : null;
+		return obj.instanceOf(Number) ? (Number) obj.value() : null;
 	}
 
 	/**
@@ -83,7 +97,7 @@ public final class Bs {
 	 * @return
 	 */
 	public static String asString(BsObject obj) {
-		return obj.instanceOf(BsConst.String) ? (String) obj.value() : null;
+		return obj.instanceOf(String) ? (String) obj.value() : null;
 	}
 
 	/**
@@ -93,25 +107,105 @@ public final class Bs {
 	 * @return
 	 */
 	public static BsObject negate(BsObject invoke) {
-		return asBoolean(invoke) ? BsConst.False : BsConst.True;
+		return asBoolean(invoke) ? False : True;
 	}
 
+	/**
+	 * Return true if obj is Nil
+	 * 
+	 * @param obj
+	 * @return
+	 */
+	public static boolean isNil(BsObject obj) {
+		return obj == null || obj == Nil;
+	}
+
+	/**
+	 * Return the global builtin module
+	 * 
+	 * @return
+	 */
 	public static BsObject builtin() {
 		return builtin;
 	}
 
+	/**
+	 * Compile a string of code in the default stack
+	 * 
+	 * @param code
+	 * @return
+	 */
 	public static BsObject compile(String code) {
 		BsCompiler compiler = new BsCompiler();
 		return compiler.compile(code);
 	}
 
+	/**
+	 * Evaluate a string of code in the default stack
+	 * 
+	 * @param code
+	 * @return
+	 */
 	public static BsObject eval(String code) {
 		BsCompiler compiler = new BsCompiler();
 		return compiler.eval(code);
 	}
 
-	public static BsObject eval(Node node) {
-		BsInterpreter i = new BsInterpreter();
+	/**
+	 * Compile a string of code that will evaluate in stack
+	 * 
+	 * @param code
+	 * @param stack
+	 * @return BsObject that is callable <code>obj.invoke("call")</code>
+	 */
+	public static BsObject compile(String code, Stack stack) {
+		BsCompiler compiler = new BsCompiler();
+		return compiler.compile(code, stack);
+	}
+
+	/**
+	 * Evaluate a Node in the context of stack
+	 * 
+	 * @param node
+	 * @param stack
+	 * @return
+	 */
+	public static BsObject eval(Node node, Stack stack) {
+		BsInterpreter i = new BsInterpreter(stack);
 		return (BsObject) i.visit(node);
 	}
+
+	/**
+	 * Evaluate a file in the context of stack
+	 * 
+	 * @param file
+	 * @param stack
+	 * @return
+	 */
+	public static BsObject eval(File file, Stack stack) {
+		BsCompiler compiler = new BsCompiler();
+		Node node;
+		try {
+			node = compiler.parse(new FileReader(file), stack);
+			if (compiler.hasError()) {
+				return compiler.error();
+			} else {
+				return eval(node, stack);
+			}
+		} catch (FileNotFoundException e) {
+			return BsError.raise(e.getMessage());
+		}
+
+	}
+
+	/**
+	 * Evaluate a node in the default stack
+	 * 
+	 * @param code
+	 * @return
+	 */
+	public static BsObject eval(Node code) {
+		return eval(code, BsStack.getDefault());
+	}
+
 }

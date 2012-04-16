@@ -132,17 +132,9 @@ public class BsObject {
 		}
 	}
 
-	public void message(String name, int arity, BsCode code) {
-		messages.put(name, new BsMessageData(code, arity, name));
-	}
-
-	public BsCode getCode() {
-		if (!instanceOf(BsConst.Block)) {
-			return null;
-		}
-
-		BsCodeData data = value();
-		return new BsMessageProxy(data);
+	public void message(String asString, BsCodeData data) {
+		messages.put(name, new BsMessageData(new BsMessageProxy(data),
+				data.arguments.size(), name));
 	}
 
 	private BsMessage javaMethod(String name) {
@@ -167,7 +159,11 @@ public class BsObject {
 	}
 
 	public BsObject slot(String key) {
-		return instVars.get(key);
+		BsObject obj = instVars.get(key);
+		if (obj == null) {
+			return BsConst.Nil;
+		}
+		return obj;
 	}
 
 	public void slot(String key, BsObject value) {
@@ -187,4 +183,5 @@ public class BsObject {
 		}
 		return (name != null ? name : "anonymous") + "@" + id;
 	}
+
 }

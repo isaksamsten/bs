@@ -3,7 +3,6 @@ package com.bs.lang.proto;
 import com.bs.lang.Bs;
 import com.bs.lang.BsCodeData;
 import com.bs.lang.BsConst;
-import com.bs.lang.BsMessageProxy;
 import com.bs.lang.BsObject;
 import com.bs.lang.annot.BsRuntimeMessage;
 
@@ -76,6 +75,29 @@ public class BsProto extends BsObject {
 		return self.slot(Bs.asString(args[0]));
 	}
 
+	@BsRuntimeMessage(name = "isNil?", arity = 0)
+	public BsObject isNil(BsObject self, BsObject... args) {
+		return BsConst.False;
+	}
+
+	@BsRuntimeMessage(name = "ifNil", arity = 1)
+	public BsObject ifNil(BsObject self, BsObject... args) {
+		if (args[0].instanceOf(BsConst.Block)) {
+			return self;
+		}
+
+		return BsError.typeError("ifNil", args[0], BsConst.Block);
+	}
+
+	@BsRuntimeMessage(name = "ifNonNil", arity = 1)
+	public BsObject ifNonNil(BsObject self, BsObject... args) {
+		if (args[0].instanceOf(BsConst.Block)) {
+			return args[0].invoke("call");
+		}
+
+		return BsError.typeError("ifNonNil", args[0], BsConst.Block);
+	}
+
 	@BsRuntimeMessage(name = "setSlot", arity = 1)
 	public BsObject setSlot(BsObject self, BsObject... args) {
 		if (!args[0].instanceOf(BsConst.String)) {
@@ -84,7 +106,7 @@ public class BsProto extends BsObject {
 		}
 		return self.slot(Bs.asString(args[0]));
 	}
-	
+
 	@BsRuntimeMessage(name = "pass", arity = 0)
 	public BsObject pass(BsObject self, BsObject... args) {
 		return self;
@@ -99,8 +121,7 @@ public class BsProto extends BsObject {
 			return BsError.typeError("<-", args[0].prototype(), BsConst.Block);
 		}
 		BsCodeData data = args[1].value();
-		self.message(Bs.asString(args[0]), data.arguments.size(),
-				new BsMessageProxy(data));
+		self.message(Bs.asString(args[0]), data);
 
 		return self;
 	}

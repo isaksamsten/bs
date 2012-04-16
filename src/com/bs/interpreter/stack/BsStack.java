@@ -2,6 +2,7 @@ package com.bs.interpreter.stack;
 
 import java.util.ArrayList;
 
+import com.bs.lang.Bs;
 import com.bs.lang.BsConst;
 import com.bs.lang.BsObject;
 
@@ -14,9 +15,10 @@ public class BsStack implements Stack {
 	}
 
 	private ArrayList<BsObject> stack = new ArrayList<BsObject>();
+	private BsObject global = Bs.builtin();
 	private int current = -1;
 
-	private BsStack() {
+	public BsStack() {
 	}
 
 	@Override
@@ -45,9 +47,13 @@ public class BsStack implements Stack {
 	@Override
 	public BsObject lookup(String key) {
 		BsObject found = null;
-		for (int i = current; i >= 0 && found == null; i--) {
+		for (int i = current; i >= 0 && Bs.isNil(found); i--) {
 			found = stack.get(i).slot(key);
 		}
+		if (Bs.isNil(found)) {
+			found = global.slot(key);
+		}
+
 		return found;
 	}
 
@@ -61,7 +67,22 @@ public class BsStack implements Stack {
 		}
 
 		return null;
+	}
 
+	@Override
+	public BsObject global() {
+		return global;
+	}
+
+	@Override
+	public BsObject root() {
+		return stack.get(0);
+	}
+
+	@Override
+	public BsObject enterGlobal(String key, BsObject value) {
+		global.slot(key, value);
+		return value;
 	}
 
 }

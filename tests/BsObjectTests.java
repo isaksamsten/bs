@@ -3,7 +3,6 @@ import static org.junit.Assert.assertEquals;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.bs.interpreter.stack.BsStack;
 import com.bs.lang.Bs;
 import com.bs.lang.BsCodeData;
 import com.bs.lang.BsConst;
@@ -15,7 +14,6 @@ public class BsObjectTests {
 
 	@Before
 	public void setUp() {
-		BsStack.getDefault().push(Bs.builtin());
 	}
 
 	@Test
@@ -89,7 +87,7 @@ public class BsObjectTests {
 				Bs.asString(str.invoke("+", BsString.clone(" world"))));
 		assertEquals("Hello", Bs.asString(str));
 	}
-
+	
 	@Test
 	public void testReturn() {
 		BsObject obj = BsConst.Proto.invoke("return",

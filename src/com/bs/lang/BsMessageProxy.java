@@ -1,6 +1,7 @@
 package com.bs.lang;
 
 import com.bs.interpreter.stack.BsStack;
+import com.bs.interpreter.stack.Stack;
 import com.bs.lang.proto.BsError;
 
 public class BsMessageProxy implements BsCode {
@@ -17,9 +18,10 @@ public class BsMessageProxy implements BsCode {
 				self.slot(data.arguments.get(n), args[n]);
 			}
 
-			BsStack.getDefault().push(self);
-			BsObject ret = Bs.eval(data.code);
-			BsStack.getDefault().pop();
+			Stack stack = data.stack;
+			stack.push(self);
+			BsObject ret = Bs.eval(data.code, stack);
+			stack.pop();
 
 			return ret;
 		} else {

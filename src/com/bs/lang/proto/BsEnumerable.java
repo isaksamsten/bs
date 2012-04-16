@@ -23,16 +23,18 @@ public class BsEnumerable extends BsObject {
 			return BsError.typeError("map", args[0], BsConst.Block);
 		}
 
+		BsCodeData map = args[0].value();
 		BsObject list = BsList.create();
 
-		BsObject each = Bs.compile("list << block call e.");
+		BsObject each = Bs.compile("list << block call e.", map.stack);
 		each.slot("list", list);
 		each.slot("block", args[0]);
 		BsCodeData data = each.value();
 		data.arguments.add("e");
+		data.stack = map.stack;
 
 		BsObject ret = self.invoke("each", each);
-		if(ret.isError()) {
+		if (ret.isError()) {
 			return ret;
 		}
 

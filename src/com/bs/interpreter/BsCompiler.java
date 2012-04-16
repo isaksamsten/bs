@@ -4,6 +4,8 @@ import java.io.Reader;
 import java.io.StringReader;
 import java.util.ArrayList;
 
+import com.bs.interpreter.stack.BsStack;
+import com.bs.interpreter.stack.Stack;
 import com.bs.lang.BsConst;
 import com.bs.lang.BsObject;
 import com.bs.lang.proto.BsBlock;
@@ -66,8 +68,8 @@ public class BsCompiler {
 		handler.add(message);
 	}
 
-	public BsObject compile(Reader reader) {
-		Node node = parse(reader);
+	public BsObject compile(Reader reader, Stack stack) {
+		Node node = parse(reader, stack);
 		if (message.hasError()) {
 			return message.error;
 		}
@@ -76,12 +78,24 @@ public class BsCompiler {
 		return code;
 	}
 
+	public BsObject compile(Reader reader) {
+		return compile(reader, BsStack.getDefault());
+	}
+
+	public BsObject compile(String str, Stack stack) {
+		return compile(new StringReader(str), stack);
+	}
+
 	public BsObject compile(String str) {
-		return compile(new StringReader(str));
+		return compile(str, BsStack.getDefault());
 	}
 
 	public BsObject eval(String str) {
-		BsObject compile = compile(str);
+		return eval(str, BsStack.getDefault());
+	}
+
+	public BsObject eval(String str, Stack stack) {
+		BsObject compile = compile(str, stack);
 		if (!compile.instanceOf(BsConst.Error)) {
 			return compile.invoke("call");
 		}
@@ -89,11 +103,19 @@ public class BsCompiler {
 		return message.error;
 	}
 
+	public BsObject error() {
+		return message.error;
+	}
+
+	public boolean hasError() {
+		return message.hasError();
+	}
+
 	/**
 	 * @param reader
 	 * @return
 	 */
-	protected Node parse(Reader reader) {
+	public Node parse(Reader reader, Stack stack) {
 		Scanner scanner = new BsScanner(reader);
 
 		Tokenizer tokenizer = new BsTokenizer(scanner,

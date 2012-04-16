@@ -1,6 +1,5 @@
 package com.bs.lang.proto;
 
-import com.bs.lang.Bs;
 import com.bs.lang.BsConst;
 import com.bs.lang.BsObject;
 import com.bs.lang.annot.BsRuntimeMessage;

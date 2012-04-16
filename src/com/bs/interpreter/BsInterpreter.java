@@ -5,6 +5,8 @@ import java.util.List;
 
 import com.bs.interpreter.stack.BsStack;
 import com.bs.interpreter.stack.Stack;
+import com.bs.lang.Bs;
+import com.bs.lang.BsCodeData;
 import com.bs.lang.BsConst;
 import com.bs.lang.BsObject;
 import com.bs.lang.proto.BsBlock;
@@ -51,8 +53,8 @@ public class BsInterpreter implements Interpreter {
 	@Override
 	public Object visitVariable(IdentifierNode node) {
 		if (node.state() == State.LOAD) {
-			Object value = stack.lookup(node.variable());
-			if (value == null) {
+			BsObject value = stack.lookup(node.variable());
+			if (Bs.isNil(value)) {
 				return BsError.nameError(node.variable());
 			} else {
 				return value;
@@ -140,6 +142,9 @@ public class BsInterpreter implements Interpreter {
 			args = new ArrayList<String>();
 		}
 		BsObject block = BsBlock.create(args, blockNode.statements());
+		BsCodeData data = block.value();
+		data.stack = stack;
+
 		return block;
 	}
 

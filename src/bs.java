@@ -6,6 +6,8 @@ import com.bs.interpreter.stack.BsStack;
 import com.bs.interpreter.stack.Stack;
 import com.bs.lang.Bs;
 import com.bs.lang.BsObject;
+import com.bs.lang.proto.BsModule;
+import com.bs.lang.proto.BsString;
 import com.bs.parser.StatementsParser;
 import com.bs.parser.source.BsScanner;
 import com.bs.parser.source.BsTokenizer;
@@ -51,43 +53,47 @@ public class bs {
 			}
 		});
 
-		BsObject module = Bs.builtin();
-
+		BsObject module = BsModule.create("<stdin>");
 		Stack stack = BsStack.getDefault();
 		stack.push(module);
 
+		/* @formatter:off */
 		Scanner sc = new BsScanner(
 				new StringReader(
-						"x := 30--40." +
-						"x := x map { | d | " +
-						"	d * 10. " +
-						"}." +
-						"System puts x." +
-						"System puts [1,2,3] map { | d |" +
-						"	d * 10." +
-						"}." +
-						"(1--10) each { | y |" +
-						"   System puts y." +
-						"	b := x each { | z |" +
-						"		System puts z." +
-						"		Proto return y." +
-						"   }." +
-						"  	Proto return b." +
-						"}." +
-						"x := True." +
-						"{x.} whileTrue {" +
-						"	System puts \"While true\"." +
-						"  	Proto return()." +
-						"}." +
-						"e := Proto try { " +
-						"	[10, 10 + 10] each {| x | " +
-						"   	System puts xy * 10." +
-						"   }." +
-						"}. " +
-						"e catch \"NameError\", { | e |" +
-						"  	System puts \"Caught NameError: \" + e getMessage()." +
-						"}." +
-						"e pass()."));
+						"a := Module load \"test.bs\"." +
+						"System puts a getSlot \"b\"."
+								+ "x := 30--40."
+								+ "x := x map { | d | "
+								+ "	Proto return d * 10."
+								+ "	20 * d. "
+								+ "}."
+								+ "System puts x."
+								+ "System puts [1,2,3] map { | d |"
+								+ "	d * 10."
+								+ "}."
+								+ "(1--10) each { | y |"
+								+ "   System puts y."
+								+ "	b := x each { | z |"
+								+ "		System puts z."
+								+ "		Proto return y."
+								+ "   }."
+								+ "  	Proto return b."
+								+ "}."
+								+ "x := True."
+								+ "{x.} whileTrue {"
+								+ "		System puts \"While true\"."
+								+ "  	Proto return(False)."
+								+ "}."
+								+ "e := Proto try { "
+								+ "	[10, 10 + 10] each {| x | "
+								+ "   	System puts xy * 10."
+								+ "   }."
+								+ "}. "
+								+ "e catch \"NameError\", { | e |"
+								+ "  	System puts \"Caught NameError: \" + e getMessage()."
+								+ "}." + "e pass()." + "System puts 210."));
+
+		/* @formatter:on */
 		Tokenizer tz = new BsTokenizer(sc, new DefaultTokenFactory(), handler,
 				'#');
 		StatementsParser parser = new StatementsParser(tz,
@@ -96,7 +102,7 @@ public class bs {
 		Node n = parser.parse();
 		Interpreter interpreter = new BsInterpreter(stack);
 		BsObject value = (BsObject) interpreter.visit(n);
-		System.out.println("===================\n" +
-				"Last evalualted expression result: " + value);
+		System.out.println("===================\n"
+				+ "Last evalualted expression result: " + value);
 	}
 }

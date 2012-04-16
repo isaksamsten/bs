@@ -1,0 +1,8 @@
+System puts "In test.bs".
+[1,2,3] each { | x |
+	System puts x.
+}.
+
+b := 1.
+c := 2.
+System puts "end test.bs".
