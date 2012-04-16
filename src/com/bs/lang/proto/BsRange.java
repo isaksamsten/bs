@@ -38,6 +38,9 @@ public class BsRange extends BsObject {
 
 		for (int n = min; n < max; n++) {
 			value = args[0].invoke("call", BsNumber.clone(n));
+			if(value.isBreak()) {
+				return value;
+			}
 		}
 
 		return value;

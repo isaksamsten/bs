@@ -57,7 +57,7 @@ public class BsBlock extends BsObject {
 			}
 
 			BsStack.getDefault().push(self);
-			BsObject ret = Bs.eval(data.code);
+			BsObject ret = Bs.blockEval(data.code);
 			BsStack.getDefault().pop();
 
 			return ret;

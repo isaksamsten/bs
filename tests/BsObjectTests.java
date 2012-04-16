@@ -98,7 +98,7 @@ public class BsObjectTests {
 
 		obj = Bs.eval("10. Proto return 30. 20.");
 		assertEquals(30, Bs.asNumber(obj));
-		assertEquals(false, obj.isReturn() && obj.isBreak());
+		assertEquals(true, obj.isReturn() && obj.isBreak());
 	}
 
 	@Test

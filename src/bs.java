@@ -59,12 +59,14 @@ public class bs {
 		Scanner sc = new BsScanner(
 				new StringReader(
 						"x := 1--10." +
-						"(1--10) each { | y |" +
+						"System puts((1--10) each { | y |" +
+						"   System puts y." +
+						"	Proto return y." +
 						"	x each { | z |" +
 						"		System puts y + z." +
 						"   }." +
 						"  	System puts y." +
-						"}." +
+						"})." +
 						"x := True." +
 						"{x.} whileTrue {" +
 						"	System puts \"While true\"." +

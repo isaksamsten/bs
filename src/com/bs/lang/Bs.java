@@ -1,5 +1,6 @@
 package com.bs.lang;
 
+import com.bs.interpreter.BsBlockInterpreter;
 import com.bs.interpreter.BsCompiler;
 import com.bs.interpreter.BsInterpreter;
 import com.bs.lang.proto.BsModule;
@@ -99,6 +100,11 @@ public final class Bs {
 
 	public static BsObject eval(Node node) {
 		BsInterpreter i = new BsInterpreter();
+		return (BsObject) i.visit(node);
+	}
+
+	public static BsObject blockEval(Node node) {
+		BsBlockInterpreter i = new BsBlockInterpreter();
 		return (BsObject) i.visit(node);
 	}
 
