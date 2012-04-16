@@ -60,34 +60,34 @@ public class bs {
 				new StringReader(
 						"x := 1--10." +
 						"(1--10) each { | y |" +
-						"  System puts y." +
+						"	x each { | z |" +
+						"		System puts y + z." +
+						"   }." +
+						"  	System puts y." +
 						"}." +
 						"x := True." +
 						"{x.} whileTrue {" +
-						"  System puts \"While true\"." +
-						"  x := False." +
+						"	System puts \"While true\"." +
+						"  	x := False." +
 						"}." +
-						"left := Proto try { [10, 10 + 10] each {| x | " +
-						"     System puts xy * 10." +
-						"  }." +
+						"e := Proto try { " +
+						"	[10, 10 + 10] each {| x | " +
+						"   	System puts xy * 10." +
+						"   }." +
 						"}. " +
-						"left catch \"NameError\", { | e |" +
-						"  System puts \"Caught NameError: \" + e getMessage()." +
-						"}."));
+						"e catch \"NameError\", { | e |" +
+						"  	System puts \"Caught NameError: \" + e getMessage()." +
+						"}." +
+						"e pass()."));
 		Tokenizer tz = new BsTokenizer(sc, new DefaultTokenFactory(), handler,
 				'#');
 		StatementsParser parser = new StatementsParser(tz,
 				new DefaultNodeFactory(), handler);
 
 		Node n = parser.parse();
-		System.out.println(n.toTree());
-
 		Interpreter interpreter = new BsInterpreter(stack);
 		BsObject value = (BsObject) interpreter.visit(n);
-
-		System.out.println(value.isError() + " ->" + value);
-
-		System.out.println(module.slot("right"));
-		System.out.println(module.slot("left"));
+		System.out.println("===================\n" +
+				"Last evalualted expression result: " + value);
 	}
 }
