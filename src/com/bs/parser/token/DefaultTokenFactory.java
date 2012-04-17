@@ -11,9 +11,13 @@ public class DefaultTokenFactory implements TokenFactory {
 	public Token number(String value, int line, int position) {
 		Number number = null;
 		try {
-			number = Long.parseLong(value);
+			number = Integer.parseInt(value);
 		} catch (NumberFormatException e) {
-			number = Double.parseDouble(value);
+			try {
+				number = Long.parseLong(value);
+			} catch (NumberFormatException e2) {
+				number = Double.parseDouble(value);
+			}
 		}
 
 		return new Token(value, number, TokenType.NUMBER, line, position);

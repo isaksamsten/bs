@@ -61,7 +61,7 @@ public class bs {
 		Scanner sc = new BsScanner(
 				new StringReader(
 						"a := Module load \"test.bs\"." +
-						"pp := a ->(:person) ->(:Person) clone()." +
+						"pp := a -> :person, 10; -> :Person; clone()." +
 						"pp setName \"isak\"." +
 						"System puts pp getName()."
 								+ "System puts a."
@@ -90,7 +90,7 @@ public class bs {
 								+ "}."
 								+ "e := Proto try { "
 								+ "	[10, 10 + 10] each {| x | "
-								+ "   	System puts xy * 10."
+								+ "   	System puts x * 10; * 20."
 								+ "   }."
 								+ "}. "
 								+ "e catch :NameError, { | e |"

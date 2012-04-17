@@ -14,7 +14,7 @@ public enum TokenType {
 	/*
 	 * Delimiter
 	 */
-	COMMA(","),
+	COMMA(","), SEMI_COLON(";"),
 
 	/*
 	 * Block

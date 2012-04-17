@@ -53,6 +53,13 @@ public class MessageParser extends BsParser<MessageNode> {
 			ExpressionsNode expressions = parser.parse(next);
 			if (expressions != null) {
 				node.expressions(expressions);
+				
+				/*
+				 * Handle breaking when dealing with parenthesis less calls
+				 */
+				if(tokenizer().current().type() == TokenType.SEMI_COLON) {
+					tokenizer().next();
+				}
 			} else {
 				messageHandler().error(tokenizer().current(),
 						MessageType.SYNTAX_ERROR, Message.UNEXPECTED_MESSAGE,

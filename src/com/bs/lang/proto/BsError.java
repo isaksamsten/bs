@@ -39,8 +39,8 @@ public class BsError extends BsObject {
 	public static BsObject typeError(BsObject self, String method, int got,
 			int expected) {
 		return raise(BsConst.TypeError,
-				"%s %s() takes %d arguments (%d given)", self.name(), method,
-				expected, got);
+				"%s %s() takes %d arguments (%d given)", self.prototype()
+						.name(), method, expected, got);
 	}
 
 	public static final String IGNORE = "ignore";

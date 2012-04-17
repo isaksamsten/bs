@@ -6,6 +6,7 @@ import java.util.ArrayList;
 
 import com.bs.interpreter.stack.BsStack;
 import com.bs.interpreter.stack.Stack;
+import com.bs.lang.BsCodeData;
 import com.bs.lang.BsConst;
 import com.bs.lang.BsObject;
 import com.bs.lang.proto.BsBlock;
@@ -75,6 +76,8 @@ public class BsCompiler {
 		}
 
 		BsObject code = BsBlock.create(new ArrayList<String>(), node);
+		BsCodeData data = code.value();
+		data.stack = stack;
 		return code;
 	}
 

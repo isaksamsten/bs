@@ -20,7 +20,7 @@ public class BsSymbol extends BsObject {
 	 * @param value
 	 * @return
 	 */
-	public static Object get(String value) {
+	public static BsObject get(String value) {
 		BsObject obj = symbols.get(value);
 		if (obj != null) {
 			return obj;

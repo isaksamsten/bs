@@ -9,6 +9,8 @@ import com.bs.lang.BsConst;
 import com.bs.lang.BsObject;
 import com.bs.lang.proto.BsNumber;
 import com.bs.lang.proto.BsString;
+import com.bs.lang.proto.BsSymbol;
+import com.bs.lang.proto.BsSystem;
 
 public class BsObjectTests {
 
@@ -57,8 +59,8 @@ public class BsObjectTests {
 		BsCodeData data = block.value();
 		data.arguments.add("self"); // a method always take one arg
 
-		BsConst.Proto.invoke("<-", BsString.clone("test2"), block);
-		obj.invoke("<-", BsString.clone("test"), block);
+		BsConst.Proto.invoke("<<=", BsSymbol.get("test2"), block);
+		obj.invoke("<<=", BsSymbol.get("test"), block);
 
 		obj = obj.invoke("test");
 		assertEquals(10, Bs.asNumber(obj));
@@ -71,6 +73,30 @@ public class BsObjectTests {
 
 		obj = BsConst.Proto.invoke("test");
 		assertEquals(true, obj.instanceOf(BsConst.NameError));
+	}
+
+	@Test
+	public void testSyntax() {
+		BsObject obj = Bs.eval("10");
+		assertEquals(true, obj.instanceOf(BsConst.SyntaxError));
+
+		obj = Bs.eval("10 + 10");
+		assertEquals(true, obj.instanceOf(BsConst.SyntaxError));
+		
+		obj = Bs.eval("10 +(10.");
+		assertEquals(true, obj.instanceOf(BsConst.SyntaxError));
+		
+		obj = Bs.eval("10 := 10.");
+		assertEquals(true, obj.instanceOf(BsConst.SyntaxError));
+		
+		obj = Bs.eval("10 + 10; * 20.");
+		assertEquals(400, Bs.asNumber(obj));
+		
+		obj = Bs.eval("10 +(10) *(20).");
+		assertEquals(400, Bs.asNumber(obj));
+		
+		obj = Bs.eval("10 + 10 * 20.");
+		assertEquals(210, Bs.asNumber(obj));
 	}
 
 	@Test
@@ -87,7 +113,7 @@ public class BsObjectTests {
 				Bs.asString(str.invoke("+", BsString.clone(" world"))));
 		assertEquals("Hello", Bs.asString(str));
 	}
-	
+
 	@Test
 	public void testReturn() {
 		BsObject obj = BsConst.Proto.invoke("return",
@@ -98,7 +124,7 @@ public class BsObjectTests {
 		assertEquals(true, obj.instanceOf(BsConst.Block));
 		assertEquals(30, Bs.asNumber(obj.invoke("call")));
 		assertEquals(true, Bs.asBoolean(obj.invoke("hasReturned")));
-		
+
 		obj = Bs.eval("10. Proto return 30. 20.");
 		assertEquals(30, Bs.asNumber(obj));
 	}

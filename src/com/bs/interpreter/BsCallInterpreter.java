@@ -20,6 +20,9 @@ public class BsCallInterpreter extends BsInterpreter {
 	public Object visitMessages(MessagesNode node) {
 		for (Node n : node.childrens()) {
 			receiver = (BsObject) visit(n);
+			if(receiver.isBreak()) {
+				return receiver;
+			}
 		}
 
 		return receiver;
