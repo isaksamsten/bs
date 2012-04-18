@@ -1,0 +1,46 @@
+a := Module load "test.bs".
+person := Module load "Person.bs".
+pp := person -> :Person; clone().
+pp setName "isak".
+System puts pp getName().
+System puts a.
+System puts a -> :b.
+x := 30--40.
+x := x map { | d | 
+	Proto return d * 10.
+	20 * d.
+}.
+
+System puts x; x.
+System puts [1,2,3] map { | d |
+	d * 10.
+}.
+
+(1--10) each { | y |
+   System puts y.
+   b := x each { | z |
+		System puts z.
+		Proto return y.
+   }.
+   
+   Proto return b.
+}.
+
+x := True.
+{x.} whileTrue {
+	System puts "While true".
+ 	Proto return(False).
+}.
+
+e := Proto try {
+	[10, 10 + 10] each {| x | 
+ 	 	System puts x * 10; * 20.
+    }.
+}.
+
+e catch :NameError, { | e |
+  	System puts "Caught NameError: " + e getMessage().
+}.
+
+e pass(). 
+System puts 210.

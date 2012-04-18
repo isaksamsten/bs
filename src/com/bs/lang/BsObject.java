@@ -30,7 +30,7 @@ public class BsObject {
 	private Object value;
 
 	private Map<String, BsMessageData> messages = new HashMap<String, BsMessageData>();
-	private Map<String, BsObject> instVars = new HashMap<String, BsObject>();
+	private Map<String, BsObject> slots = new HashMap<String, BsObject>();
 
 	private Class<?> klass;
 
@@ -163,7 +163,7 @@ public class BsObject {
 	}
 
 	public BsObject slot(String key) {
-		BsObject obj = instVars.get(key);
+		BsObject obj = slots.get(key);
 		if (obj == null) {
 			return BsConst.Nil;
 		}
@@ -171,12 +171,12 @@ public class BsObject {
 	}
 
 	public void slot(String key, BsObject value) {
-		instVars.put(key, value);
+		slots.put(key, value);
 	}
 
 	public void slot(BsObject value) {
 		if (value.name() != null)
-			instVars.put(value.name(), value);
+			slots.put(value.name(), value);
 	}
 
 	@Override
@@ -186,6 +186,10 @@ public class BsObject {
 			return (String) str.value();
 		}
 		return (name != null ? name : "anonymous") + "@" + id;
+	}
+
+	public boolean hasSlot(String key) {
+		return slots.containsKey(key);
 	}
 
 }

@@ -1,3 +1,6 @@
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.StringReader;
 
 import com.bs.interpreter.BsInterpreter;
@@ -7,7 +10,6 @@ import com.bs.interpreter.stack.Stack;
 import com.bs.lang.Bs;
 import com.bs.lang.BsObject;
 import com.bs.lang.proto.BsModule;
-import com.bs.lang.proto.BsString;
 import com.bs.parser.StatementsParser;
 import com.bs.parser.source.BsScanner;
 import com.bs.parser.source.BsTokenizer;
@@ -16,86 +18,21 @@ import com.bs.parser.source.Tokenizer;
 import com.bs.parser.token.DefaultTokenFactory;
 import com.bs.parser.tree.DefaultNodeFactory;
 import com.bs.parser.tree.Node;
-import com.bs.util.Message;
 import com.bs.util.MessageHandler;
-import com.bs.util.MessageListener;
+import com.bs.util.PrintStreamMessageListener;
 
 public class bs {
 
-	public static void main(String[] args) {
+	public static void main(String[] args) throws FileNotFoundException {
 		MessageHandler handler = new MessageHandler();
-		handler.add(new MessageListener() {
-
-			@Override
-			public void fatal(Throwable t) {
-				System.out.println(t.getMessage());
-				System.exit(-1);
-			}
-
-			@Override
-			public void fatal(Message message) {
-				System.out.format(message + "\n", message.args());
-				System.exit(-1);
-			}
-
-			@Override
-			public void error(Message message) {
-				System.out.format("   File \"%s\", line %d\n", "<stdin>",
-						message.line());
-				System.out.println("     " + message.currentLine());
-				for (int n = 0; n < message.position() + 4; n++) {
-					System.out.print(" ");
-				}
-				System.out.println("^");
-				System.out.format(
-						message.type().toString() + ": " + message.message()
-								+ "\n\n", message.args());
-			}
-		});
+		handler.add(new PrintStreamMessageListener(System.out));
 
 		BsObject module = BsModule.create("<stdin>");
 		Stack stack = BsStack.getDefault();
 		stack.push(module);
 
 		/* @formatter:off */
-		Scanner sc = new BsScanner(
-				new StringReader(
-						"a := Module load \"test.bs\"." +
-						"pp := a -> :person, 10; -> :Person; clone()." +
-						"pp setName \"isak\"." +
-						"System puts pp getName()."
-								+ "System puts a."
-								+ "System puts a -> :b."
-								+ "x := 30--40."
-								+ "x := x map { | d | "
-								+ "	Proto return d * 10."
-								+ "	20 * d. "
-								+ "}."
-								+ "System puts x."
-								+ "System puts [1,2,3] map { | d |"
-								+ "	d * 10."
-								+ "}."
-								+ "(1--10) each { | y |"
-								+ "   System puts y."
-								+ "	b := x each { | z |"
-								+ "		System puts z."
-								+ "		Proto return y."
-								+ "   }."
-								+ "  	Proto return b."
-								+ "}."
-								+ "x := True."
-								+ "{x.} whileTrue {"
-								+ "		System puts \"While true\"."
-								+ "  	Proto return(False)."
-								+ "}."
-								+ "e := Proto try { "
-								+ "	[10, 10 + 10] each {| x | "
-								+ "   	System puts x * 10; * 20."
-								+ "   }."
-								+ "}. "
-								+ "e catch :NameError, { | e |"
-								+ "  	System puts \"Caught NameError: \" + e getMessage()."
-								+ "}." + "e pass()." + "System puts 210."));
+		Scanner sc = new BsScanner(new FileReader(new File("Main.bs")));
 
 		/* @formatter:on */
 		Tokenizer tz = new BsTokenizer(sc, new DefaultTokenFactory(), handler,
@@ -103,10 +40,13 @@ public class bs {
 		StatementsParser parser = new StatementsParser(tz,
 				new DefaultNodeFactory(), handler);
 
-		Node n = parser.parse();
-		Interpreter interpreter = new BsInterpreter(stack);
-		BsObject value = (BsObject) interpreter.visit(n);
-		System.out.println("===================\n"
-				+ "Last evalualted expression result: " + value);
+		Node code = parser.parse();
+
+		if (handler.errors() == 0) {
+			BsObject value = Bs.eval(code, BsStack.getDefault());
+			if (value.isError()) {
+				System.out.println("Traceback (most recent call first):\n  " + value);
+			}
+		}
 	}
 }

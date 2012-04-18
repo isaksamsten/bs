@@ -59,14 +59,25 @@ public class BsStack implements Stack {
 
 	@Override
 	public BsObject enter(String key, BsObject value) {
-		for (int i = current; i >= 0; i--) {
-			if (!stack.get(i).instanceOf(BsConst.Block)) {
-				stack.get(i).slot(key, value);
-				return value;
-			}
+		int idx = foundAt(key);
+		BsObject c = null;
+		if (idx > 0) {
+			c = stack.get(idx);
+		} else {
+			c = local();
 		}
 
-		return null;
+		c.slot(key, value);
+		return value;
+	}
+
+	protected int foundAt(String key) {
+		for (int i = current; i >= 0; i--) {
+			if (stack.get(i).hasSlot(key)) {
+				return i;
+			}
+		}
+		return -1;
 	}
 
 	@Override
