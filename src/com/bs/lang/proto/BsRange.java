@@ -24,6 +24,7 @@ public class BsRange extends BsObject {
 
 	public BsRange() {
 		super(BsConst.Enumerable, "Range", BsRange.class);
+		initRuntimeMethods();
 	}
 
 	@BsRuntimeMessage(name = "each", arity = 1)

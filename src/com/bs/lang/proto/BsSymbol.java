@@ -12,10 +12,11 @@ public class BsSymbol extends BsObject {
 
 	public BsSymbol() {
 		super(BsConst.Proto, "Symbol", BsSymbol.class);
+		initRuntimeMethods();
 	}
 
 	/**
-	 * Get a static instance of a symbol 
+	 * Get a static instance of a symbol
 	 * 
 	 * @param value
 	 * @return

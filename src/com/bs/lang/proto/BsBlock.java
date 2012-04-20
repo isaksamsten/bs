@@ -25,6 +25,7 @@ public class BsBlock extends BsObject {
 
 	public BsBlock() {
 		super(BsConst.Proto, "Block", BsBlock.class);
+		initRuntimeMethods();
 	}
 
 	public BsBlock(Class<?> c) {

@@ -13,6 +13,7 @@ public class BsString extends BsObject {
 
 	public BsString() {
 		super(BsConst.Proto, "String", BsString.class);
+		initRuntimeMethods();
 	}
 
 	@BsRuntimeMessage(name = "length", arity = 0)

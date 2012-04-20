@@ -13,6 +13,7 @@ public class BsList extends BsObject {
 
 	public BsList() {
 		super(BsConst.Enumerable, "List", BsList.class);
+		initRuntimeMethods();
 	}
 
 	@BsRuntimeMessage(name = "each", arity = 1)

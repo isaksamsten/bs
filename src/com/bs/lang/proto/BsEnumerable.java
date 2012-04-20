@@ -10,6 +10,7 @@ public class BsEnumerable extends BsObject {
 
 	public BsEnumerable() {
 		super(BsConst.Proto, "Enumerable", BsEnumerable.class);
+		initRuntimeMethods();
 	}
 
 	@BsRuntimeMessage(name = "each", arity = 1)

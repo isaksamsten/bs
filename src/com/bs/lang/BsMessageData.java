@@ -11,4 +11,8 @@ class BsMessageData {
 		this.name = name;
 	}
 
+	public BsMessage getMessage(BsObject binder) {
+		return code.getMessage(name, arity, binder);
+	}
+
 }

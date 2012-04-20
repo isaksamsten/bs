@@ -7,5 +7,6 @@ public class BsFalse extends BsObject {
 
 	public BsFalse() {
 		super(BsConst.Bool, "False", BsFalse.class);
+		initRuntimeMethods();
 	}
 }

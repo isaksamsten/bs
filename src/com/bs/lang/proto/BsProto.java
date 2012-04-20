@@ -12,6 +12,7 @@ public class BsProto extends BsObject {
 
 	public BsProto() {
 		super(null, "Proto", BsProto.class);
+		initRuntimeMethods();
 	}
 
 	@BsRuntimeMessage(name = "toString", arity = 0)
@@ -33,6 +34,15 @@ public class BsProto extends BsObject {
 		}
 
 		return ret;
+	}
+
+	@BsRuntimeMessage(name = "<=>", arity = 1)
+	public BsObject compareTo(BsObject self, BsObject... args) {
+		if (self.equals(args[0])) {
+			return BsNumber.clone(0);
+		}
+
+		return BsNumber.clone(-1);
 	}
 
 	@BsRuntimeMessage(name = "=", arity = 1)

@@ -10,4 +10,6 @@ public interface BsCode {
 	 */
 	BsObject execute(BsObject self, BsObject... args);
 
+	BsMessage getMessage(String name, int arity, BsObject binder);
+
 }

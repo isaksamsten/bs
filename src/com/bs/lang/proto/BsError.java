@@ -59,6 +59,7 @@ public class BsError extends BsObject {
 
 	public BsError() {
 		super(BsConst.Proto, "Error", BsError.class);
+		initRuntimeMethods();
 	}
 
 	@BsRuntimeMessage(name = "toString", arity = 0)

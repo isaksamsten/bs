@@ -7,5 +7,6 @@ public class BsTrue extends BsObject {
 
 	public BsTrue() {
 		super(BsConst.Bool, "True", BsTrue.class);
+		initRuntimeMethods();
 	}
 }

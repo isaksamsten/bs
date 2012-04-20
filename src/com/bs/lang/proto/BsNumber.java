@@ -13,6 +13,7 @@ public class BsNumber extends BsObject {
 
 	public BsNumber() {
 		super(BsConst.Proto, "Number", BsNumber.class);
+		initRuntimeMethods();
 	}
 
 	@BsRuntimeMessage(name = "+", arity = 1)

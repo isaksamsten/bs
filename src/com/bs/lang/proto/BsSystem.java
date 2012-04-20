@@ -8,6 +8,7 @@ public class BsSystem extends BsObject {
 
 	public BsSystem() {
 		super(BsConst.Proto, "System", BsSystem.class);
+		initRuntimeMethods();
 	}
 
 	@BsRuntimeMessage(name = "puts", arity = -1)

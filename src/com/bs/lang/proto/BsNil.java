@@ -8,6 +8,7 @@ public class BsNil extends BsObject {
 
 	public BsNil() {
 		super(BsConst.Proto, "Nil", BsNil.class);
+		initRuntimeMethods();
 	}
 
 	@BsRuntimeMessage(name = "toString", arity = 0)

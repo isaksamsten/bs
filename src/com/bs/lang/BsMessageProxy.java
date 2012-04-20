@@ -29,4 +29,9 @@ public class BsMessageProxy implements BsCode {
 		}
 	}
 
+	@Override
+	public BsMessage getMessage(String name, int arity, BsObject binder) {
+		return new BsBoundMessage(name, arity, this, binder);
+	}
+
 }

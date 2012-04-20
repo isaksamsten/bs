@@ -23,4 +23,9 @@ public class BsJavaProxy implements BsCode {
 			return BsError.raise("Invalid java method invokation... Fail!!!");
 		}
 	}
+
+	@Override
+	public BsMessage getMessage(String name, int arity, BsObject binder) {
+		return new BsMessage(name, arity, this);
+	}
 }

@@ -22,6 +22,7 @@ public class BsModule extends BsObject {
 
 	public BsModule() {
 		super(BsConst.Proto, "Module", BsModule.class);
+		initRuntimeMethods();
 	}
 
 	@BsRuntimeMessage(name = "toString", arity = 0)

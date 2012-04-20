@@ -52,6 +52,24 @@ public class BsObject {
 		id = ID++;
 	}
 
+	protected void initRuntimeMethods() {
+
+		Method[] methods = klass.getMethods();
+		for (Method m : methods) {
+			BsRuntimeMessage brm = m.getAnnotation(BsRuntimeMessage.class);
+			if (brm != null) {
+				BsJavaProxy proxy = new BsJavaProxy(this, m);
+
+				messages.put(brm.name(), new BsMessageData(proxy, brm.arity(),
+						brm.name()));
+				for (String alias : brm.aliases()) {
+					messages.put(alias,
+							new BsMessageData(proxy, brm.arity(), alias));
+				}
+			}
+		}
+	}
+
 	public long id() {
 		return id;
 	}
@@ -116,15 +134,13 @@ public class BsObject {
 	}
 
 	public BsMessage message(String name) {
-		BsMessage msg = null;
 		BsMessageData data = messages.get(name);
 		if (data != null) {
-			msg = new BsBoundMessage(data.name, data.arity, data.code, this);
-			return msg;
+			return data.getMessage(this);
 		}
-		if ((msg = javaMethod(name)) != null) {
-			return msg;
-		}
+		// if ((msg = javaMethod(name)) != null) {
+		// return msg;
+		// }
 
 		if (prototype != null) {
 			return prototype.message(name);

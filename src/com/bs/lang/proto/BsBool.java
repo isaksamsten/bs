@@ -9,6 +9,7 @@ public class BsBool extends BsObject {
 
 	public BsBool() {
 		super(BsConst.Proto, "Bool", BsBool.class);
+		initRuntimeMethods();
 	}
 
 	@BsRuntimeMessage(name = "ifTrue", arity = -1)
