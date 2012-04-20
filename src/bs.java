@@ -20,7 +20,7 @@ import com.bs.util.PrintStreamMessageListener;
 public class bs {
 
 	public static void main(String[] args) throws FileNotFoundException {
-		args = new String[] { "Person.bs" };
+//		args = new String[] { "Person.bs" };
 		MessageHandler handler = new MessageHandler();
 		handler.add(new PrintStreamMessageListener(System.out));
 
