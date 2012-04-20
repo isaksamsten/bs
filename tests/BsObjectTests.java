@@ -105,6 +105,16 @@ public class BsObjectTests {
 		assertEquals(true,
 				Bs.asBoolean(BsConst.Proto.invoke("=", BsConst.Proto)));
 	}
+	
+	@Test
+	public void testBoolean() {
+		assertEquals(BsConst.True, Bs.eval("True & True."));
+		assertEquals(BsConst.True, Bs.eval("True /\\ True."));
+		assertEquals(BsConst.True, Bs.eval("True /\\ False."));
+		assertEquals(BsConst.True, Bs.eval("True /\\ False."));
+		assertEquals(BsConst.False, Bs.eval("True & False."));
+		assertEquals(BsConst.False, Bs.eval("False & False."));
+	}
 
 	@Test
 	public void testString() {
@@ -120,6 +130,14 @@ public class BsObjectTests {
 		BsObject obj = BsConst.Proto.invoke("return",
 				BsString.clone("Hello world"));
 		assertEquals(true, obj.isReturn() && obj.isBreak());
+
+		obj = Bs.eval("Proto clone()");
+		BsObject method = Bs.compile("Proto return 10.");
+		BsCodeData data = method.value();
+		data.arguments.add("self");
+		obj.invoke("<<=", BsSymbol.get("getTen"), method);
+
+		assertEquals(10, Bs.asNumber(obj.invoke("getTen")));
 
 		obj = Bs.compile("10. Proto return 30. 20.");
 		assertEquals(true, obj.instanceOf(BsConst.Block));

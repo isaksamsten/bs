@@ -1,10 +1,6 @@
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
-import java.io.StringReader;
-
-import com.bs.interpreter.BsInterpreter;
-import com.bs.interpreter.Interpreter;
 import com.bs.interpreter.stack.BsStack;
 import com.bs.interpreter.stack.Stack;
 import com.bs.lang.Bs;
@@ -24,6 +20,7 @@ import com.bs.util.PrintStreamMessageListener;
 public class bs {
 
 	public static void main(String[] args) throws FileNotFoundException {
+		args = new String[] { "Person.bs" };
 		MessageHandler handler = new MessageHandler();
 		handler.add(new PrintStreamMessageListener(System.out));
 

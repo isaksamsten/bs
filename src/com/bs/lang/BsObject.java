@@ -1,7 +1,6 @@
 package com.bs.lang;
 
 import java.lang.reflect.Method;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -63,8 +62,8 @@ public class BsObject {
 				messages.put(brm.name(), new BsMessageData(proxy, brm.arity(),
 						brm.name()));
 				for (String alias : brm.aliases()) {
-					messages.put(alias,
-							new BsMessageData(proxy, brm.arity(), alias));
+					messages.put(alias, new BsMessageData(proxy, brm.arity(),
+							alias));
 				}
 			}
 		}
@@ -138,9 +137,6 @@ public class BsObject {
 		if (data != null) {
 			return data.getMessage(this);
 		}
-		// if ((msg = javaMethod(name)) != null) {
-		// return msg;
-		// }
 
 		if (prototype != null) {
 			return prototype.message(name);
@@ -152,21 +148,6 @@ public class BsObject {
 	public void message(String name, BsCodeData data) {
 		messages.put(name, new BsMessageData(new BsMessageProxy(data),
 				data.arguments.size(), name));
-	}
-
-	private BsMessage javaMethod(String name) {
-		Method[] methods = klass.getMethods();
-		for (Method m : methods) {
-			BsRuntimeMessage brm = m.getAnnotation(BsRuntimeMessage.class);
-			if (brm != null
-					&& (brm.name().equals(name) || Arrays.binarySearch(
-							brm.aliases(), name) >= 0)) {
-
-				return new BsMessage(name, brm.arity(),
-						new BsJavaProxy(this, m));
-			}
-		}
-		return null;
 	}
 
 	public BsObject invoke(String message, BsObject... args) {

@@ -3,7 +3,6 @@ package com.bs.interpreter.stack;
 import java.util.ArrayList;
 
 import com.bs.lang.Bs;
-import com.bs.lang.BsConst;
 import com.bs.lang.BsObject;
 
 public class BsStack implements Stack {

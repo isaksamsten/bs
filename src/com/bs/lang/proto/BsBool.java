@@ -34,14 +34,24 @@ public class BsBool extends BsObject {
 		}
 	}
 
-	@BsRuntimeMessage(name = "negate", arity = -1)
+	@BsRuntimeMessage(name = "and", arity = 1, aliases = { "&" })
+	public BsObject and(BsObject self, BsObject... args) {
+		return Bs.bool(Bs.asBoolean(self) && Bs.asBoolean(args[0]));
+	}
+
+	@BsRuntimeMessage(name = "or", arity = 1, aliases = { "/\\" })
+	public BsObject or(BsObject self, BsObject... args) {
+		return Bs.bool(Bs.asBoolean(self) || Bs.asBoolean(args[0]));
+	}
+
+	@BsRuntimeMessage(name = "negate", arity = 0)
 	public BsObject negate(BsObject self, BsObject... args) {
 		return Bs.negate(self);
 	}
 
 	@BsRuntimeMessage(name = "clone", arity = 0)
 	public BsObject clone(BsObject self, BsObject... args) {
-		return BsError.raise("Cant clone");
+		return BsError.raise("Can't clone");
 	}
 
 }

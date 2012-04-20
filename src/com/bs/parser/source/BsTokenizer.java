@@ -172,6 +172,8 @@ public class BsTokenizer implements Tokenizer {
 			case '<':
 			case '>':
 			case '=':
+			case '\\':
+			case '&':
 				return true;
 			default:
 				return false;

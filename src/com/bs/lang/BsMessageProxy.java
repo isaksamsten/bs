@@ -1,8 +1,6 @@
 package com.bs.lang;
 
-import com.bs.interpreter.stack.BsStack;
-import com.bs.interpreter.stack.Stack;
-import com.bs.lang.proto.BsError;
+import com.bs.lang.proto.BsBlock;
 
 public class BsMessageProxy implements BsCode {
 	private BsCodeData data;
@@ -13,20 +11,7 @@ public class BsMessageProxy implements BsCode {
 
 	@Override
 	public BsObject execute(BsObject self, BsObject... args) {
-		if (data.arguments.size() == args.length) {
-			for (int n = 0; n < args.length; n++) {
-				self.slot(data.arguments.get(n), args[n]);
-			}
-
-			Stack stack = data.stack;
-			stack.push(self);
-			BsObject ret = Bs.eval(data.code, stack);
-			stack.pop();
-
-			return ret;
-		} else {
-			return BsError.raise("Invalid arity");
-		}
+		return BsBlock.execute(data, self, args);
 	}
 
 	@Override

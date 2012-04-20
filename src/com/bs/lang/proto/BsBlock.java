@@ -2,7 +2,6 @@ package com.bs.lang.proto;
 
 import java.util.List;
 
-import com.bs.interpreter.stack.BsStack;
 import com.bs.interpreter.stack.Stack;
 import com.bs.lang.Bs;
 import com.bs.lang.BsCodeData;
@@ -53,7 +52,7 @@ public class BsBlock extends BsObject {
 
 	@BsRuntimeMessage(name = "call", arity = -1)
 	public BsObject call(BsObject self, BsObject... args) {
-		return execute(self, args);
+		return execute((BsCodeData) self.value(), self, args);
 	}
 
 	@BsRuntimeMessage(name = "whileTrue", arity = 1)
@@ -72,9 +71,16 @@ public class BsBlock extends BsObject {
 		return last;
 	}
 
-	public BsObject execute(BsObject self, BsObject... args) {
-		BsCodeData data = self.value();
-
+	/**
+	 * Execut a BsCodeData object in the context of self, with args arguments.
+	 * 
+	 * @param data
+	 * @param self
+	 * @param args
+	 * @return
+	 */
+	public static BsObject execute(BsCodeData data, BsObject self,
+			BsObject... args) {
 		if (data.arguments.size() == args.length) {
 			for (int n = 0; n < args.length; n++) {
 				self.slot(data.arguments.get(n), args[n]);
