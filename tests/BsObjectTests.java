@@ -49,6 +49,7 @@ public class BsObjectTests {
 		assertEquals(200, Bs.asNumber(one.invoke("*", two)));
 		assertEquals(10, Bs.asNumber(one.invoke("%", two)));
 		assertEquals(0, Bs.asNumber(one.invoke("/", two)));
+		assertEquals(BsConst.True, one.invoke("<", two));
 	}
 
 	@Test
@@ -82,19 +83,19 @@ public class BsObjectTests {
 
 		obj = Bs.eval("10 + 10");
 		assertEquals(true, obj.instanceOf(BsConst.SyntaxError));
-		
+
 		obj = Bs.eval("10 +(10.");
 		assertEquals(true, obj.instanceOf(BsConst.SyntaxError));
-		
+
 		obj = Bs.eval("10 := 10.");
 		assertEquals(true, obj.instanceOf(BsConst.SyntaxError));
-		
+
 		obj = Bs.eval("10 + 10; * 20.");
 		assertEquals(400, Bs.asNumber(obj));
-		
+
 		obj = Bs.eval("10 +(10) *(20).");
 		assertEquals(400, Bs.asNumber(obj));
-		
+
 		obj = Bs.eval("10 + 10 * 20.");
 		assertEquals(210, Bs.asNumber(obj));
 	}

@@ -127,4 +127,8 @@ public class BsError extends BsObject {
 		return clone(Bs.asString(args[0]));
 	}
 
+	public static BsObject subClassResponsibility() {
+		return raise("Method should be implemented by subclasses");
+	}
+
 }

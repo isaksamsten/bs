@@ -61,7 +61,7 @@ public class BsStack implements Stack {
 	public BsObject enter(String key, BsObject value) {
 		int idx = foundAt(key);
 		BsObject c = null;
-		if (idx > 0) {
+		if (idx >= 0) {
 			c = stack.get(idx);
 		} else {
 			c = local();

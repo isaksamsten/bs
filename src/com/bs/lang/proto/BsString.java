@@ -12,7 +12,7 @@ public class BsString extends BsObject {
 	}
 
 	public BsString() {
-		super(BsConst.Proto, "String", BsString.class);
+		super(BsConst.Comparable, "String", BsString.class);
 		initRuntimeMethods();
 	}
 
@@ -26,6 +26,16 @@ public class BsString extends BsObject {
 		String me = Bs.asString(self);
 		String other = Bs.asString(args[0]);
 		return BsString.clone(me + other);
+	}
+
+	@BsRuntimeMessage(name = "compareTo", arity = 1, aliases = { "<=>" })
+	public BsObject compareTo(BsObject self, BsObject... args) {
+		if (!args[0].instanceOf(BsConst.String)) {
+			return BsError.typeError("compareTo", args[0], BsConst.String);
+		}
+
+		return BsNumber
+				.clone(Bs.asString(self).compareTo(Bs.asString(args[0])));
 	}
 
 	@BsRuntimeMessage(name = "toString", arity = 0)

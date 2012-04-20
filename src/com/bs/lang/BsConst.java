@@ -2,6 +2,7 @@ package com.bs.lang;
 
 import com.bs.lang.proto.BsBlock;
 import com.bs.lang.proto.BsBool;
+import com.bs.lang.proto.BsComparable;
 import com.bs.lang.proto.BsEnumerable;
 import com.bs.lang.proto.BsError;
 import com.bs.lang.proto.BsFalse;
@@ -20,6 +21,7 @@ public final class BsConst {
 
 	public static final BsObject Proto = new BsProto();
 	public static final BsObject Module = new BsModule();
+	public static final BsObject Comparable = new BsComparable();
 
 	public static final BsObject System = new BsSystem();
 
