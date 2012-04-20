@@ -30,10 +30,23 @@ public class ExpressionParser extends BsParser<ExpressionNode> {
 			CallParser parser = new CallParser(this);
 			node = parser.parse(start);
 		} else if (start.type() == TokenType.IDENTIFIER) {
-			node = nodeFactory().expression(start);
-			node.left(nodeFactory().identifier(start));
+			if (next.type() == TokenType.LEFT_PAREN) {
+				CallNode call = nodeFactory().call(start);
+				call.left(null);
 
-			tokenizer().next();
+				MessagesParser msgParser = new MessagesParser(this);
+				MessagesNode msgs = msgParser.parse(start);
+				if (msgs != null) {
+					call.messages(msgs);
+					node = call;
+				}
+
+			} else {
+				node = nodeFactory().expression(start);
+				node.left(nodeFactory().identifier(start));
+
+				tokenizer().next();
+			}
 		} else if (start.type() == TokenType.LEFT_PAREN) {
 			CallParser parser = new CallParser(this);
 			node = parser.parse(start);

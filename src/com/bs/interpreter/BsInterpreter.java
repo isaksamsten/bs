@@ -79,10 +79,18 @@ public class BsInterpreter implements Interpreter {
 	@Override
 	public Object visitCall(CallNode node) {
 		BsObject lhs = (BsObject) visit(node.left());
-		if (lhs.isBreak()) {
+
+		/*
+		 * Null left hand side == call without a receiver
+		 */
+		if (lhs != null && lhs.isBreak()) {
 			return lhs;
 		}
 
+		/*
+		 * Thus, set lhs to the local object if lhs is null
+		 */
+		lhs = lhs != null ? lhs : stack.local();
 		Interpreter interpreter = new BsCallInterpreter(this, lhs);
 		return interpreter.visit(node.messages());
 	}

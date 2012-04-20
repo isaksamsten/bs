@@ -1,3 +1,5 @@
+load("test.bs").
+
 Person := Proto clone :Person.
 Person <<= :init, { | self, name | 
 	System puts self.

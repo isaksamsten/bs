@@ -9,6 +9,23 @@ import com.bs.lang.proto.BsError;
 
 public class BsObject {
 
+	private class BsMessageData {
+		public BsCode code;
+		public int arity;
+		public String name;
+
+		public BsMessageData(BsCode code, int arity, String name) {
+			this.code = code;
+			this.arity = arity;
+			this.name = name;
+		}
+
+		public BsMessage getMessage(BsObject binder) {
+			return code.getMessage(name, arity, binder);
+		}
+
+	}
+
 	public static BsObject value(BsObject proto, Object value) {
 		BsObject obj = new BsObject(proto);
 		obj.value(value);

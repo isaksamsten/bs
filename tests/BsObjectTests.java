@@ -139,12 +139,12 @@ public class BsObjectTests {
 
 		assertEquals(10, Bs.asNumber(obj.invoke("getTen")));
 
-		obj = Bs.compile("10. Proto return 30. 20.");
+		obj = Bs.compile("10. return(30). 20.");
 		assertEquals(true, obj.instanceOf(BsConst.Block));
 		assertEquals(30, Bs.asNumber(obj.invoke("call")));
 		assertEquals(true, Bs.asBoolean(obj.invoke("hasReturned")));
 
-		obj = Bs.eval("10. Proto return 30. 20.");
+		obj = Bs.eval("10. return(30). 20.");
 		assertEquals(30, Bs.asNumber(obj));
 	}
 
