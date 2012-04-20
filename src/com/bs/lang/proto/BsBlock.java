@@ -84,8 +84,10 @@ public class BsBlock extends BsObject {
 			stack.push(self);
 			BsObject ret = Bs.eval(data.code, stack);
 			stack.pop();
-			if (ret.isReturn()) {
-				ret.setReturn(false);
+			if (ret.isBreak()) {
+				if (ret.isReturn()) {
+					ret.setReturn(false);
+				}
 				self.slot(HAS_RETURNED, BsConst.True);
 			}
 

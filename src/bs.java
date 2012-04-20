@@ -32,7 +32,7 @@ public class bs {
 		stack.push(module);
 
 		/* @formatter:off */
-		Scanner sc = new BsScanner(new FileReader(new File("Main.bs")));
+		Scanner sc = new BsScanner(new FileReader(new File(args[0])));
 
 		/* @formatter:on */
 		Tokenizer tz = new BsTokenizer(sc, new DefaultTokenFactory(), handler,
@@ -45,7 +45,8 @@ public class bs {
 		if (handler.errors() == 0) {
 			BsObject value = Bs.eval(code, BsStack.getDefault());
 			if (value.isError()) {
-				System.out.println("Traceback (most recent call first):\n  " + value);
+				System.out.println("Traceback (most recent call first):\n  "
+						+ value);
 			}
 		}
 	}
