@@ -201,7 +201,7 @@ public class BsObject {
 		if (msg != null) {
 			return msg.invoke(this, args);
 		} else {
-			return BsError.nameError(message, this);
+			return BsError.nameError(message, this.prototype());
 		}
 	}
 

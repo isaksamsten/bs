@@ -27,14 +27,11 @@ public class bs {
 		MessageHandler handler = new MessageHandler();
 		handler.add(new PrintStreamMessageListener(System.out));
 
-		BsObject module = BsModule.create("<stdin>");
+		BsObject module = BsModule.create(args[0]);
 		Stack stack = BsStack.getDefault();
 		stack.push(module);
 
-		/* @formatter:off */
 		Scanner sc = new BsScanner(new FileReader(new File(args[0])));
-
-		/* @formatter:on */
 		Tokenizer tz = new BsTokenizer(sc, new DefaultTokenFactory(), handler,
 				'#');
 		StatementsParser parser = new StatementsParser(tz,

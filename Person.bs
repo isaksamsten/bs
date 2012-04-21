@@ -5,6 +5,12 @@ Person <<= :init, { | self, name |
 	System puts name.
 }.
 
+<<=(:test, { | self, str | 
+	System puts str.
+}).
+
+test("Testar en modulmetod").
+
 Person <<= :setName, { | self, name |
 	self <- :name, name.
 }.

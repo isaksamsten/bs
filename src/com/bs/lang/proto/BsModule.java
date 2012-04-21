@@ -27,6 +27,9 @@ public class BsModule extends BsObject {
 
 	@BsRuntimeMessage(name = "toString", arity = 0)
 	public BsObject toString(BsObject self, BsObject... args) {
+		if (self == BsConst.Module) {
+			return BsString.clone("Module");
+		}
 		return BsString.clone("Module: <" + Bs.asString(self.slot(FILE_NAME))
 				+ ">");
 	}
