@@ -2,6 +2,7 @@ package com.bs.interpreter;
 
 import java.util.List;
 
+import com.bs.lang.Bs;
 import com.bs.lang.BsObject;
 import com.bs.parser.tree.MessageNode;
 import com.bs.parser.tree.MessagesNode;
@@ -20,7 +21,8 @@ public class BsCallInterpreter extends BsInterpreter {
 	public Object visitMessages(MessagesNode node) {
 		for (Node n : node.childrens()) {
 			receiver = (BsObject) visit(n);
-			if(receiver.isBreak()) {
+			if (receiver.isBreak()) {
+				Bs.updateError(receiver, node);
 				return receiver;
 			}
 		}
@@ -39,11 +41,20 @@ public class BsCallInterpreter extends BsInterpreter {
 		String message = (String) visit(node.identifier());
 		List<BsObject> list = (List<BsObject>) exprs;
 		BsObject[] arguments = new BsObject[0];
+
 		if (list != null) {
-			arguments = list.toArray(new BsObject[0]);
+			arguments = new BsObject[list.size()];
+			for (int n = 0; n < arguments.length; n++) {
+				BsObject o = list.get(n);
+				if (o.isBreak()) {
+					Bs.updateError(o, node);
+					return o;
+				} else {
+					arguments[n] = o;
+				}
+			}
 		}
 
 		return receiver.invoke(message, arguments);
 	}
-
 }

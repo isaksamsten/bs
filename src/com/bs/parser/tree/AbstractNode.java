@@ -5,12 +5,14 @@ import com.bs.parser.token.Token;
 public abstract class AbstractNode implements Node {
 
 	private int line, position;
+	private String code;
 
 	public AbstractNode(Token token) {
-		this(token.line(), token.position());
+		this(token.currentLine(), token.line(), token.position());
 	}
 
-	public AbstractNode(int line, int position) {
+	public AbstractNode(String code, int line, int position) {
+		this.code = code;
 		this.line = line;
 		this.position = position;
 	}
@@ -19,6 +21,11 @@ public abstract class AbstractNode implements Node {
 	public Node parent() {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	@Override
+	public String code() {
+		return code;
 	}
 
 	@Override

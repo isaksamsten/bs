@@ -4,12 +4,12 @@ import java.lang.reflect.Method;
 
 import com.bs.lang.proto.BsError;
 
-public class BsJavaProxy implements BsCode {
+public class BsJavaCode implements BsCode {
 
 	private Method method;
 	private Object invoker;
 
-	public BsJavaProxy(Object invoker, Method m) {
+	public BsJavaCode(Object invoker, Method m) {
 		method = m;
 		this.invoker = invoker;
 	}
@@ -20,7 +20,7 @@ public class BsJavaProxy implements BsCode {
 			return (BsObject) method.invoke(invoker, self, args);
 		} catch (Exception e) {
 			e.printStackTrace();
-			return BsError.raise("Invalid java method invokation... Fail!!!");
+			return BsError.raise("Java invokation failed. This is a bug.");
 		}
 	}
 

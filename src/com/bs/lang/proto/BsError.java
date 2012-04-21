@@ -43,9 +43,15 @@ public class BsError extends BsObject {
 						.name(), method, expected, got);
 	}
 
-	public static final String IGNORE = "ignore";
+	public static BsObject subClassResponsibility() {
+		return raise("Method should be implemented by subclasses");
+	}
+
+	public static final String IGNORED = "ignored";
 	public static final String MESSAGE = "message";
 	public static final String CAUGHT = "caught";
+	public static final String STACK_TRACE = "stackTrace";
+	
 
 	/**
 	 * Create a new Error type
@@ -104,7 +110,7 @@ public class BsError extends BsObject {
 
 	@BsRuntimeMessage(name = "pass", arity = 0)
 	public BsObject pass(BsObject self, BsObject... args) {
-		self.slot(IGNORE, BsConst.False);
+		self.slot(IGNORED, BsConst.False);
 		return self;
 	}
 
@@ -126,9 +132,4 @@ public class BsError extends BsObject {
 
 		return clone(Bs.asString(args[0]));
 	}
-
-	public static BsObject subClassResponsibility() {
-		return raise("Method should be implemented by subclasses");
-	}
-
 }

@@ -15,10 +15,6 @@ public class StringNode extends AbstractNode implements LiteralNode {
 
 	private String string;
 
-	public StringNode(int line, int position) {
-		super(line, position);
-	}
-
 	public StringNode(Token token) {
 		super(token);
 	}

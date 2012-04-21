@@ -1,5 +1,7 @@
 package com.bs.parser;
 
+import java.util.EnumSet;
+
 import com.bs.parser.token.Token;
 import com.bs.parser.token.TokenType;
 import com.bs.parser.tree.ExpressionsNode;
@@ -10,6 +12,9 @@ import com.bs.util.Message;
 import com.bs.util.MessageType;
 
 public class MessageParser extends BsParser<MessageNode> {
+
+	public static EnumSet<TokenType> MESSAGE_END = EnumSet.of(TokenType.DOT,
+			TokenType.SEMI_COLON);
 
 	public MessageParser(BsParser<?> parser) {
 		super(parser);
@@ -53,11 +58,11 @@ public class MessageParser extends BsParser<MessageNode> {
 			ExpressionsNode expressions = parser.parse(next);
 			if (expressions != null) {
 				node.expressions(expressions);
-				
+
 				/*
 				 * Handle breaking when dealing with parenthesis less calls
 				 */
-				if(tokenizer().current().type() == TokenType.SEMI_COLON) {
+				if (tokenizer().current().type() == TokenType.SEMI_COLON) {
 					tokenizer().next();
 				}
 			} else {
@@ -65,11 +70,15 @@ public class MessageParser extends BsParser<MessageNode> {
 						MessageType.SYNTAX_ERROR, Message.UNEXPECTED_MESSAGE,
 						tokenizer().current().text());
 			}
+		} else if (MESSAGE_END.contains(next.type())) {
+			node = nodeFactory().message(start);
+			IdentifierNode identifier = nodeFactory().identifier(start);
+			identifier.state(State.MESSAGE);
+			node.identifier(identifier);
 		} else {
 
 		}
 
 		return node;
 	}
-
 }

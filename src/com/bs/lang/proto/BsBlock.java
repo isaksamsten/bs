@@ -7,9 +7,11 @@ import com.bs.lang.Bs;
 import com.bs.lang.BsCodeData;
 import com.bs.lang.BsConst;
 import com.bs.lang.BsObject;
+import com.bs.lang.annot.BsProto;
 import com.bs.lang.annot.BsRuntimeMessage;
 import com.bs.parser.tree.Node;
 
+@BsProto(name = "Block")
 public class BsBlock extends BsObject {
 
 	public static BsObject create(List<String> args, Node statements) {
@@ -91,8 +93,8 @@ public class BsBlock extends BsObject {
 			BsObject ret = Bs.eval(data.code, stack);
 			stack.pop();
 			if (ret.isBreak()) {
-				if (ret.isReturn()) {
-					ret.setReturn(false);
+				if (ret.isReturning()) {
+					ret.setReturning(false);
 				}
 				self.slot(HAS_RETURNED, BsConst.True);
 			}

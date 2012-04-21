@@ -10,10 +10,6 @@ public class ExpressionNode extends StatementNode implements LiteralNode {
 
 	private LiteralNode left;
 
-	public ExpressionNode(int line, int position) {
-		super(line, position);
-	}
-
 	public ExpressionNode(Token token) {
 		super(token);
 	}

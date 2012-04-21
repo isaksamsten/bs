@@ -5,10 +5,6 @@ import com.bs.parser.token.Token;
 
 public class MessagesNode extends AbstractListNode<MessageNode> {
 
-	public MessagesNode(int line, int position) {
-		super(line, position);
-	}
-
 	public MessagesNode(Token token) {
 		super(token);
 	}

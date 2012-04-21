@@ -5,10 +5,6 @@ import com.bs.parser.token.Token;
 
 public class ExpressionsNode extends AbstractListNode<ExpressionNode> {
 
-	public ExpressionsNode(int line, int position) {
-		super(line, position);
-	}
-
 	public ExpressionsNode(Token token) {
 		super(token);
 	}

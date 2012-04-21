@@ -32,10 +32,39 @@ public class BsList extends BsObject {
 		return last;
 	}
 
-	@BsRuntimeMessage(name = "<<", arity = 1)
+	@BsRuntimeMessage(name = "size?", arity = 0)
+	public BsObject size(BsObject self, BsObject... args) {
+		ArrayList<BsObject> value = self.value();
+		return BsNumber.clone(value.size());
+	}
+
+	@BsRuntimeMessage(name = "add", arity = 1, aliases = { "<<" })
 	public BsObject add(BsObject self, BsObject... args) {
-		List<BsObject> value = self.value();
+		ArrayList<BsObject> value = self.value();
 		value.add(args[0]);
+		return self;
+	}
+
+	@BsRuntimeMessage(name = "addAll", arity = 1, aliases = { "++" })
+	public BsObject addAll(BsObject self, BsObject... args) {
+		if (!args[0].instanceOf(BsConst.List)) {
+			return BsError.typeError("addAll", args[0], BsConst.List);
+		}
+
+		List<BsObject> value = self.value();
+		List<BsObject> other = args[0].value();
+		value.addAll(other);
+		return self;
+	}
+
+	@BsRuntimeMessage(name = "insert", arity = 2)
+	public BsObject insert(BsObject self, BsObject... args) {
+		if (!args[0].instanceOf(BsConst.Number)) {
+			return BsError.typeError("insert", args[0], BsConst.Number);
+		}
+
+		List<BsObject> value = self.value();
+		value.add(Bs.asNumber(args[0]).intValue(), args[0]);
 		return self;
 	}
 
@@ -45,5 +74,9 @@ public class BsList extends BsObject {
 
 	public static BsObject create(BsObject... args) {
 		return BsObject.value(BsConst.List, Arrays.asList(args));
+	}
+
+	public static BsObject create(List<BsObject> list) {
+		return BsObject.value(BsConst.List, list);
 	}
 }

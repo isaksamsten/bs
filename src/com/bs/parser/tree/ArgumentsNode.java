@@ -5,10 +5,6 @@ import com.bs.parser.token.Token;
 
 public class ArgumentsNode extends AbstractListNode<IdentifierNode> {
 
-	public ArgumentsNode(int line, int position) {
-		super(line, position);
-	}
-
 	public ArgumentsNode(Token token) {
 		super(token);
 	}

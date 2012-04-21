@@ -9,11 +9,6 @@ public class NumberNode extends AbstractNode implements LiteralNode {
 
 	private Number number;
 
-	public NumberNode(int line, int position, Number number) {
-		super(line, position);
-		this.number = number;
-	}
-
 	public NumberNode(Token token, Number number) {
 		super(token);
 		this.number = number;

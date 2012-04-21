@@ -10,6 +10,8 @@ public interface Node {
 
 	Node parent();
 
+	String code();
+
 	int line();
 
 	int position();

@@ -2,17 +2,19 @@ load("test.bs").
 
 Person := Proto clone :Person.
 Person <<= :init, { | self, name | 
-	System puts self.
+	System puts name.
 }.
+
 Person <<= :setName, { | self, name |
 	self <- :name, name.
 }.
 Person <<= :getName, { | self |
-	Proto return(self -> :name).
+	return(self -> :name).
 }.
 
-p := Person clone().
+p := Person clone("isak").
 p setName "isak".
+p getName.
 System puts(p getName()).
 
 (1 < 10) or ((2 > 20) and (10 > 20)) or True; ifTrue {

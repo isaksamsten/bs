@@ -10,10 +10,6 @@ public abstract class AbstractListNode<T extends Node> extends AbstractNode {
 
 	private List<T> nodes = new ArrayList<T>();
 
-	public AbstractListNode(int line, int position) {
-		super(line, position);
-	}
-
 	public AbstractListNode(Token token) {
 		super(token);
 	}

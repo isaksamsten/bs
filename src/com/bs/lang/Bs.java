@@ -7,32 +7,34 @@ import static com.bs.lang.BsConst.False;
 import static com.bs.lang.BsConst.List;
 import static com.bs.lang.BsConst.Module;
 import static com.bs.lang.BsConst.NameError;
+import static com.bs.lang.BsConst.Nil;
 import static com.bs.lang.BsConst.Number;
 import static com.bs.lang.BsConst.Proto;
-import static com.bs.lang.BsConst.String;
+import static com.bs.lang.BsConst.Symbol;
 import static com.bs.lang.BsConst.SyntaxError;
 import static com.bs.lang.BsConst.System;
 import static com.bs.lang.BsConst.True;
 import static com.bs.lang.BsConst.TypeError;
-import static com.bs.lang.BsConst.Nil;
-import static com.bs.lang.BsConst.Symbol;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.util.ArrayList;
+import java.util.List;
 
 import com.bs.interpreter.BsCompiler;
 import com.bs.interpreter.BsInterpreter;
 import com.bs.interpreter.stack.BsStack;
 import com.bs.interpreter.stack.Stack;
 import com.bs.lang.proto.BsError;
+import com.bs.lang.proto.BsList;
 import com.bs.lang.proto.BsModule;
+import com.bs.lang.proto.BsString;
 import com.bs.parser.tree.Node;
 
 public final class Bs {
 
 	private static BsObject builtin;
-
 	static {
 		builtin = BsModule.create("builtin");
 		builtin.slot(Proto);
@@ -43,7 +45,7 @@ public final class Bs {
 		 * Literal types
 		 */
 		builtin.slot(Symbol);
-		builtin.slot(String);
+		builtin.slot(BsConst.String);
 		builtin.slot(List);
 		builtin.slot(Number);
 		builtin.slot(Bool);
@@ -99,7 +101,7 @@ public final class Bs {
 	 * @return
 	 */
 	public static String asString(BsObject obj) {
-		return obj.instanceOf(String) || obj.instanceOf(Symbol) ? (String) obj
+		return obj.instanceOf(BsConst.String) || obj.instanceOf(Symbol) ? (String) obj
 				.value() : null;
 	}
 
@@ -199,6 +201,30 @@ public final class Bs {
 			return BsError.raise(e.getMessage());
 		}
 
+	}
+
+	/**
+	 * 
+	 * @param o
+	 * @param node
+	 */
+	public static void updateError(BsObject o, Node node) {
+		if (o.isError()) {
+			BsObject obj = o.slot(BsError.STACK_TRACE);
+			BsObject str = BsString.clone(String.format(
+					"'%s' at line %d position %d", node.code(), node.line(),
+					node.position()));
+			if (obj == null || obj.isNil()) {
+				List<BsObject> objs = new ArrayList<BsObject>();
+				objs.add(str);
+				obj = BsList.create(objs);
+				o.slot(BsError.STACK_TRACE, obj);
+			} else {
+				ArrayList<BsObject> objs = obj.value();
+				objs.add(str);
+			}
+
+		}
 	}
 
 	/**

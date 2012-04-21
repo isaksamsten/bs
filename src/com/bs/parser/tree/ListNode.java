@@ -14,10 +14,6 @@ public class ListNode extends ExpressionNode {
 		super(token);
 	}
 
-	public ListNode(int line, int position) {
-		super(line, position);
-	}
-
 	public ExpressionsNode expressions() {
 		return expressions;
 	}

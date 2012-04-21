@@ -2,10 +2,10 @@ package com.bs.lang;
 
 import com.bs.lang.proto.BsBlock;
 
-public class BsMessageProxy implements BsCode {
+public class BsMessageCode implements BsCode {
 	private BsCodeData data;
 
-	public BsMessageProxy(BsCodeData data) {
+	public BsMessageCode(BsCodeData data) {
 		this.data = data;
 	}
 

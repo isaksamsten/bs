@@ -2,6 +2,11 @@ package com.bs.lang;
 
 import com.bs.lang.proto.BsError;
 
+/**
+ * Instances of this class should not be 
+ * @author isak
+ *
+ */
 public class BsMessage {
 	private int arity;
 
@@ -12,7 +17,7 @@ public class BsMessage {
 	/**
 	 * 
 	 * @param arity
-	 *            -1 unkown
+	 *            -1 variable
 	 */
 	public BsMessage(String name, int arity, BsCode code) {
 		this.name = name;
@@ -25,7 +30,7 @@ public class BsMessage {
 	}
 
 	public boolean isJavaCode() {
-		return code instanceof BsJavaProxy;
+		return code instanceof BsJavaCode;
 	}
 
 	/**

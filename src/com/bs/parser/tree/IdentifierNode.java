@@ -26,10 +26,6 @@ public class IdentifierNode extends AbstractNode implements LiteralNode {
 	private String variable;
 	private IdentifierNode.State state = State.LOAD;
 
-	public IdentifierNode(int line, int position) {
-		super(line, position);
-	}
-
 	public IdentifierNode(Token token) {
 		super(token);
 	}

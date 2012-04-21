@@ -10,7 +10,6 @@ import com.bs.lang.BsObject;
 import com.bs.lang.proto.BsNumber;
 import com.bs.lang.proto.BsString;
 import com.bs.lang.proto.BsSymbol;
-import com.bs.lang.proto.BsSystem;
 
 public class BsObjectTests {
 
@@ -38,6 +37,20 @@ public class BsObjectTests {
 		assertEquals(true, list.instanceOf(BsConst.List));
 		assertEquals(true, list.instanceOf(BsConst.Proto));
 		assertEquals(false, list.instanceOf(BsConst.True));
+	}
+
+	@Test
+	public void testList() {
+		BsObject list = Bs.eval("[10, 20, 30, dsadsa].");
+		assertEquals(true, list.instanceOf(BsConst.NameError));
+
+		list = Bs.eval("[1,2,3] << [4,5,6] size?; ++ [10, 20]; size?.");
+		assertEquals(6, Bs.asNumber(list));
+
+		BsObject list2 = Bs
+				.eval("[1,2,3] <<([4,5,6] size?()) ++([10, 20]) size?().");
+
+		assertEquals(Bs.asNumber(list2), Bs.asNumber(list));
 	}
 
 	@Test
@@ -105,7 +118,7 @@ public class BsObjectTests {
 		assertEquals(true,
 				Bs.asBoolean(BsConst.Proto.invoke("=", BsConst.Proto)));
 	}
-	
+
 	@Test
 	public void testBoolean() {
 		assertEquals(BsConst.True, Bs.eval("True & True."));
@@ -129,7 +142,7 @@ public class BsObjectTests {
 	public void testReturn() {
 		BsObject obj = BsConst.Proto.invoke("return",
 				BsString.clone("Hello world"));
-		assertEquals(true, obj.isReturn() && obj.isBreak());
+		assertEquals(true, obj.isReturning() && obj.isBreak());
 
 		obj = Bs.eval("Proto clone()");
 		BsObject method = Bs.compile("Proto return 10.");

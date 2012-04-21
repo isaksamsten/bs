@@ -84,6 +84,7 @@ public class BsInterpreter implements Interpreter {
 		 * Null left hand side == call without a receiver
 		 */
 		if (lhs != null && lhs.isBreak()) {
+			Bs.updateError(lhs, node);
 			return lhs;
 		}
 
@@ -120,11 +121,12 @@ public class BsInterpreter implements Interpreter {
 	}
 
 	@Override
-	public Object visitStatements(StatementsNode statementsNode) {
+	public Object visitStatements(StatementsNode node) {
 		BsObject last = null;
-		for (Node n : statementsNode.childrens()) {
+		for (Node n : node.childrens()) {
 			last = (BsObject) visit(n);
 			if (last.isBreak()) {
+				Bs.updateError(last, node);
 				return last;
 			}
 		}
@@ -137,6 +139,7 @@ public class BsInterpreter implements Interpreter {
 		BsObject value = (BsObject) visit(node.expression());
 
 		if (value.isError()) {
+			Bs.updateError(value, node);
 			return value;
 		}
 		stack.enter(var, value);
@@ -177,10 +180,14 @@ public class BsInterpreter implements Interpreter {
 		return null;
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public Object visitList(ListNode node) {
-		List<BsObject> objects = (List<BsObject>) visit(node.expressions());
+		Object objects = visit(node.expressions());
+		if (objects instanceof BsObject && ((BsObject) objects).isError()) {
+			Bs.updateError((BsObject) objects, node);
+			return objects;
+		}
+
 		BsObject list = BsObject.value(BsConst.List, objects);
 		return list;
 	}

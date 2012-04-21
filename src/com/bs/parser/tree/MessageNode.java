@@ -15,10 +15,6 @@ public class MessageNode extends AbstractNode {
 		super(token);
 	}
 
-	public MessageNode(int line, int position) {
-		super(line, position);
-	}
-
 	public IdentifierNode identifier() {
 		return identifier;
 	}

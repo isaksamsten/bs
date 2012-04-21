@@ -11,10 +11,6 @@ public class BlockNode extends ExpressionNode {
 	private ArgumentsNode arguments;
 	private StatementsNode statements;
 
-	public BlockNode(int line, int position) {
-		super(line, position);
-	}
-
 	public BlockNode(Token token) {
 		super(token);
 	}

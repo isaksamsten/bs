@@ -11,10 +11,6 @@ public class AssignNode extends StatementNode {
 	private IdentifierNode identifier;
 	private ExpressionNode expression;
 
-	public AssignNode(int line, int position) {
-		super(line, position);
-	}
-
 	public AssignNode(Token token) {
 		super(token);
 	}

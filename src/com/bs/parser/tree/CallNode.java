@@ -10,10 +10,6 @@ public class CallNode extends ExpressionNode {
 
 	private MessagesNode messages;
 
-	public CallNode(int line, int position) {
-		super(line, position);
-	}
-
 	public CallNode(Token token) {
 		super(token);
 	}

@@ -1,7 +1,5 @@
 package com.bs.lang.proto;
 
-import org.apache.commons.lang3.ArrayUtils;
-
 import com.bs.lang.Bs;
 import com.bs.lang.BsCodeData;
 import com.bs.lang.BsConst;
@@ -128,11 +126,11 @@ public class BsProto extends BsObject {
 	@BsRuntimeMessage(name = "setMethod", arity = 2, aliases = { "<<=" })
 	public BsObject addMethod(BsObject self, BsObject... args) {
 		if (!args[0].instanceOf(BsConst.Symbol)) {
-			return BsError.typeError("method", args[0].prototype(),
+			return BsError.typeError("setMethod", args[0].prototype(),
 					BsConst.String);
 		}
 		if (!args[1].instanceOf(BsConst.Block)) {
-			return BsError.typeError("method", args[0].prototype(),
+			return BsError.typeError("setMethod", args[1].prototype(),
 					BsConst.Block);
 		}
 		BsCodeData data = args[1].value();
@@ -143,11 +141,11 @@ public class BsProto extends BsObject {
 
 	@BsRuntimeMessage(name = "return", arity = 1)
 	public BsObject returnit(BsObject self, BsObject... args) {
-		args[0].setReturn(true);
+		args[0].setReturning(true);
 		return args[0];
 	}
 
-	@BsRuntimeMessage(name = "init", arity = 1)
+	@BsRuntimeMessage(name = "init", arity = -1)
 	public BsObject init(BsObject self, BsObject... args) {
 		return self;
 	}
@@ -161,8 +159,10 @@ public class BsProto extends BsObject {
 			obj = new BsObject(self);
 		}
 
-		args = ArrayUtils.add(args, 0, obj);
-		obj.invoke("init", args);
+		BsObject ret = obj.invoke("init", args);
+		if (ret.isError()) {
+			return ret;
+		}
 		return obj;
 	}
 }

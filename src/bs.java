@@ -1,10 +1,13 @@
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.util.List;
+
 import com.bs.interpreter.stack.BsStack;
 import com.bs.interpreter.stack.Stack;
 import com.bs.lang.Bs;
 import com.bs.lang.BsObject;
+import com.bs.lang.proto.BsError;
 import com.bs.lang.proto.BsModule;
 import com.bs.parser.StatementsParser;
 import com.bs.parser.source.BsScanner;
@@ -20,7 +23,7 @@ import com.bs.util.PrintStreamMessageListener;
 public class bs {
 
 	public static void main(String[] args) throws FileNotFoundException {
-//		args = new String[] { "Person.bs" };
+		args = new String[] { "Person.bs" };
 		MessageHandler handler = new MessageHandler();
 		handler.add(new PrintStreamMessageListener(System.out));
 
@@ -44,6 +47,11 @@ public class bs {
 			if (value.isError()) {
 				System.out.println("Traceback (most recent call first):\n  "
 						+ value);
+				List<BsObject> stackTrace = value.slot(BsError.STACK_TRACE)
+						.value();
+				for (BsObject str : stackTrace) {
+					System.out.println("\t" + Bs.asString(str));
+				}
 			}
 		}
 	}
