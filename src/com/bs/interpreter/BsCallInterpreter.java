@@ -18,9 +18,9 @@ public class BsCallInterpreter extends BsInterpreter {
 	}
 
 	@Override
-	public Object visitMessages(MessagesNode node) {
+	public Object interpretMessages(MessagesNode node) {
 		for (Node n : node.childrens()) {
-			receiver = (BsObject) visit(n);
+			receiver = (BsObject) interpret(n);
 			if (receiver.isBreak()) {
 				Bs.updateError(receiver, node);
 				return receiver;
@@ -32,13 +32,13 @@ public class BsCallInterpreter extends BsInterpreter {
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public Object visitMessage(MessageNode node) {
-		Object exprs = visit(node.expressions());
+	public Object interpretMessage(MessageNode node) {
+		Object exprs = interpret(node.expressions());
 		if (exprs instanceof BsObject && ((BsObject) exprs).isBreak()) {
 			return exprs;
 		}
 
-		String message = (String) visit(node.identifier());
+		String message = (String) interpret(node.identifier());
 		List<BsObject> list = (List<BsObject>) exprs;
 		BsObject[] arguments = new BsObject[0];
 

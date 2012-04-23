@@ -4,6 +4,7 @@ import com.bs.parser.tree.ArgumentsNode;
 import com.bs.parser.tree.AssignNode;
 import com.bs.parser.tree.BlockNode;
 import com.bs.parser.tree.CallNode;
+import com.bs.parser.tree.CharacterNode;
 import com.bs.parser.tree.ExpressionNode;
 import com.bs.parser.tree.ExpressionsNode;
 import com.bs.parser.tree.IdentifierNode;
@@ -18,34 +19,36 @@ import com.bs.parser.tree.SymbolNode;
 
 public interface Interpreter {
 
-	Object visit(Node node);
+	Object interpret(Node node);
 
-	Object visitNumber(NumberNode numberNode);
+	Object interpretNumber(NumberNode numberNode);
 
-	Object visitVariable(IdentifierNode variableNode);
+	Object interpretVariable(IdentifierNode variableNode);
 
-	Object visitString(StringNode stringNode);
+	Object interpretString(StringNode stringNode);
 
-	Object visitExpression(ExpressionNode exprNode);
+	Object interpretExpression(ExpressionNode exprNode);
 
-	Object visitCall(CallNode callNode);
+	Object interpretCall(CallNode callNode);
 
-	Object visitExpressions(ExpressionsNode expressionListNode);
+	Object interpretExpressions(ExpressionsNode expressionListNode);
 
-	Object visitMessage(MessageNode messageNode);
+	Object interpretMessage(MessageNode messageNode);
 
-	Object visitMessages(MessagesNode messagesNode);
+	Object interpretMessages(MessagesNode messagesNode);
 
-	Object visitStatements(StatementsNode statementsNode);
+	Object interpretStatements(StatementsNode statementsNode);
 
-	Object visitAssign(AssignNode assignNode);
+	Object interpretAssign(AssignNode assignNode);
 
-	Object visitBlock(BlockNode blockNode);
+	Object interpretBlock(BlockNode blockNode);
 
-	Object visitArguments(ArgumentsNode argumentsNode);
+	Object interpretArguments(ArgumentsNode argumentsNode);
 
-	Object visitList(ListNode listNode);
+	Object interpretList(ListNode listNode);
 
-	Object visitSymbol(SymbolNode symbolNode);
+	Object interpretSymbol(SymbolNode symbolNode);
+
+	Object interpretCharacter(CharacterNode characterNode);
 
 }

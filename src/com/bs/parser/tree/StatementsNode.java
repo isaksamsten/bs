@@ -11,7 +11,7 @@ public class StatementsNode extends AbstractListNode<StatementNode> {
 
 	@Override
 	public Object visit(Interpreter visitor) {
-		return visitor.visitStatements(this);
+		return visitor.interpretStatements(this);
 	}
 
 	@Override

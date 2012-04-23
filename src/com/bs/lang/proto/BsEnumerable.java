@@ -19,20 +19,44 @@ public class BsEnumerable extends BsObject {
 	}
 
 	@BsRuntimeMessage(name = "map", arity = 1)
-	public BsObject map(BsObject self, final BsObject... args) {
+	public BsObject map(BsObject self, BsObject... args) {
 		if (!args[0].instanceOf(BsConst.Block)) {
 			return BsError.typeError("map", args[0], BsConst.Block);
 		}
 
-		BsCodeData map = args[0].value();
+		return each("list << block call e.", self, args[0]);
+	}
+
+	@BsRuntimeMessage(name = "filter", arity = 1)
+	public BsObject filter(BsObject self, BsObject... args) {
+		if (!args[0].instanceOf(BsConst.Block)) {
+			return BsError.typeError("filter", args[0], BsConst.Block);
+		}
+
+		return each("(block call e) ifTrue { list << e. }.", self, args[0]);
+	}
+
+	/**
+	 * Iterate over subclass, executing code in context of each object
+	 * 
+	 * In code, e refer to current element, block to the block and list to a
+	 * list for collecting return values
+	 * 
+	 * @param code
+	 * @param self
+	 * @param block
+	 * @return
+	 */
+	protected BsObject each(String code, BsObject self, BsObject block) {
+		BsCodeData mapData = block.value();
 		BsObject list = BsList.create();
 
-		BsObject each = Bs.compile("list << block call e.", map.stack);
+		BsObject each = Bs.compile(code, mapData.stack);
 		each.slot("list", list);
-		each.slot("block", args[0]);
+		each.slot("block", block);
 		BsCodeData data = each.value();
 		data.arguments.add("e");
-		data.stack = map.stack;
+		data.stack = mapData.stack;
 
 		BsObject ret = self.invoke("each", each);
 		if (ret.isError()) {

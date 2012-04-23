@@ -16,7 +16,7 @@ public class NumberNode extends AbstractNode implements LiteralNode {
 
 	@Override
 	public Object visit(Interpreter visitor) {
-		return visitor.visitNumber(this);
+		return visitor.interpretNumber(this);
 	}
 
 	/**

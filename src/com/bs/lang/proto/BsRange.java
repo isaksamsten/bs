@@ -33,15 +33,44 @@ public class BsRange extends BsObject {
 			return BsError.typeError("each", args[0], BsConst.Proto);
 		}
 
-		BsObject value = BsConst.False;
-		int min = Bs.asNumber(self.slot(MIN)).intValue(), max = Bs.asNumber(
-				self.slot(MAX)).intValue();
+		BsObject value = BsConst.Nil;
+		BsObject min = self.slot(MIN);
+		BsObject max = self.slot(MAX);
+		BsObject block = args[0];
 
-		for (int n = min; n < max
-				&& !Bs.asBoolean(args[0].slot(BsBlock.HAS_RETURNED)); n++) {
-			value = args[0].invoke("call", BsNumber.clone(n));
+		while (Bs.asBoolean(min.invoke("<=", max))) {
+			value = block.invoke("call", min);
+			if (value.isBreak()) {
+				break;
+			}
+
+			min = min.invoke("next");
+			if (min.isError()) {
+				value = min;
+				break;
+			}
+
 		}
 
+		// BsObject value = BsConst.False;
+		// int min = Bs.asNumber(self.slot(MIN)).intValue(), max = Bs.asNumber(
+		// self.slot(MAX)).intValue();
+		//
+		// for (int n = min; n < max
+		// && !Bs.asBoolean(args[0].slot(BsBlock.HAS_RETURNED)); n++) {
+		// value = args[0].invoke("call", BsNumber.clone(n));
+		// if (value.isError()) {
+		// return value;
+		// }
+		// }
+
 		return value;
+	}
+
+	@BsRuntimeMessage(name = "init", arity = 2)
+	public BsObject init(BsObject self, BsObject... args) {
+		self.slot(MIN, args[0]);
+		self.slot(MAX, args[1]);
+		return self;
 	}
 }

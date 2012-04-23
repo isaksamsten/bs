@@ -12,6 +12,6 @@ public class SymbolNode extends StringNode {
 
 	@Override
 	public Object visit(Interpreter visitor) {
-		return visitor.visitSymbol(this);
+		return visitor.interpretSymbol(this);
 	}
 }

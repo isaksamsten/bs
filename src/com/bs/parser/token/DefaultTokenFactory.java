@@ -8,18 +8,7 @@ public class DefaultTokenFactory implements TokenFactory {
 	}
 
 	@Override
-	public Token number(String value, int line, int position) {
-		Number number = null;
-		try {
-			number = Integer.parseInt(value);
-		} catch (NumberFormatException e) {
-			try {
-				number = Long.parseLong(value);
-			} catch (NumberFormatException e2) {
-				number = Double.parseDouble(value);
-			}
-		}
-
+	public Token number(String value, Number number, int line, int position) {
 		return new Token(value, number, TokenType.NUMBER, line, position);
 	}
 
@@ -51,5 +40,10 @@ public class DefaultTokenFactory implements TokenFactory {
 	@Override
 	public Token symbol(String value, int line, int position) {
 		return new Token(value, value, TokenType.SYMBOL, line, position);
+	}
+
+	@Override
+	public Token character(String value, char at, int line, int position) {
+		return new Token(value, at, TokenType.CHARACTER, line, position);
 	}
 }

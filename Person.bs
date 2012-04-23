@@ -17,11 +17,15 @@ Person <<= :setName, { | self, name |
 Person <<= :getName, { | self |
 	return(self -> :name).
 }.
+Person <<= :toString, { | self |
+	return(self -> :name).
+}.
 
 p := Person clone("isak").
 p setName "isak".
 p getName.
 System puts(p getName()).
+System puts p.
 
 (1 < 10) or ((2 > 20) and (10 > 20)) or True; ifTrue {
 	System puts "2 i less than 20 and 1 less than ten".

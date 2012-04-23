@@ -44,7 +44,7 @@ public class BsObjectTests {
 		BsObject list = Bs.eval("[10, 20, 30, dsadsa].");
 		assertEquals(true, list.instanceOf(BsConst.NameError));
 
-		list = Bs.eval("[1,2,3] << [4,5,6] size?; ++ [10, 20]; size?.");
+		list = Bs.eval("[1,2,3] << [4,5,6] size?;; ++ [10, 20]; size?.");
 		assertEquals(6, Bs.asNumber(list));
 
 		BsObject list2 = Bs

@@ -11,7 +11,7 @@ public class ExpressionsNode extends AbstractListNode<ExpressionNode> {
 
 	@Override
 	public Object visit(Interpreter visitor) {
-		return visitor.visitExpressions(this);
+		return visitor.interpretExpressions(this);
 	}
 
 	@Override

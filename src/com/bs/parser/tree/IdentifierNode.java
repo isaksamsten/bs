@@ -48,7 +48,7 @@ public class IdentifierNode extends AbstractNode implements LiteralNode {
 
 	@Override
 	public Object visit(Interpreter visitor) {
-		return visitor.visitVariable(this);
+		return visitor.interpretVariable(this);
 	}
 
 	@Override

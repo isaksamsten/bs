@@ -35,7 +35,7 @@ public class ListNode extends ExpressionNode {
 
 	@Override
 	public Object visit(Interpreter visitor) {
-		return visitor.visitList(this);
+		return visitor.interpretList(this);
 	}
 
 }

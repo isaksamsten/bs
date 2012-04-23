@@ -11,7 +11,7 @@ public class ArgumentsNode extends AbstractListNode<IdentifierNode> {
 
 	@Override
 	public Object visit(Interpreter visitor) {
-		return visitor.visitArguments(this);
+		return visitor.interpretArguments(this);
 	}
 
 	@Override

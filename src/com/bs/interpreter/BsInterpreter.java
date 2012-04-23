@@ -10,6 +10,7 @@ import com.bs.lang.BsCodeData;
 import com.bs.lang.BsConst;
 import com.bs.lang.BsObject;
 import com.bs.lang.proto.BsBlock;
+import com.bs.lang.proto.BsChar;
 import com.bs.lang.proto.BsError;
 import com.bs.lang.proto.BsNumber;
 import com.bs.lang.proto.BsString;
@@ -18,6 +19,7 @@ import com.bs.parser.tree.ArgumentsNode;
 import com.bs.parser.tree.AssignNode;
 import com.bs.parser.tree.BlockNode;
 import com.bs.parser.tree.CallNode;
+import com.bs.parser.tree.CharacterNode;
 import com.bs.parser.tree.ExpressionNode;
 import com.bs.parser.tree.ExpressionsNode;
 import com.bs.parser.tree.IdentifierNode;
@@ -48,12 +50,12 @@ public class BsInterpreter implements Interpreter {
 	}
 
 	@Override
-	public Object visitNumber(NumberNode numberNode) {
+	public Object interpretNumber(NumberNode numberNode) {
 		return BsNumber.clone(numberNode.number());
 	}
 
 	@Override
-	public Object visitVariable(IdentifierNode node) {
+	public Object interpretVariable(IdentifierNode node) {
 		if (node.state() == State.LOAD) {
 			BsObject value = stack.lookup(node.variable());
 			if (Bs.isNil(value)) {
@@ -67,18 +69,18 @@ public class BsInterpreter implements Interpreter {
 	}
 
 	@Override
-	public Object visitString(StringNode stringNode) {
+	public Object interpretString(StringNode stringNode) {
 		return BsString.clone(stringNode.string());
 	}
 
 	@Override
-	public Object visitExpression(ExpressionNode node) {
-		return visit(node.left());
+	public Object interpretExpression(ExpressionNode node) {
+		return interpret(node.left());
 	}
 
 	@Override
-	public Object visitCall(CallNode node) {
-		BsObject lhs = (BsObject) visit(node.left());
+	public Object interpretCall(CallNode node) {
+		BsObject lhs = (BsObject) interpret(node.left());
 
 		/*
 		 * Null left hand side == call without a receiver
@@ -93,14 +95,14 @@ public class BsInterpreter implements Interpreter {
 		 */
 		lhs = lhs != null ? lhs : stack.local();
 		Interpreter interpreter = new BsCallInterpreter(this, lhs);
-		return interpreter.visit(node.messages());
+		return interpreter.interpret(node.messages());
 	}
 
 	@Override
-	public Object visitExpressions(ExpressionsNode node) {
+	public Object interpretExpressions(ExpressionsNode node) {
 		List<BsObject> objects = new ArrayList<BsObject>();
 		for (Node expr : node.childrens()) {
-			BsObject obj = (BsObject) visit(expr);
+			BsObject obj = (BsObject) interpret(expr);
 			if (obj.isBreak()) {
 				return obj;
 			}
@@ -111,20 +113,20 @@ public class BsInterpreter implements Interpreter {
 	}
 
 	@Override
-	public Object visitMessage(MessageNode messageNode) {
+	public Object interpretMessage(MessageNode messageNode) {
 		throw new UnsupportedOperationException("Handled in overriden method.");
 	}
 
 	@Override
-	public Object visitMessages(MessagesNode messagesNode) {
+	public Object interpretMessages(MessagesNode messagesNode) {
 		throw new UnsupportedOperationException("Handled in overriden method.");
 	}
 
 	@Override
-	public Object visitStatements(StatementsNode node) {
+	public Object interpretStatements(StatementsNode node) {
 		BsObject last = null;
 		for (Node n : node.childrens()) {
-			last = (BsObject) visit(n);
+			last = (BsObject) interpret(n);
 			if (last.isBreak()) {
 				Bs.updateError(last, node);
 				return last;
@@ -134,9 +136,9 @@ public class BsInterpreter implements Interpreter {
 	}
 
 	@Override
-	public Object visitAssign(AssignNode node) {
-		String var = (String) visit(node.identifier());
-		BsObject value = (BsObject) visit(node.expression());
+	public Object interpretAssign(AssignNode node) {
+		String var = (String) interpret(node.identifier());
+		BsObject value = (BsObject) interpret(node.expression());
 
 		if (value.isError()) {
 			Bs.updateError(value, node);
@@ -149,8 +151,8 @@ public class BsInterpreter implements Interpreter {
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public Object visitBlock(BlockNode blockNode) {
-		List<String> args = (List<String>) visit(blockNode.arguments());
+	public Object interpretBlock(BlockNode blockNode) {
+		List<String> args = (List<String>) interpret(blockNode.arguments());
 		if (args == null) {
 			args = new ArrayList<String>();
 		}
@@ -162,10 +164,10 @@ public class BsInterpreter implements Interpreter {
 	}
 
 	@Override
-	public Object visitArguments(ArgumentsNode argumentsNode) {
+	public Object interpretArguments(ArgumentsNode argumentsNode) {
 		List<String> args = new ArrayList<String>();
 		for (Node n : argumentsNode.childrens()) {
-			String arg = (String) visit(n);
+			String arg = (String) interpret(n);
 			args.add(arg);
 		}
 
@@ -173,7 +175,7 @@ public class BsInterpreter implements Interpreter {
 	}
 
 	@Override
-	public Object visit(Node node) {
+	public Object interpret(Node node) {
 		if (node != null)
 			return node.visit(this);
 
@@ -181,8 +183,8 @@ public class BsInterpreter implements Interpreter {
 	}
 
 	@Override
-	public Object visitList(ListNode node) {
-		Object objects = visit(node.expressions());
+	public Object interpretList(ListNode node) {
+		Object objects = interpret(node.expressions());
 		if (objects instanceof BsObject && ((BsObject) objects).isError()) {
 			Bs.updateError((BsObject) objects, node);
 			return objects;
@@ -193,7 +195,12 @@ public class BsInterpreter implements Interpreter {
 	}
 
 	@Override
-	public Object visitSymbol(SymbolNode node) {
+	public Object interpretSymbol(SymbolNode node) {
 		return BsSymbol.get(node.string());
+	}
+
+	@Override
+	public Object interpretCharacter(CharacterNode node) {
+		return BsChar.clone((Character) node.value());
 	}
 }

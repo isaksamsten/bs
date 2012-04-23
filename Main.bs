@@ -1,6 +1,6 @@
 a := Module load "test.bs".
 person := Module load "Person.bs".
-pp := person -> :Person; clone().
+pp := person -> :Person; clone("Olle").
 pp setName "isak".
 System puts pp getName().
 System puts a.
@@ -13,9 +13,22 @@ x := x map { | d |
 	20 * d.
 }.
 
+# Print the character after, after, i
+System puts ('i' next; next).
+('a'--'d') each { | c |
+	return('d').
+	System puts c.
+}.
+
 System puts [1,2,3] map { | d |
 	d * 10.
 }.
+
+System puts "Test filter".
+System puts [1,2,3] filter { | d | d >= 2. }.
+System puts "Test filter".
+
+System puts 10 next; next; next.
 
 (1--10) each { | x |
   System puts x + 10.

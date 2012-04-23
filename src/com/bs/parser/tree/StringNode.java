@@ -29,7 +29,7 @@ public class StringNode extends AbstractNode implements LiteralNode {
 
 	@Override
 	public Object visit(Interpreter visitor) {
-		return visitor.visitString(this);
+		return visitor.interpretString(this);
 	}
 
 	@Override

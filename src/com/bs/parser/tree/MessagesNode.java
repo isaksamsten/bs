@@ -16,6 +16,6 @@ public class MessagesNode extends AbstractListNode<MessageNode> {
 
 	@Override
 	public Object visit(Interpreter visitor) {
-		return visitor.visitMessages(this);
+		return visitor.interpretMessages(this);
 	}
 }

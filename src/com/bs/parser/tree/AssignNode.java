@@ -33,7 +33,7 @@ public class AssignNode extends StatementNode {
 
 	@Override
 	public Object visit(Interpreter visitor) {
-		return visitor.visitAssign(this);
+		return visitor.interpretAssign(this);
 	}
 
 	@Override

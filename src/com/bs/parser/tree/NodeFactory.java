@@ -114,4 +114,11 @@ public interface NodeFactory {
 	 * @return
 	 */
 	LiteralNode symbol(Token start);
+
+	/**
+	 * 
+	 * @param start
+	 * @return
+	 */
+	LiteralNode character(Token start);
 }

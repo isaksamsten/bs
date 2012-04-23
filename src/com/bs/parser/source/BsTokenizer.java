@@ -1,5 +1,7 @@
 package com.bs.parser.source;
 
+import org.apache.commons.lang3.StringEscapeUtils;
+
 import com.bs.parser.token.Token;
 import com.bs.parser.token.TokenFactory;
 import com.bs.parser.token.TokenType;
@@ -72,6 +74,8 @@ public class BsTokenizer implements Tokenizer {
 			token = extractSpecial();
 		} else if (current == '"') {
 			token = extractString();
+		} else if (current == '\'') {
+			token = extractCharacter();
 		} else {
 			messageHandler().error(scanner(), MessageType.SYNTAX_ERROR,
 					Message.UNEXPECTED_TOKEN, String.valueOf(current));
@@ -83,6 +87,27 @@ public class BsTokenizer implements Tokenizer {
 		return token;
 	}
 
+	protected Token extractCharacter() {
+		StringBuilder builder = new StringBuilder();
+		char c = scanner().next();
+		while (c != '\'') {
+			builder.append(c);
+			c = scanner().next();
+		}
+		scanner().next();
+
+		String str = StringEscapeUtils.unescapeJava(builder.toString());
+		if (str.length() > 1) {
+			messageHandler.error(scanner(), MessageType.SYNTAX_ERROR,
+					Message.UNEXPECTED_TOKEN, str);
+			return factory.error(scanner().line(), scanner().position());
+		} else {
+			return factory.character(str, str.charAt(0), scanner().line(),
+					scanner().position());
+		}
+
+	}
+
 	protected Token extractSymbol() {
 		StringBuilder builder = new StringBuilder();
 		char c = scanner().next();
@@ -91,8 +116,9 @@ public class BsTokenizer implements Tokenizer {
 			c = scanner().next();
 		}
 
-		return factory.symbol(builder.toString(), scanner.line(),
-				scanner.position());
+		return factory.symbol(
+				StringEscapeUtils.unescapeJava(builder.toString()),
+				scanner.line(), scanner.position());
 	}
 
 	public MessageHandler messageHandler() {
@@ -141,7 +167,26 @@ public class BsTokenizer implements Tokenizer {
 			c = scanner().next();
 		}
 
-		return factory.number(builder.toString(), scanner().line(), scanner()
+		String value = builder.toString();
+		Number number = null;
+		try {
+			number = Integer.parseInt(value);
+		} catch (NumberFormatException e) {
+			try {
+				number = Long.parseLong(value);
+			} catch (NumberFormatException e2) {
+				try {
+					number = Double.parseDouble(value);
+				} catch (Exception e3) {
+					messageHandler().error(scanner(), MessageType.SYNTAX_ERROR,
+							Message.UNEXPECTED_NUMBER, value);
+					return factory
+							.error(scanner().line(), scanner().position());
+				}
+			}
+		}
+
+		return factory.number(value, number, scanner().line(), scanner()
 				.position());
 	}
 

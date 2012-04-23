@@ -191,6 +191,10 @@ public class BsObject {
 		}
 	}
 
+	public boolean respondTo(String name) {
+		return messages.containsKey(name);
+	}
+
 	public void message(String name, BsCodeData data) {
 		messages.put(name, new BsMessageData(new BsMessageCode(data),
 				data.arguments.size(), name));

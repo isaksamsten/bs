@@ -33,7 +33,7 @@ public class MessageNode extends AbstractNode {
 
 	@Override
 	public Object visit(Interpreter visitor) {
-		return visitor.visitMessage(this);
+		return visitor.interpretMessage(this);
 	}
 
 	@Override

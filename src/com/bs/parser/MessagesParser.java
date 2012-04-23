@@ -26,7 +26,6 @@ public class MessagesParser extends BsParser<MessagesNode> {
 					&& (message = parser.parse(tokenizer().current())) != null) {
 				node.add(message);
 			}
-
 		} else {
 			messageHandler().error(tokenizer().current(),
 					MessageType.SYNTAX_ERROR, Message.UNEXPECTED_MESSAGE,

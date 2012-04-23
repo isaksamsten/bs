@@ -2,6 +2,7 @@ package com.bs.lang;
 
 import com.bs.lang.proto.BsBlock;
 import com.bs.lang.proto.BsBool;
+import com.bs.lang.proto.BsChar;
 import com.bs.lang.proto.BsComparable;
 import com.bs.lang.proto.BsEnumerable;
 import com.bs.lang.proto.BsError;
@@ -42,5 +43,6 @@ public final class BsConst {
 	public static final BsObject NameError = BsError.clone("NameError");
 	public static final BsObject SyntaxError = BsError.clone("SyntaxError");
 	public static final BsObject Symbol = new BsSymbol();
+	public static final BsObject Char = new BsChar();
 
 }

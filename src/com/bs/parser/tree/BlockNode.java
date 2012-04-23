@@ -45,7 +45,7 @@ public class BlockNode extends ExpressionNode {
 
 	@Override
 	public Object visit(Interpreter visitor) {
-		return visitor.visitBlock(this);
+		return visitor.interpretBlock(this);
 	}
 
 }

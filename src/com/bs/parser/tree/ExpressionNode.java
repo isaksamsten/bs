@@ -34,7 +34,7 @@ public class ExpressionNode extends StatementNode implements LiteralNode {
 
 	@Override
 	public Object visit(Interpreter visitor) {
-		return visitor.visitExpression(this);
+		return visitor.interpretExpression(this);
 	}
 
 	@Override

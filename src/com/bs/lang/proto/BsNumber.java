@@ -61,6 +61,16 @@ public class BsNumber extends BsObject {
 		return clone(result);
 	}
 
+	@BsRuntimeMessage(name = "next", arity = 0)
+	public BsObject next(BsObject self, BsObject... args) {
+		return clone(Bs.asNumber(self).intValue() + 1);
+	}
+
+	@BsRuntimeMessage(name = "prev", arity = 0)
+	public BsObject prev(BsObject self, BsObject... args) {
+		return clone(Bs.asNumber(self).intValue() + 1);
+	}
+
 	@BsRuntimeMessage(name = "--", arity = 1)
 	public BsObject range(BsObject self, BsObject... args) {
 		if (!args[0].instanceOf(BsConst.Number)) {
@@ -76,7 +86,12 @@ public class BsNumber extends BsObject {
 			return BsError.typeError("compareTo", args[0], BsConst.String);
 		}
 
-		return self.invoke("-", args);
+		return subtract(self, args);
+	}
+
+	@BsRuntimeMessage(name = "toString", arity = 0)
+	public BsObject toString(BsObject self, BsObject... args) {
+		return BsString.clone(Bs.asNumber(self).toString());
 	}
 
 	/**

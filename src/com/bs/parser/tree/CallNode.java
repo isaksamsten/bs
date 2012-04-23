@@ -35,7 +35,7 @@ public class CallNode extends ExpressionNode {
 
 	@Override
 	public Object visit(Interpreter visitor) {
-		return visitor.visitCall(this);
+		return visitor.interpretCall(this);
 	}
 
 }

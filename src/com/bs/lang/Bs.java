@@ -95,6 +95,15 @@ public final class Bs {
 	}
 
 	/**
+	 * 
+	 * @param obj
+	 * @return
+	 */
+	public static char asCharacter(BsObject obj) {
+		return obj.instanceOf(BsConst.Char) ? (Character) obj.value() : null;
+	}
+
+	/**
 	 * Return an instance of BsConst.String to its java String value
 	 * 
 	 * @param obj
@@ -177,7 +186,7 @@ public final class Bs {
 	 */
 	public static BsObject eval(Node node, Stack stack) {
 		BsInterpreter i = new BsInterpreter(stack);
-		return (BsObject) i.visit(node);
+		return (BsObject) i.interpret(node);
 	}
 
 	/**
