@@ -78,6 +78,12 @@ public class BsError extends BsObject {
 	public BsObject getMessage(BsObject self, BsObject... args) {
 		return self.slot(MESSAGE);
 	}
+	
+	@BsRuntimeMessage(name = "getStacktrace", arity = 0)
+	public BsObject getStacktrace(BsObject self, BsObject... args) {
+		return self.slot(STACK_TRACE);
+	}
+	
 
 	@BsRuntimeMessage(name = "setMessage", arity = 1)
 	public BsObject setMessage(BsObject self, BsObject... args) {

@@ -28,7 +28,7 @@ public class BsProto extends BsObject {
 		BsObject block = args[0];
 		BsObject ret = block.invoke("call");
 		if (ret.isError()) {
-			ret.slot("ignore", BsConst.True);
+			ret.slot(BsError.IGNORED, BsConst.True);
 		}
 
 		return ret;

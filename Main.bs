@@ -13,6 +13,11 @@ x := x map { | d |
 	20 * d.
 }.
 
+1--10; each { | x | 
+	System puts "hej".
+}.
+
+
 # Print the character after, after, i
 System puts ('i' next; next).
 ('a'--'d') each { | c |
@@ -62,13 +67,13 @@ x := True.
 
 e := Proto try {
 	[10, 10 + 10] each {| x | 
- 	 	System puts x * 10; * 20.
+ 	 	System puts xs * 10; * 20.
     }.
 }.
 
 e catch :NameError, { | e |
   	System puts "Caught NameError: " + e getMessage().
+  	e getStacktrace; each { | s | System puts s.}.
 }.
 
-e pass(). 
-System puts 210.
+System puts "Reached end".
