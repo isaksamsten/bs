@@ -32,6 +32,7 @@ System puts [1,2,3] map { | d |
 System puts "Test filter".
 System puts [1,2,3] filter { | d | d >= 2. }.
 System puts "Test filter".
+System puts((1 <(2)) and(2 >(0)) or(True)).
 
 System puts 10 next; next; next.
 

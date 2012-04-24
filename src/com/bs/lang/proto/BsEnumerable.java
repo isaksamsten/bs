@@ -35,6 +35,25 @@ public class BsEnumerable extends BsObject {
 
 		return each("(block call e) ifTrue { list << e. }.", self, args[0]);
 	}
+	
+	@BsRuntimeMessage(name = "any?", arity = 1)
+	public BsObject any(BsObject self, BsObject... args) {
+		if (!args[0].instanceOf(BsConst.Block)) {
+			return BsError.typeError("any?", args[0], BsConst.Block);
+		}
+
+		return each("(block call e) ifTrue { return(True). }.", self, args[0]);
+	}
+	
+	@BsRuntimeMessage(name = "all?", arity = 1)
+	public BsObject all(BsObject self, BsObject... args) {
+		if (!args[0].instanceOf(BsConst.Block)) {
+			return BsError.typeError("any?", args[0], BsConst.Block);
+		}
+
+		return each("(block call e) ifFalse { return(False). }.", self, args[0]);
+	}
+	
 
 	/**
 	 * Iterate over subclass, executing code in context of each object

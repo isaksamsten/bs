@@ -36,12 +36,12 @@ public class BsBool extends BsObject {
 		}
 	}
 
-	@BsRuntimeMessage(name = "and", arity = 1, aliases = { "&" })
+	@BsRuntimeMessage(name = "and", arity = 1, aliases = { "&", "/\\" })
 	public BsObject and(BsObject self, BsObject... args) {
 		return Bs.bool(Bs.asBoolean(self) && Bs.asBoolean(args[0]));
 	}
 
-	@BsRuntimeMessage(name = "or", arity = 1, aliases = { "/\\" })
+	@BsRuntimeMessage(name = "or", arity = 1, aliases = { "\\/" })
 	public BsObject or(BsObject self, BsObject... args) {
 		return Bs.bool(Bs.asBoolean(self) || Bs.asBoolean(args[0]));
 	}

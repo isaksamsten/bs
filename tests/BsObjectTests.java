@@ -122,11 +122,14 @@ public class BsObjectTests {
 	@Test
 	public void testBoolean() {
 		assertEquals(BsConst.True, Bs.eval("True & True."));
-		assertEquals(BsConst.True, Bs.eval("True /\\ True."));
-		assertEquals(BsConst.True, Bs.eval("True /\\ False."));
-		assertEquals(BsConst.True, Bs.eval("True /\\ False."));
+		assertEquals(BsConst.True, Bs.eval("True \\/ True."));
+		assertEquals(BsConst.True, Bs.eval("True \\/ False."));
+		assertEquals(BsConst.True, Bs.eval("True \\/ False."));
 		assertEquals(BsConst.False, Bs.eval("True & False."));
 		assertEquals(BsConst.False, Bs.eval("False & False."));
+		assertEquals(Bs.eval("True /\\ True."), Bs.eval("True & True."));
+		assertEquals(Bs.eval("True and True."), Bs.eval("True & True."));
+		assertEquals(Bs.eval("True and True."), Bs.eval("True /\\ True."));
 	}
 
 	@Test
