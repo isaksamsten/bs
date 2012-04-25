@@ -56,12 +56,19 @@ public final class Bs {
 		builtin.slot(Enumerable);
 
 		/*
+		 * IO
+		 */
+		builtin.slot(BsConst.IO);
+		builtin.slot(BsConst.Reader);
+
+		/*
 		 * Errors
 		 */
 		builtin.slot(Error);
 		builtin.slot(SyntaxError);
 		builtin.slot(NameError);
 		builtin.slot(TypeError);
+		builtin.slot(BsConst.IOError);
 	}
 
 	/**
@@ -73,6 +80,10 @@ public final class Bs {
 	 */
 	public static boolean asBoolean(BsObject obj) {
 		return obj != null && obj == BsConst.True;
+	}
+
+	public static Object to(BsObject obj, Class<?> cl) {
+		return cl.cast(obj.value());
 	}
 
 	/**

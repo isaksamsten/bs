@@ -42,6 +42,11 @@ public class BsError extends BsObject {
 				"%s %s() takes %d arguments (%d given)", self.prototype()
 						.name(), method, expected, got);
 	}
+	
+
+	public static BsObject IOError(String message) {
+		return raise(BsConst.IOError, message);
+	}
 
 	public static BsObject subClassResponsibility() {
 		return raise("Method should be implemented by subclasses");
@@ -138,4 +143,5 @@ public class BsError extends BsObject {
 
 		return clone(Bs.asString(args[0]));
 	}
+
 }

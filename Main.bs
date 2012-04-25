@@ -29,6 +29,9 @@ System puts [1,2,3] map { | d |
 	d * 10.
 }.
 
+a := System read.
+System puts a.
+
 System puts "Test filter".
 System puts [1,2,3] filter { | d | d >= 2. }.
 System puts "Test filter".

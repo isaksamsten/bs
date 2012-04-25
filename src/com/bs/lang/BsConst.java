@@ -17,14 +17,15 @@ import com.bs.lang.proto.BsString;
 import com.bs.lang.proto.BsSymbol;
 import com.bs.lang.proto.BsSystem;
 import com.bs.lang.proto.BsTrue;
+import com.bs.lang.proto.io.BsIO;
+import com.bs.lang.proto.io.BsReader;
+import com.bs.lang.proto.io.BsWriter;
 
 public final class BsConst {
 
 	public static final BsObject Proto = new BsProto();
 	public static final BsObject Module = new BsModule();
 	public static final BsObject Comparable = new BsComparable();
-
-	public static final BsObject System = new BsSystem();
 
 	public static final BsObject Nil = new BsNil();
 	public static final BsObject Bool = new BsBool();
@@ -42,7 +43,15 @@ public final class BsConst {
 	public static final BsObject TypeError = BsError.clone("TypeError");
 	public static final BsObject NameError = BsError.clone("NameError");
 	public static final BsObject SyntaxError = BsError.clone("SyntaxError");
+	public static final BsObject IOError = BsError.clone("IOError");
+
 	public static final BsObject Symbol = new BsSymbol();
 	public static final BsObject Char = new BsChar();
+
+	public static final BsObject IO = new BsIO();
+	public static final BsObject Reader = new BsReader();
+	public static final BsObject Writer = new BsWriter();
+
+	public static final BsObject System = new BsSystem();
 
 }

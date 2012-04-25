@@ -4,8 +4,11 @@ import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.commons.lang3.ArrayUtils;
+
 import com.bs.lang.annot.BsRuntimeMessage;
 import com.bs.lang.proto.BsError;
+import com.bs.lang.proto.BsString;
 
 /**
  * 
@@ -98,7 +101,6 @@ public class BsObject {
 	}
 
 	protected void initRuntimeMethods() {
-
 		Method[] methods = klass.getMethods();
 		for (Method m : methods) {
 			BsRuntimeMessage brm = m.getAnnotation(BsRuntimeMessage.class);
@@ -204,9 +206,12 @@ public class BsObject {
 		BsMessage msg = message(message);
 		if (msg != null) {
 			return msg.invoke(this, args);
-		} else {
-			return BsError.nameError(message, this.prototype());
+		} else if (respondTo("methodMissing")) {
+			args = ArrayUtils.add(args, 0, BsString.clone(message));
+			return message("methodMissing").invoke(this, args);
 		}
+
+		return BsError.nameError(message, this.prototype());
 	}
 
 	public BsObject slot(String key) {
