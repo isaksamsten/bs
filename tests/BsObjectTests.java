@@ -40,6 +40,22 @@ public class BsObjectTests {
 	}
 
 	@Test
+	public void testJavaIterop() {
+		BsObject java = BsConst.Java.invoke("new",
+				BsString.clone("java.lang.String"), BsString.clone("Value"));
+
+		BsObject ret = java.invoke("toString");
+		System.out.println(ret);
+
+		java = BsConst.Java.invoke("new", BsString.clone("java.io.File"),
+				BsString.clone("test.bs"));
+
+		System.out.println(java.invoke("exists").value());
+
+		System.out.println(java.value());
+	}
+
+	@Test
 	public void testList() {
 		BsObject list = Bs.eval("[10, 20, 30, dsadsa].");
 		assertEquals(true, list.instanceOf(BsConst.NameError));

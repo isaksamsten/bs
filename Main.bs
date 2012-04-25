@@ -18,6 +18,11 @@ x := x map { | d |
 }.
 
 
+f := Java new "java.io.File", "test.bs".
+e := f exists.
+
+System puts e.
+
 # Print the character after, after, i
 System puts ('i' next; next).
 ('a'--'d') each { | c |

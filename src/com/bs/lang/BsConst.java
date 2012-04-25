@@ -21,6 +21,7 @@ import com.bs.lang.proto.io.BsFile;
 import com.bs.lang.proto.io.BsIO;
 import com.bs.lang.proto.io.BsReader;
 import com.bs.lang.proto.io.BsWriter;
+import com.bs.lang.proto.java.BsJava;
 
 public final class BsConst {
 
@@ -55,5 +56,6 @@ public final class BsConst {
 	public static final BsObject File = new BsFile();
 
 	public static final BsObject System = new BsSystem();
+	public static final BsObject Java = new BsJava();
 
 }

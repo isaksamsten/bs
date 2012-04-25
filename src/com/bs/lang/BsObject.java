@@ -206,9 +206,9 @@ public class BsObject {
 		BsMessage msg = message(message);
 		if (msg != null) {
 			return msg.invoke(this, args);
-		} else if (respondTo("methodMissing")) {
+		} else if ((msg = message("messageMissing")) != null) {
 			args = ArrayUtils.add(args, 0, BsString.clone(message));
-			return message("methodMissing").invoke(this, args);
+			return msg.invoke(this, args);
 		}
 
 		return BsError.nameError(message, this.prototype());

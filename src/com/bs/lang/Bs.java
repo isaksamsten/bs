@@ -56,6 +56,11 @@ public final class Bs {
 		builtin.slot(Enumerable);
 
 		/*
+		 * Java interop
+		 */
+		builtin.slot(BsConst.Java);
+
+		/*
 		 * IO
 		 */
 		builtin.slot(BsConst.IO);
