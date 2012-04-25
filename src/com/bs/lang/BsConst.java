@@ -46,6 +46,7 @@ public final class BsConst {
 	public static final BsObject NameError = BsError.clone("NameError");
 	public static final BsObject SyntaxError = BsError.clone("SyntaxError");
 	public static final BsObject IOError = BsError.clone("IOError");
+	public static final BsObject JavaError = BsError.clone("JavaError");
 
 	public static final BsObject Symbol = new BsSymbol();
 	public static final BsObject Char = new BsChar();

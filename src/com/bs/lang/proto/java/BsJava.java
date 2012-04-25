@@ -1,7 +1,6 @@
 package com.bs.lang.proto.java;
 
 import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 
@@ -10,6 +9,7 @@ import com.bs.lang.BsConst;
 import com.bs.lang.BsObject;
 import com.bs.lang.annot.BsRuntimeMessage;
 import com.bs.lang.proto.BsError;
+import com.bs.lang.proto.BsNumber;
 import com.bs.lang.proto.BsString;
 
 public class BsJava extends BsObject {
@@ -36,7 +36,7 @@ public class BsJava extends BsObject {
 		initRuntimeMethods();
 	}
 
-	@BsRuntimeMessage(name = "messageMissing", arity = -1)
+	@BsRuntimeMessage(name = Bs.METHOD_MISSING, arity = -1)
 	public BsObject methodMissing(BsObject self, BsObject... args) {
 		String name = Bs.asString(args[0]);
 		BsJavaData data = self.value();
@@ -46,14 +46,11 @@ public class BsJava extends BsObject {
 		for (int n = 1; n < args.length; n++) {
 			Object value = args[n].value();
 			if (value != null) {
-				if (value instanceof BsJavaData) {
-					classes[n] = ((BsJavaData) value).cls;
-				} else {
-					classes[n] = value.getClass();
-				}
+				classes[n] = getClass(value);
 				arguments[n] = value;
 			} else {
-				return BsError.raise("Fail to convert to java");
+				return BsError
+						.javaError("Unsupported type in invokation (is it really a Java type?)");
 			}
 		}
 
@@ -61,10 +58,9 @@ public class BsJava extends BsObject {
 			Method method = data.cls.getMethod(name, classes);
 			Object ret = method.invoke(data.instance, arguments);
 
-			data = new BsJavaData(ret.getClass(), ret);
-			return BsObject.value(BsConst.Java, data);
+			return getBsObject(ret.getClass(), ret);
 		} catch (Exception e) {
-			return BsError.nameError(e.getMessage());
+			return BsError.javaError(e.getMessage());
 		}
 	}
 
@@ -86,7 +82,7 @@ public class BsJava extends BsObject {
 			}
 
 			if (ctor == null) {
-				return BsError.nameError("new");
+				return BsError.javaError("No such Constructor");
 			}
 
 			Type[] types = ctor.getGenericParameterTypes();
@@ -97,7 +93,7 @@ public class BsJava extends BsObject {
 			} else {
 				Object[] arguments = new Object[types.length];
 				for (int n = 1; n < args.length; n++) {
-					Object obj = args[n].value();
+					Object obj = getValue(args[n].value());
 					if (obj == null) {
 						return BsError.typeError("new", BsConst.Nil,
 								BsConst.Java);
@@ -112,7 +108,7 @@ public class BsJava extends BsObject {
 			}
 
 		} catch (Exception e) {
-			return BsError.nameError(e.getMessage());
+			return BsError.javaError(e.getMessage());
 		}
 	}
 
@@ -122,15 +118,62 @@ public class BsJava extends BsObject {
 	}
 
 	/**
+	 * 
+	 * @param obj
+	 * @return
+	 */
+	protected Class<?> getClass(Object obj) {
+		if (obj instanceof BsJavaData) {
+			return ((BsJavaData) obj).cls;
+		} else {
+			return obj.getClass();
+		}
+	}
+
+	protected Object getValue(Object obj) {
+		if (obj instanceof BsJavaData) {
+			return ((BsJavaData) obj).instance;
+		} else if (obj == BsConst.True) {
+			return true;
+		} else if (obj == BsConst.False) {
+			return false;
+		} else if (obj == BsConst.Nil) {
+			return null;
+		} else {
+			return obj;
+		}
+	}
+
+	protected BsObject getBsObject(Class<?> cls, Object value) {
+		if (value instanceof Number) {
+			return BsNumber.clone((Number) value);
+		} else if (value instanceof String) {
+			return BsString.clone((String) value);
+		} else if (value instanceof Boolean) {
+			if ((Boolean) value) {
+				return BsConst.True;
+			} else {
+				return BsConst.False;
+			}
+		} else if (value == null) {
+			return BsConst.Nil;
+		} else {
+			return BsObject.value(BsConst.Java, new BsJavaData(cls, value));
+		}
+	}
+
+	/**
 	 * @param types
 	 * @param args
 	 * @return
 	 */
-	protected boolean isCorrectType(Type[] types, BsObject... args) {
+	protected boolean isCorrectType(Type[] types, BsObject[] args) {
 		for (int i = 1; i < args.length; i++) {
 			Object object = args[i].value();
-			if (object != null && object.getClass() != types[i - 1]) {
-				return false;
+			if (object != null) {
+				Class<?> cls = getClass(object);
+				if (!((Class<?>) types[i - 1]).isAssignableFrom(cls))
+					return false;
 			}
 		}
 		return true;

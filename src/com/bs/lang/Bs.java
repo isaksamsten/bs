@@ -264,4 +264,8 @@ public final class Bs {
 		return eval(code, BsStack.getDefault());
 	}
 
+	public static final String NEW = "new";
+	public static final String CLONE = "clone";
+	public static final String METHOD_MISSING = "methodMissing";
+
 }

@@ -206,7 +206,7 @@ public class BsObject {
 		BsMessage msg = message(message);
 		if (msg != null) {
 			return msg.invoke(this, args);
-		} else if ((msg = message("messageMissing")) != null) {
+		} else if ((msg = message(Bs.METHOD_MISSING)) != null) {
 			args = ArrayUtils.add(args, 0, BsString.clone(message));
 			return msg.invoke(this, args);
 		}

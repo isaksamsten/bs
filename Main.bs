@@ -21,6 +21,10 @@ x := x map { | d |
 f := Java new "java.io.File", "test.bs".
 e := f exists.
 
+in := Java new("java.io.BufferedInputStream", Java new("java.io.FileInputStream", "test.bs")).
+
+System puts in markSupported.
+
 System puts e.
 
 # Print the character after, after, i

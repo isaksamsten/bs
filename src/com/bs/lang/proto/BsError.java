@@ -26,6 +26,16 @@ public class BsError extends BsObject {
 		return raise(BsConst.NameError, "name '%s' not defined", name);
 	}
 
+	public static BsObject javaError(String name, Throwable t) {
+		return raise(BsConst.JavaError,
+				"error in Java invokation '%s'. Trace: '%s'", name,
+				t.toString());
+	}
+
+	public static BsObject javaError(String name) {
+		return raise(BsConst.JavaError, "error in Java invokation '%s'", name);
+	}
+
 	public static BsObject syntaxError(String message) {
 		return raise(BsConst.SyntaxError, message);
 	}
@@ -42,7 +52,6 @@ public class BsError extends BsObject {
 				"%s %s() takes %d arguments (%d given)", self.prototype()
 						.name(), method, expected, got);
 	}
-	
 
 	public static BsObject IOError(String message) {
 		return raise(BsConst.IOError, message);
@@ -56,7 +65,6 @@ public class BsError extends BsObject {
 	public static final String MESSAGE = "message";
 	public static final String CAUGHT = "caught";
 	public static final String STACK_TRACE = "stackTrace";
-	
 
 	/**
 	 * Create a new Error type
@@ -83,12 +91,11 @@ public class BsError extends BsObject {
 	public BsObject getMessage(BsObject self, BsObject... args) {
 		return self.slot(MESSAGE);
 	}
-	
+
 	@BsRuntimeMessage(name = "getStacktrace", arity = 0)
 	public BsObject getStacktrace(BsObject self, BsObject... args) {
 		return self.slot(STACK_TRACE);
 	}
-	
 
 	@BsRuntimeMessage(name = "setMessage", arity = 1)
 	public BsObject setMessage(BsObject self, BsObject... args) {
