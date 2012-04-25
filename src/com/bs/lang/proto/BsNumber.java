@@ -8,6 +8,9 @@ import com.bs.lang.annot.BsRuntimeMessage;
 public class BsNumber extends BsObject {
 
 	public static BsObject clone(Number number) {
+		if(number==null) {
+			return BsConst.Nil;
+		}
 		return BsObject.value(BsConst.Number, number);
 	}
 

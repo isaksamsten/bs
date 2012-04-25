@@ -60,6 +60,8 @@ public final class Bs {
 		 */
 		builtin.slot(BsConst.IO);
 		builtin.slot(BsConst.Reader);
+		builtin.slot(BsConst.Writer);
+		builtin.slot(BsConst.File);
 
 		/*
 		 * Errors
@@ -232,8 +234,8 @@ public final class Bs {
 		if (o.isError()) {
 			BsObject obj = o.slot(BsError.STACK_TRACE);
 			BsObject str = BsString.clone(String.format(
-					"'%s' at line %d position %d", node.code(), node.line(),
-					node.position()));
+					"'%s' at line %d position %d", node.code().trim(),
+					node.line(), node.position()));
 			if (obj == null || obj.isNil()) {
 				List<BsObject> objs = new ArrayList<BsObject>();
 				objs.add(str);

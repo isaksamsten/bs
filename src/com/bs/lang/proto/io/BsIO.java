@@ -1,9 +1,12 @@
 package com.bs.lang.proto.io;
 
+import java.io.Closeable;
+import java.io.IOException;
+
 import com.bs.lang.BsConst;
 import com.bs.lang.BsObject;
 import com.bs.lang.annot.BsRuntimeMessage;
-import com.sun.xml.internal.ws.Closeable;
+import com.bs.lang.proto.BsError;
 
 public class BsIO extends BsObject {
 
@@ -15,7 +18,11 @@ public class BsIO extends BsObject {
 	@BsRuntimeMessage(name = "close", arity = 0)
 	public BsObject close(BsObject self, BsObject... args) {
 		Closeable reader = self.value();
-		reader.close();
+		try {
+			reader.close();
+		} catch (IOException e) {
+			return BsError.IOError(e.getMessage());
+		}
 		return self;
 	}
 }

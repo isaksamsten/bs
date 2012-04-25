@@ -24,4 +24,14 @@ public class BsNil extends BsObject {
 
 		return BsError.typeError("ifNil", args[0], BsConst.Block);
 	}
+	
+	@BsRuntimeMessage(name = "isNil?", arity = 0)
+	public BsObject isNil(BsObject self, BsObject... args) {
+		return BsConst.True;
+	}
+	
+	@BsRuntimeMessage(name = "isNonNil?", arity = 0)
+	public BsObject isNonNil(BsObject self, BsObject... args) {
+		return BsConst.False;
+	}
 }

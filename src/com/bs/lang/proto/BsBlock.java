@@ -60,6 +60,9 @@ public class BsBlock extends BsObject {
 	@BsRuntimeMessage(name = "whileTrue", arity = 1)
 	public BsObject whileTrue(BsObject self, BsObject... args) {
 		BsObject w = self.invoke("call");
+		if (w.isError()) {
+			return w;
+		}
 
 		BsObject last = BsConst.False;
 		while (Bs.asBoolean(w) && !Bs.asBoolean(args[0].slot(HAS_RETURNED))) {

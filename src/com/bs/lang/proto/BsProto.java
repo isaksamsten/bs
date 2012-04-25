@@ -99,6 +99,11 @@ public class BsProto extends BsObject {
 	public BsObject isNil(BsObject self, BsObject... args) {
 		return BsConst.False;
 	}
+	
+	@BsRuntimeMessage(name = "isNonNil?", arity = 0)
+	public BsObject isNonNil(BsObject self, BsObject... args) {
+		return BsConst.True;
+	}
 
 	@BsRuntimeMessage(name = "ifNil", arity = 1)
 	public BsObject ifNil(BsObject self, BsObject... args) {

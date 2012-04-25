@@ -1,6 +1,9 @@
 package com.bs.lang.proto.io;
 
 import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.Reader;
 
@@ -61,5 +64,21 @@ public class BsReader extends BsObject {
 		} catch (IOException e) {
 			return BsError.IOError(e.getMessage());
 		}
+	}
+
+	@BsRuntimeMessage(name = "init", arity = 1)
+	public BsObject init(BsObject self, BsObject... args) {
+		if (!args[0].instanceOf(BsConst.File)) {
+			return BsError.typeError("init", args[0], BsConst.File);
+		}
+
+		File file = args[0].value();
+		try {
+			self.value(new BufferedReader(new FileReader(file)));
+		} catch (FileNotFoundException e) {
+			return BsError.IOError(e.getMessage());
+		}
+
+		return self;
 	}
 }

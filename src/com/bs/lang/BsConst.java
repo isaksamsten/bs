@@ -17,6 +17,7 @@ import com.bs.lang.proto.BsString;
 import com.bs.lang.proto.BsSymbol;
 import com.bs.lang.proto.BsSystem;
 import com.bs.lang.proto.BsTrue;
+import com.bs.lang.proto.io.BsFile;
 import com.bs.lang.proto.io.BsIO;
 import com.bs.lang.proto.io.BsReader;
 import com.bs.lang.proto.io.BsWriter;
@@ -51,6 +52,7 @@ public final class BsConst {
 	public static final BsObject IO = new BsIO();
 	public static final BsObject Reader = new BsReader();
 	public static final BsObject Writer = new BsWriter();
+	public static final BsObject File = new BsFile();
 
 	public static final BsObject System = new BsSystem();
 

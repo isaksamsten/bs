@@ -1,5 +1,9 @@
 package com.bs.lang.proto.io;
 
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.OutputStream;
 import java.io.PrintStream;
 
@@ -53,6 +57,23 @@ public class BsWriter extends BsObject {
 		}
 
 		writer.format(Bs.asString(args[0]), str);
+		return self;
+	}
+
+	@BsRuntimeMessage(name = "init", arity = 1)
+	public BsObject init(BsObject self, BsObject... args) {
+		if (!args[0].instanceOf(BsConst.File)) {
+			return BsError.typeError("init", args[0], BsConst.File);
+		}
+
+		File file = args[0].value();
+		try {
+			self.value(new PrintStream(new BufferedOutputStream(
+					new FileOutputStream(file))));
+		} catch (FileNotFoundException e) {
+			return BsError.IOError(e.getMessage());
+		}
+
 		return self;
 	}
 }

@@ -29,6 +29,20 @@ System puts [1,2,3] map { | d |
 	d * 10.
 }.
 
+file := File clone "test.bs".
+reader := Reader clone file.
+line := reader readLine.
+System puts line.
+{line isNonNil?.} whileTrue {
+	System puts line.	
+	line := reader readLine.
+}.
+reader close.
+
+
+
+System puts file exist?.
+
 a := System read.
 System puts a.
 
