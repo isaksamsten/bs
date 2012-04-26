@@ -3,12 +3,17 @@ package com.bs.lang.proto.java;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.List;
 
 import com.bs.lang.Bs;
 import com.bs.lang.BsConst;
 import com.bs.lang.BsObject;
 import com.bs.lang.annot.BsRuntimeMessage;
 import com.bs.lang.proto.BsError;
+import com.bs.lang.proto.BsList;
 import com.bs.lang.proto.BsNumber;
 import com.bs.lang.proto.BsString;
 
@@ -46,8 +51,8 @@ public class BsJava extends BsObject {
 		for (int n = 1; n < args.length; n++) {
 			Object value = args[n].value();
 			if (value != null) {
-				classes[n] = getClass(value);
-				arguments[n] = value;
+				classes[n - 1] = getClass(value);
+				arguments[n - 1] = value;
 			} else {
 				return BsError
 						.javaError("Unsupported type in invokation (is it really a Java type?)");
@@ -55,13 +60,44 @@ public class BsJava extends BsObject {
 		}
 
 		try {
-			Method method = data.cls.getMethod(name, classes);
+			Method method = getMethod(data.cls, name, classes);
 			Object ret = method.invoke(data.instance, arguments);
 
-			return getBsObject(ret.getClass(), ret);
+			return ret == null ? BsConst.Nil : getBsObject(ret.getClass(), ret);
 		} catch (Exception e) {
 			return BsError.javaError(e.getMessage());
 		}
+	}
+
+	/**
+	 * This is slow! :(
+	 * 
+	 * @param cls
+	 * @param name
+	 * @return
+	 */
+	protected Method getMethod(Class<?> cls, String name, Class<?>[] parameters) {
+		Method[] methods = cls.getMethods();
+		for (Method method : methods) {
+			if (!method.getName().equals(name)) {
+				continue;
+			}
+			Class<?>[] parameterTypes = method.getParameterTypes();
+			if (parameterTypes.length != parameters.length) {
+				continue;
+			}
+			boolean matches = true;
+			for (int i = 0; i < parameterTypes.length; i++) {
+				if (!parameterTypes[i].isAssignableFrom(parameters[i])) {
+					matches = false;
+					break;
+				}
+			}
+			if (matches) {
+				return method;
+			}
+		}
+		return null;
 	}
 
 	@BsRuntimeMessage(name = "new", arity = -1)
@@ -116,7 +152,8 @@ public class BsJava extends BsObject {
 
 	@BsRuntimeMessage(name = "toString", arity = 0)
 	public BsObject toString(BsObject self, BsObject... args) {
-		return BsString.clone("Java" + self.value());
+		BsJavaData data = self.value();
+		return BsString.clone(data.instance.toString());
 	}
 
 	/**
@@ -159,6 +196,28 @@ public class BsJava extends BsObject {
 			}
 		} else if (value == null) {
 			return BsConst.Nil;
+		} else if (value instanceof List) {
+			List<BsObject> obj = new ArrayList<BsObject>();
+			List<Object> list = (List<Object>) value;
+			for (Object o : list) {
+				if (o == null) {
+					obj.add(BsConst.Nil);
+				} else {
+					obj.add(getBsObject(o.getClass(), o));
+				}
+			}
+			return BsList.create(obj);
+		} else if (cls.isArray()) {
+			List<BsObject> obj = new ArrayList<BsObject>();
+			Object[] list = (Object[]) value;
+			for (Object o : list) {
+				if (o == null) {
+					obj.add(BsConst.Nil);
+				} else {
+					obj.add(getBsObject(o.getClass(), o));
+				}
+			}
+			return BsList.create(obj);
 		} else {
 			return BsObject.value(BsConst.Java, new BsJavaData(cls, value));
 		}
