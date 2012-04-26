@@ -107,6 +107,8 @@ public class BsJava extends BsObject {
 				return BsObject.value(BsConst.Java, data);
 			}
 
+		} catch (ClassNotFoundException e) {
+			return BsError.javaError("class not found: '%s'", e.getMessage());
 		} catch (Exception e) {
 			return BsError.javaError(e.getMessage());
 		}

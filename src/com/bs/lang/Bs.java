@@ -19,6 +19,7 @@ import static com.bs.lang.BsConst.TypeError;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -184,6 +185,17 @@ public final class Bs {
 	}
 
 	/**
+	 * Evaluate a string of code in the default stack
+	 * 
+	 * @param code
+	 * @return
+	 */
+	public static BsObject eval(String code, Stack stack) {
+		BsCompiler compiler = new BsCompiler();
+		return compiler.eval(code, stack);
+	}
+
+	/**
 	 * Compile a string of code that will evaluate in stack
 	 * 
 	 * @param code
@@ -228,6 +240,16 @@ public final class Bs {
 			return BsError.raise(e.getMessage());
 		}
 
+	}
+
+	public static BsObject evalRepl(String code, Stack stack) {
+		BsCompiler compile = new BsCompiler();
+		Node node = compile.parse(new StringReader(code), stack);
+		if (compile.hasError()) {
+			return compile.error();
+		} else {
+			return eval(node, stack);
+		}
 	}
 
 	/**

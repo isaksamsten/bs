@@ -32,8 +32,9 @@ public class BsError extends BsObject {
 				t.toString());
 	}
 
-	public static BsObject javaError(String name) {
-		return raise(BsConst.JavaError, "error in Java invokation '%s'", name);
+	public static BsObject javaError(String msg, Object... args) {
+		return raise(BsConst.JavaError, "error in Java invokation '%s'",
+				msg);
 	}
 
 	public static BsObject syntaxError(String message) {

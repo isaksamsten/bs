@@ -22,10 +22,16 @@ f := Java new "java.io.File", "test.bs".
 e := f exists.
 
 in := Java new("java.io.BufferedInputStream", Java new("java.io.FileInputStream", "test.bs")).
-
+scanner := Java new ("java.util.Scanner", f).
 System puts in markSupported.
 
 System puts e.
+
+line := scanner nextLine.
+{scanner hasNextLine.} whileTrue {
+	System puts line.
+	line := scanner nextLine.
+}.
 
 # Print the character after, after, i
 System puts ('i' next; next).

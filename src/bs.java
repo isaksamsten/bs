@@ -23,33 +23,64 @@ import com.bs.util.PrintStreamMessageListener;
 public class bs {
 
 	public static void main(String[] args) throws FileNotFoundException {
-		args = new String[] { "Main.bs" };
-		MessageHandler handler = new MessageHandler();
-		handler.add(new PrintStreamMessageListener(System.out));
+		// args = new String[] { "Main.bs" };
 
-		BsObject module = BsModule.create(args[0]);
-		Stack stack = BsStack.getDefault();
-		stack.push(module);
+		if (args.length > 0) {
+			MessageHandler handler = new MessageHandler();
+			handler.add(new PrintStreamMessageListener(System.out));
 
-		Scanner sc = new BsScanner(new FileReader(new File(args[0])));
-		Tokenizer tz = new BsTokenizer(sc, new DefaultTokenFactory(), handler,
-				'#');
-		StatementsParser parser = new StatementsParser(tz,
-				new DefaultNodeFactory(), handler);
+			BsObject module = BsModule.create(args[0]);
+			Stack stack = BsStack.getDefault();
+			stack.push(module);
 
-		Node code = parser.parse();
+			Scanner sc = new BsScanner(new FileReader(new File(args[0])));
+			Tokenizer tz = new BsTokenizer(sc, new DefaultTokenFactory(),
+					handler, '#');
+			StatementsParser parser = new StatementsParser(tz,
+					new DefaultNodeFactory(), handler);
 
-		if (handler.errors() == 0) {
-			BsObject value = Bs.eval(code, BsStack.getDefault());
-			if (value.isError()) {
-				System.out.println("Traceback (most recent call first):\n  "
-						+ value);
-				List<BsObject> stackTrace = value.slot(BsError.STACK_TRACE)
-						.value();
-				for (BsObject str : stackTrace) {
-					System.out.println("\t" + Bs.asString(str));
+			Node code = parser.parse();
+
+			if (handler.errors() == 0) {
+				BsObject value = Bs.eval(code, BsStack.getDefault());
+				if (value.isError()) {
+					printError(value);
 				}
 			}
+		} else {
+			java.util.Scanner scanner = new java.util.Scanner(System.in);
+			BsObject module = BsModule.create("<stdin>");
+			Stack stack = BsStack.getDefault();
+			stack.push(module);
+			while (true) {
+				String code = read(scanner, ">> ");
+				BsObject obj = Bs.evalRepl(code, stack);
+				if (obj.isError()) {
+					printError(obj);
+				} else {
+					System.out.println(obj);
+				}
+			}
+
 		}
+	}
+
+	/**
+	 * @param value
+	 */
+	protected static void printError(BsObject value) {
+		System.out.println("Traceback (most recent call first):\n  " + value);
+		List<BsObject> stackTrace = value.slot(BsError.STACK_TRACE).value();
+		if (stackTrace != null) {
+			for (BsObject str : stackTrace) {
+				System.out.println("\t" + Bs.asString(str));
+			}
+		}
+
+	}
+
+	private static String read(java.util.Scanner scanner, String promt) {
+		System.out.print(promt);
+		return scanner.nextLine();
 	}
 }
