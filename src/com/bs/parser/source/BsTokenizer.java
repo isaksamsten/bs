@@ -133,8 +133,9 @@ public class BsTokenizer implements Tokenizer {
 			c = scanner().next();
 		}
 		scanner.next(); // consume "
-		return factory.string(builder.toString(), scanner.line(),
-				scanner.position());
+		return factory.string(
+				StringEscapeUtils.unescapeJava(builder.toString()),
+				scanner.line(), scanner.position());
 	}
 
 	protected Token extractSpecial() {

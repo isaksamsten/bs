@@ -27,6 +27,12 @@ public class BsRange extends BsObject {
 		initRuntimeMethods();
 	}
 
+	@BsRuntimeMessage(name = "toString", arity = 0)
+	public BsObject toString(BsObject self, BsObject... args) {
+		return BsString.clone(Bs.asString(self.slot(MIN).invoke("toString")) + "--"
+				+ Bs.asString(self.slot(MAX).invoke("toString")));
+	}
+
 	@BsRuntimeMessage(name = "each", arity = 1)
 	public BsObject each(BsObject self, BsObject... args) {
 		if (!args[0].instanceOf(BsConst.Block)) {

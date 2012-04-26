@@ -4,8 +4,6 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Comparator;
 import java.util.List;
 
 import com.bs.lang.Bs;
@@ -88,7 +86,8 @@ public class BsJava extends BsObject {
 			}
 			boolean matches = true;
 			for (int i = 0; i < parameterTypes.length; i++) {
-				if (!parameterTypes[i].isAssignableFrom(parameters[i])) {
+				if (!convertClass(parameterTypes[i]).isAssignableFrom(
+						parameters[i])) {
 					matches = false;
 					break;
 				}
@@ -156,6 +155,26 @@ public class BsJava extends BsObject {
 		return BsString.clone(data.instance.toString());
 	}
 
+	protected Class<?> convertClass(Class<?> cls) {
+		if (cls == int.class) {
+			return Integer.class;
+		} else if (cls == long.class) {
+			return Long.class;
+		} else if (cls == double.class) {
+			return Double.class;
+		} else if (cls == float.class) {
+			return Float.class;
+		} else if (cls == boolean.class) {
+			return Boolean.class;
+		} else if (cls == char.class) {
+			return Character.class;
+		} else if (cls == byte.class) {
+			return Byte.class;
+		} else {
+			return cls;
+		}
+	}
+
 	/**
 	 * 
 	 * @param obj
@@ -183,6 +202,7 @@ public class BsJava extends BsObject {
 		}
 	}
 
+	@SuppressWarnings("unchecked")
 	protected BsObject getBsObject(Class<?> cls, Object value) {
 		if (value instanceof Number) {
 			return BsNumber.clone((Number) value);

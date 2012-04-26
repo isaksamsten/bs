@@ -16,7 +16,11 @@ x := x map { | d |
 1--10; each { | x | 
 	System puts "hej".
 }.
-
+file := new("java.io.File", "output.put").
+fileWriter := new("java.io.PrintWriter", file).
+fileWriter print "Hello world\n".
+fileWriter print 86.
+fileWriter flush.
 
 f := Java new "java.io.File", "test.bs".
 e := f exists.
@@ -26,6 +30,9 @@ scanner := Java new ("java.util.Scanner", f).
 System puts in markSupported.
 
 System puts e.
+
+
+
 
 line := scanner nextLine.
 {scanner hasNextLine.} whileTrue {

@@ -8,7 +8,7 @@ import com.bs.lang.annot.BsRuntimeMessage;
 public class BsNumber extends BsObject {
 
 	public static BsObject clone(Number number) {
-		if(number==null) {
+		if (number == null) {
 			return BsConst.Nil;
 		}
 		return BsObject.value(BsConst.Number, number);
@@ -107,7 +107,11 @@ public class BsNumber extends BsObject {
 		if (isFloat(lhs) || isFloat(rhs)) {
 			result = lhs.doubleValue() + rhs.doubleValue();
 		} else {
-			result = lhs.intValue() + rhs.intValue();
+			if (isLong(lhs) || isLong(rhs)) {
+				result = lhs.longValue() + lhs.longValue();
+			} else {
+				result = lhs.intValue() + rhs.intValue();
+			}
 		}
 		return result;
 	}
@@ -122,7 +126,11 @@ public class BsNumber extends BsObject {
 		if (isFloat(lhs) || isFloat(rhs)) {
 			result = lhs.doubleValue() - rhs.doubleValue();
 		} else {
-			result = lhs.intValue() - rhs.intValue();
+			if (isLong(lhs) || isLong(rhs)) {
+				result = lhs.longValue() - lhs.longValue();
+			} else {
+				result = lhs.intValue() - rhs.intValue();
+			}
 		}
 		return result;
 	}
@@ -137,7 +145,11 @@ public class BsNumber extends BsObject {
 		if (isFloat(lhs) || isFloat(rhs)) {
 			result = lhs.doubleValue() * rhs.doubleValue();
 		} else {
-			result = lhs.intValue() * rhs.intValue();
+			if (isLong(lhs) || isLong(rhs)) {
+				result = lhs.longValue() * lhs.longValue();
+			} else {
+				result = lhs.intValue() * rhs.intValue();
+			}
 		}
 		return result;
 	}
@@ -152,7 +164,11 @@ public class BsNumber extends BsObject {
 		if (isFloat(lhs) || isFloat(rhs)) {
 			result = lhs.doubleValue() / rhs.doubleValue();
 		} else {
-			result = lhs.intValue() / rhs.intValue();
+			if (isLong(lhs) || isLong(rhs)) {
+				result = lhs.longValue() / lhs.longValue();
+			} else {
+				result = lhs.intValue() / rhs.intValue();
+			}
 		}
 		return result;
 	}
@@ -165,6 +181,10 @@ public class BsNumber extends BsObject {
 	protected Number modulo(Number lhs, Number rhs) {
 		int result = lhs.intValue() % rhs.intValue();
 		return result;
+	}
+
+	private boolean isLong(Number n) {
+		return n != null && n instanceof Long;
 	}
 
 	private boolean isFloat(Number n) {
