@@ -95,11 +95,16 @@ public class BsProto extends BsObject {
 		return self;
 	}
 
+	@BsRuntimeMessage(name = "new", arity = -1)
+	public BsObject new_(BsObject self, BsObject... args) {
+		return BsConst.Java.invoke("new", args);
+	}
+
 	@BsRuntimeMessage(name = "isNil?", arity = 0)
 	public BsObject isNil(BsObject self, BsObject... args) {
 		return BsConst.False;
 	}
-	
+
 	@BsRuntimeMessage(name = "isNonNil?", arity = 0)
 	public BsObject isNonNil(BsObject self, BsObject... args) {
 		return BsConst.True;
