@@ -11,7 +11,8 @@ public class BsMessageCode implements BsCode {
 
 	@Override
 	public BsObject execute(BsObject self, BsObject... args) {
-		return BsBlock.execute(data, self, args);
+		BsObject object = BsObject.clone(BsConst.Block); // exteral scope
+		return BsBlock.execute(data, object, args);
 	}
 
 	@Override

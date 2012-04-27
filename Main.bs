@@ -1,15 +1,24 @@
-Scanner := import("java.util.Scanner").
-sc := Scanner new System -> :in.
+#Scanner := import("java.util.Scanner").
+#sc := Scanner new System -> :in.
 
-{sc hasNextLine.} whileTrue {
-    line := sc nextLine.
-    (line = "exit") ifTrue {
-    	System puts "Line is exit".
-        return(Nil).
-    }.
-    System puts line.
-}.
+#{sc hasNextLine.} whileTrue {
+#    line := sc nextLine.
+#    (line = "exit") ifTrue {
+#    	System puts "Line is exit".
+#        return(Nil).
+#    }.
+#    System puts line.
+#}.
 
+<<=(:fib, { | self, n |
+   (n <= 1) ifTrue {
+      return(n).
+   }, {
+      return(self fib(n - 1) + self fib(n - 2)).
+   }.
+}).
+System puts "fib".
+System puts fib(8).
 
 a := Module load "test.bs".
 person := Module load "Person.bs".
