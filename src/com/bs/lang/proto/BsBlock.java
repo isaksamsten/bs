@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.bs.interpreter.stack.Stack;
 import com.bs.lang.Bs;
+import com.bs.lang.BsAbstractProto;
 import com.bs.lang.BsCodeData;
 import com.bs.lang.BsConst;
 import com.bs.lang.BsObject;
@@ -12,12 +13,12 @@ import com.bs.lang.annot.BsRuntimeMessage;
 import com.bs.parser.tree.Node;
 
 @BsProto(name = "Block")
-public class BsBlock extends BsObject {
+public class BsBlock extends BsAbstractProto {
 
 	public static BsObject create(List<String> args, Node statements) {
 		BsObject obj = BsObject.value(BsConst.Block, new BsCodeData(args,
 				statements));
-		obj.slot(ARITY, BsNumber.clone(args.size()));
+		obj.setSlot(ARITY, BsNumber.clone(args.size()));
 		return obj;
 	}
 
@@ -26,7 +27,6 @@ public class BsBlock extends BsObject {
 
 	public BsBlock() {
 		super(BsConst.Proto, "Block", BsBlock.class);
-		initRuntimeMethods();
 	}
 
 	public BsBlock(Class<?> c) {
@@ -35,12 +35,12 @@ public class BsBlock extends BsObject {
 
 	@BsRuntimeMessage(name = "arity", arity = 0)
 	public BsObject arity(BsObject self, BsObject... args) {
-		return self.slot(ARITY);
+		return self.getSlot(ARITY);
 	}
 
 	@BsRuntimeMessage(name = "hasReturned", arity = 0)
 	public BsObject hasReturned(BsObject self, BsObject... args) {
-		return self.slot(HAS_RETURNED);
+		return self.getSlot(HAS_RETURNED);
 	}
 
 	@BsRuntimeMessage(name = "setReturned", arity = 1)
@@ -48,7 +48,7 @@ public class BsBlock extends BsObject {
 		if (!args[0].instanceOf(BsConst.Bool)) {
 			return BsError.typeError("setReturned", args[0], BsConst.Bool);
 		}
-		self.slot(HAS_RETURNED, args[0]);
+		self.setSlot(HAS_RETURNED, args[0]);
 		return self;
 	}
 
@@ -65,19 +65,20 @@ public class BsBlock extends BsObject {
 		}
 
 		BsObject last = BsConst.False;
-		while (Bs.asBoolean(w) && !Bs.asBoolean(args[0].slot(HAS_RETURNED))) {
+		while (Bs.asBoolean(w) && !Bs.asBoolean(args[0].getSlot(HAS_RETURNED))) {
 			last = args[0].invoke("call");
-			w = self.invoke("call");
 			if (last.isBreak()) {
 				return last;
 			}
+
+			w = self.invoke("call");
 		}
 
 		return last;
 	}
 
 	/**
-	 * Execut a BsCodeData object in the context of self, with args arguments.
+	 * Execute a BsCodeData object in the context of self, with args arguments.
 	 * 
 	 * @param data
 	 * @param self
@@ -88,7 +89,7 @@ public class BsBlock extends BsObject {
 			BsObject... args) {
 		if (data.arguments.size() == args.length) {
 			for (int n = 0; n < args.length; n++) {
-				self.slot(data.arguments.get(n), args[n]);
+				self.setSlot(data.arguments.get(n), args[n]);
 			}
 
 			Stack stack = data.stack;
@@ -96,10 +97,7 @@ public class BsBlock extends BsObject {
 			BsObject ret = Bs.eval(data.code, stack);
 			stack.pop();
 			if (ret.isBreak()) {
-				if (ret.isReturning()) {
-					ret.setReturning(false);
-				}
-				self.slot(HAS_RETURNED, BsConst.True);
+				self.setSlot(HAS_RETURNED, BsConst.True);
 			}
 
 			return ret;

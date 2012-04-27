@@ -5,24 +5,35 @@ import java.io.File;
 import com.bs.interpreter.stack.BsStack;
 import com.bs.interpreter.stack.Stack;
 import com.bs.lang.Bs;
+import com.bs.lang.BsAbstractProto;
 import com.bs.lang.BsConst;
 import com.bs.lang.BsObject;
 import com.bs.lang.annot.BsRuntimeMessage;
 
-public class BsModule extends BsObject {
+public class BsModule extends BsAbstractProto {
 
 	private static final String FILE_NAME = "fileName";
 
 	public static BsObject create(String string) {
 		BsObject obj = BsObject.value(BsConst.Module, null);
-		obj.slot(FILE_NAME, BsString.clone(string));
+		obj.setSlot(FILE_NAME, BsString.clone(string));
 
 		return obj;
 	}
 
 	public BsModule() {
 		super(BsConst.Proto, "Module", BsModule.class);
-		initRuntimeMethods();
+	}
+
+	@BsRuntimeMessage(name = Bs.METHOD_MISSING, arity = -1)
+	public BsObject methodMissing(BsObject self, BsObject... args) {
+		String name = Bs.asString(args[0]);
+		BsObject slot = self.getSlot(name);
+		if (slot == null) {
+			return BsError.nameError(name);
+		}
+
+		return slot;
 	}
 
 	@BsRuntimeMessage(name = "toString", arity = 0)
@@ -30,8 +41,8 @@ public class BsModule extends BsObject {
 		if (self == BsConst.Module) {
 			return BsString.clone("Module");
 		}
-		return BsString.clone("Module: <" + Bs.asString(self.slot(FILE_NAME))
-				+ ">");
+		return BsString.clone("Module: <"
+				+ Bs.asString(self.getSlot(FILE_NAME)) + ">");
 	}
 
 	@BsRuntimeMessage(name = "load", arity = 1)

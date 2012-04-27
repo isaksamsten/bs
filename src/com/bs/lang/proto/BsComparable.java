@@ -1,17 +1,17 @@
 package com.bs.lang.proto;
 
 import com.bs.lang.Bs;
+import com.bs.lang.BsAbstractProto;
 import com.bs.lang.BsConst;
 import com.bs.lang.BsObject;
 import com.bs.lang.annot.BsProto;
 import com.bs.lang.annot.BsRuntimeMessage;
 
 @BsProto(name = "Comparable")
-public class BsComparable extends BsObject {
+public class BsComparable extends BsAbstractProto {
 
 	public BsComparable() {
 		super(BsConst.Proto, "Comparable", BsComparable.class);
-		initRuntimeMethods();
 	}
 
 	@BsRuntimeMessage(name = "equal", arity = 1, aliases = { "=" })

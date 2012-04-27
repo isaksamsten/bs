@@ -1,17 +1,17 @@
 package com.bs.lang.proto;
 
 import com.bs.lang.Bs;
+import com.bs.lang.BsAbstractProto;
 import com.bs.lang.BsConst;
 import com.bs.lang.BsObject;
 import com.bs.lang.annot.BsProto;
 import com.bs.lang.annot.BsRuntimeMessage;
 
 @BsProto(name = "Bool")
-public class BsBool extends BsObject {
+public class BsBool extends BsAbstractProto {
 
 	public BsBool() {
 		super(BsConst.Proto, "Bool", BsBool.class);
-		initRuntimeMethods();
 	}
 
 	@BsRuntimeMessage(name = "ifTrue", arity = -1)

@@ -1,13 +1,14 @@
 package com.bs.lang.proto;
 
 import com.bs.lang.Bs;
+import com.bs.lang.BsAbstractProto;
 import com.bs.lang.BsConst;
 import com.bs.lang.BsObject;
 import com.bs.lang.annot.BsProto;
 import com.bs.lang.annot.BsRuntimeMessage;
 
 @BsProto(name = "Char")
-public class BsChar extends BsObject {
+public class BsChar extends BsAbstractProto {
 
 	public static BsObject clone(char c) {
 		return BsObject.value(BsConst.Char, c);
@@ -15,7 +16,6 @@ public class BsChar extends BsObject {
 
 	public BsChar() {
 		super(BsConst.Comparable, "Char", BsChar.class);
-		initRuntimeMethods();
 	}
 
 	@BsRuntimeMessage(name = "next", arity = 0)

@@ -3,16 +3,22 @@ package com.bs.lang.proto;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.bs.lang.BsAbstractProto;
 import com.bs.lang.BsConst;
 import com.bs.lang.BsObject;
+import com.bs.lang.annot.BsRuntimeMessage;
 
-public class BsSymbol extends BsObject {
+public class BsSymbol extends BsAbstractProto {
 
 	private static final Map<String, BsObject> symbols = new HashMap<String, BsObject>();
 
 	public BsSymbol() {
-		super(BsConst.Proto, "Symbol", BsSymbol.class);
-		initRuntimeMethods();
+		super(BsConst.Comparable, "Symbol", BsSymbol.class);
+	}
+
+	@BsRuntimeMessage(name = "toString", arity = 0)
+	public BsObject toString(BsObject self, BsObject... args) {
+		return BsString.clone((String) self.value());
 	}
 
 	/**

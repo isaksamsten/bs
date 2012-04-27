@@ -1,11 +1,12 @@
 package com.bs.lang.proto;
 
 import com.bs.lang.Bs;
+import com.bs.lang.BsAbstractProto;
 import com.bs.lang.BsConst;
 import com.bs.lang.BsObject;
 import com.bs.lang.annot.BsRuntimeMessage;
 
-public class BsString extends BsObject {
+public class BsString extends BsAbstractProto {
 
 	public static BsObject clone(String str) {
 		if (str == null) {
@@ -16,7 +17,6 @@ public class BsString extends BsObject {
 
 	public BsString() {
 		super(BsConst.Comparable, "String", BsString.class);
-		initRuntimeMethods();
 	}
 
 	@BsRuntimeMessage(name = "length", arity = 0)
@@ -29,6 +29,24 @@ public class BsString extends BsObject {
 		String me = Bs.asString(self);
 		String other = Bs.asString(args[0]);
 		return BsString.clone(me + other);
+	}
+
+	@BsRuntimeMessage(name = "toInt", arity = 0)
+	public BsObject toInt(BsObject self, BsObject... args) {
+		try {
+			return BsNumber.clone(Integer.parseInt((String) self.value()));
+		} catch (Exception e) {
+			return BsError.typeError("Can't convert '%s' to int", self.value());
+		}
+	}
+
+	@BsRuntimeMessage(name = "toDouble", arity = 0)
+	public BsObject toDouble(BsObject self, BsObject... args) {
+		try {
+			return BsNumber.clone(Double.parseDouble((String) self.value()));
+		} catch (Exception e) {
+			return BsError.typeError("Can't convert '%s' to int", self.value());
+		}
 	}
 
 	@BsRuntimeMessage(name = "compareTo", arity = 1, aliases = { "<=>" })

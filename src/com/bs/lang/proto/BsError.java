@@ -1,52 +1,114 @@
 package com.bs.lang.proto;
 
 import com.bs.lang.Bs;
+import com.bs.lang.BsAbstractProto;
 import com.bs.lang.BsConst;
 import com.bs.lang.BsObject;
 import com.bs.lang.annot.BsRuntimeMessage;
 
-public class BsError extends BsObject {
+public class BsError extends BsAbstractProto {
 
-	public static BsObject raise(BsObject self, String message, Object... args) {
-		BsObject obj = BsObject.clone(self);
-		obj.slot("message",
+	/**
+	 * Raise an BsError of type 'type' with the message interpolated with args
+	 * 
+	 * @param type
+	 * @param message
+	 * @param args
+	 * @return
+	 */
+	public static BsObject raise(BsObject type, String message, Object... args) {
+		BsObject obj = BsObject.clone(type);
+		obj.setSlot("message",
 				BsObject.value(BsConst.String, String.format(message, args)));
 		return obj;
 	}
 
+	/**
+	 * Raise a generic BsConst.Error with message
+	 * 
+	 * @param msg
+	 * @param args
+	 * @return
+	 */
 	public static BsObject raise(String msg, Object... args) {
 		return raise(BsConst.Error, msg, args);
 	}
 
+	/**
+	 * Raise a CloneError
+	 * 
+	 * @param name
+	 * @return
+	 */
+	public static BsObject cloneError(String name) {
+		return raise(BsConst.CloneError, "Can't clone '%s'", name);
+	}
+
+	/**
+	 * Raise a NameError that is, that a method is note defined by obj
+	 * 
+	 * @param message
+	 * @param obj
+	 * @return
+	 */
 	public static BsObject nameError(String message, BsObject obj) {
 		return raise(BsConst.NameError, "No method '%s' for '%s'", message, obj);
 	}
 
+	/**
+	 * Raise a name error, that is, a name is not defined (eg. a variable)
+	 * 
+	 * @param name
+	 * @return
+	 */
 	public static BsObject nameError(String name) {
 		return raise(BsConst.NameError, "name '%s' not defined", name);
 	}
 
-	public static BsObject javaError(String name, Throwable t) {
-		return raise(BsConst.JavaError,
-				"error in Java invokation '%s'. Trace: '%s'", name,
-				t.toString());
-	}
-
+	/**
+	 * Raise a JavaError (more generic)
+	 * 
+	 * @param msg
+	 * @param args
+	 * @return
+	 */
 	public static BsObject javaError(String msg, Object... args) {
-		return raise(BsConst.JavaError, "error in Java invokation '%s'",
-				msg);
+		return raise(BsConst.JavaError, "error in Java invokation '%s'", msg);
 	}
 
+	/**
+	 * Raise a SyntaxError, when a eval() or compile() is used.
+	 * 
+	 * @param message
+	 * @return
+	 */
 	public static BsObject syntaxError(String message) {
 		return raise(BsConst.SyntaxError, message);
 	}
 
+	/**
+	 * Raise TypeError when method is invoked with invalid arguments
+	 * 
+	 * @param method
+	 * @param got
+	 * @param expected
+	 * @return
+	 */
 	public static BsObject typeError(String method, BsObject got,
 			BsObject expected) {
 		return raise(BsConst.TypeError, "%s argument must be %s, got %s",
 				method, expected.name(), got.name());
 	}
 
+	/**
+	 * Raise a TypeError when a method is invoked with invalid arity
+	 * 
+	 * @param self
+	 * @param method
+	 * @param got
+	 * @param expected
+	 * @return
+	 */
 	public static BsObject typeError(BsObject self, String method, int got,
 			int expected) {
 		return raise(BsConst.TypeError,
@@ -54,12 +116,24 @@ public class BsError extends BsObject {
 						.name(), method, expected, got);
 	}
 
+	/**
+	 * Raise a IOError when
+	 * 
+	 * @param message
+	 * @return
+	 */
 	public static BsObject IOError(String message) {
 		return raise(BsConst.IOError, message);
 	}
 
+	/**
+	 * Generic message to denot a method
+	 * 
+	 * @return
+	 */
 	public static BsObject subClassResponsibility() {
-		return raise("Method should be implemented by subclasses");
+		return raise(BsConst.SubTypeError,
+				"Method should be implemented by sub types");
 	}
 
 	public static final String IGNORED = "ignored";
@@ -85,22 +159,22 @@ public class BsError extends BsObject {
 	@BsRuntimeMessage(name = "toString", arity = 0)
 	public BsObject toString(BsObject self, BsObject... args) {
 		return BsString.clone(self.prototype().name() + ": ").invoke("+",
-				self.slot(MESSAGE));
+				self.getSlot(MESSAGE));
 	}
 
 	@BsRuntimeMessage(name = "getMessage", arity = 0)
 	public BsObject getMessage(BsObject self, BsObject... args) {
-		return self.slot(MESSAGE);
+		return self.getSlot(MESSAGE);
 	}
 
 	@BsRuntimeMessage(name = "getStacktrace", arity = 0)
 	public BsObject getStacktrace(BsObject self, BsObject... args) {
-		return self.slot(STACK_TRACE);
+		return self.getSlot(STACK_TRACE);
 	}
 
 	@BsRuntimeMessage(name = "setMessage", arity = 1)
 	public BsObject setMessage(BsObject self, BsObject... args) {
-		self.slot(MESSAGE, args[0]);
+		self.setSlot(MESSAGE, args[0]);
 		return self;
 	}
 
@@ -116,9 +190,9 @@ public class BsError extends BsObject {
 
 		String type = self.prototype().name();
 		String toCatch = Bs.asString(args[0]);
-		if (type.equals(toCatch) && !Bs.asBoolean(args[1].slot(CAUGHT))) {
-			int arity = Bs.asNumber(args[1].slot(BsBlock.ARITY)).intValue();
-			args[1].slot(CAUGHT, BsConst.True);
+		if (type.equals(toCatch) && !Bs.asBoolean(args[1].getSlot(CAUGHT))) {
+			int arity = Bs.asNumber(args[1].getSlot(BsBlock.ARITY)).intValue();
+			args[1].setSlot(CAUGHT, BsConst.True);
 			if (arity == 1) {
 				return args[1].invoke("call", self);
 			}
@@ -129,7 +203,7 @@ public class BsError extends BsObject {
 
 	@BsRuntimeMessage(name = "pass", arity = 0)
 	public BsObject pass(BsObject self, BsObject... args) {
-		self.slot(IGNORED, BsConst.False);
+		self.setSlot(IGNORED, BsConst.False);
 		return self;
 	}
 
@@ -150,6 +224,10 @@ public class BsError extends BsObject {
 		}
 
 		return clone(Bs.asString(args[0]));
+	}
+
+	public static BsObject typeError(String string, Object... value) {
+		return raise(BsConst.TypeError, string, value);
 	}
 
 }

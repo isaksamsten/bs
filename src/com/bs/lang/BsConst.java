@@ -22,6 +22,8 @@ import com.bs.lang.proto.io.BsIO;
 import com.bs.lang.proto.io.BsReader;
 import com.bs.lang.proto.io.BsWriter;
 import com.bs.lang.proto.java.BsJava;
+import com.bs.lang.proto.java.BsJavaClass;
+import com.bs.lang.proto.java.BsJavaInstance;
 
 public final class BsConst {
 
@@ -47,6 +49,8 @@ public final class BsConst {
 	public static final BsObject SyntaxError = BsError.clone("SyntaxError");
 	public static final BsObject IOError = BsError.clone("IOError");
 	public static final BsObject JavaError = BsError.clone("JavaError");
+	public static final BsObject CloneError = BsError.clone("CloneError");
+	public static final BsObject SubTypeError = BsError.clone("SubTypeError");
 
 	public static final BsObject Symbol = new BsSymbol();
 	public static final BsObject Char = new BsChar();
@@ -58,5 +62,7 @@ public final class BsConst {
 
 	public static final BsObject System = new BsSystem();
 	public static final BsObject Java = new BsJava();
+	public static final BsObject JavaInstance = new BsJavaInstance();
+	public static final BsObject JavaClass = new BsJavaClass();
 
 }

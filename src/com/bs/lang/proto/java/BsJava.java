@@ -1,147 +1,44 @@
 package com.bs.lang.proto.java;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Method;
-import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.List;
+import org.apache.commons.lang3.reflect.ConstructorUtils;
 
 import com.bs.lang.Bs;
+import com.bs.lang.BsAbstractProto;
 import com.bs.lang.BsConst;
 import com.bs.lang.BsObject;
 import com.bs.lang.annot.BsRuntimeMessage;
 import com.bs.lang.proto.BsError;
-import com.bs.lang.proto.BsList;
-import com.bs.lang.proto.BsNumber;
-import com.bs.lang.proto.BsString;
 
-public class BsJava extends BsObject {
-
-	private class BsJavaData {
-		public Class<?> cls;
-		public Object instance;
-
-		public BsJavaData(Class<?> cls, Object instance) {
-			this.cls = cls;
-			this.instance = instance;
-		}
-
-		@Override
-		public String toString() {
-			return "Instance of " + cls.getCanonicalName() + " with value "
-					+ instance;
-		}
-
-	}
+public class BsJava extends BsAbstractProto {
 
 	public BsJava() {
-		super(null, "Java", BsJava.class);
-		initRuntimeMethods();
+		super(BsConst.Proto, "Java", BsJava.class);
 	}
 
-	@BsRuntimeMessage(name = Bs.METHOD_MISSING, arity = -1)
-	public BsObject methodMissing(BsObject self, BsObject... args) {
-		String name = Bs.asString(args[0]);
-		BsJavaData data = self.value();
-
-		Class<?>[] classes = new Class<?>[args.length - 1];
-		Object[] arguments = new Object[args.length - 1];
-		for (int n = 1; n < args.length; n++) {
-			Object value = args[n].value();
-			if (value != null) {
-				classes[n - 1] = getClass(value);
-				arguments[n - 1] = value;
-			} else {
-				return BsError
-						.javaError("Unsupported type in invokation (is it really a Java type?)");
-			}
-		}
-
+	@BsRuntimeMessage(name = "import", arity = 1, aliases = { "-" })
+	public BsObject static_(BsObject self, BsObject... args) {
 		try {
-			Method method = getMethod(data.cls, name, classes);
-			Object ret = method.invoke(data.instance, arguments);
-
-			return ret == null ? BsConst.Nil : getBsObject(ret.getClass(), ret);
-		} catch (Exception e) {
-			return BsError.javaError(e.getMessage());
+			Class<?> cls = Class.forName(Bs.asString(args[0]));
+			return ReflectionUtils.createBsObject(BsConst.JavaClass, cls);
+		} catch (ClassNotFoundException e) {
+			return BsError.javaError("class not found: '%s'", e.getMessage());
 		}
-	}
-
-	/**
-	 * This is slow! :(
-	 * 
-	 * @param cls
-	 * @param name
-	 * @return
-	 */
-	protected Method getMethod(Class<?> cls, String name, Class<?>[] parameters) {
-		Method[] methods = cls.getMethods();
-		for (Method method : methods) {
-			if (!method.getName().equals(name)) {
-				continue;
-			}
-			Class<?>[] parameterTypes = method.getParameterTypes();
-			if (parameterTypes.length != parameters.length) {
-				continue;
-			}
-			boolean matches = true;
-			for (int i = 0; i < parameterTypes.length; i++) {
-				if (!convertClass(parameterTypes[i]).isAssignableFrom(
-						parameters[i])) {
-					matches = false;
-					break;
-				}
-			}
-			if (matches) {
-				return method;
-			}
-		}
-		return null;
 	}
 
 	@BsRuntimeMessage(name = "new", arity = -1)
 	public BsObject new_(BsObject self, BsObject... args) {
 		try {
 			Class<?> cls = Class.forName(Bs.asString(args[0]));
-			Constructor<?>[] ctors = cls.getConstructors();
-			Constructor<?> ctor = null;
-			for (int n = 0; n < ctors.length; n++) {
-				Type[] types = ctors[n].getGenericParameterTypes();
-				if (types.length == args.length - 1) {
-					if (!isCorrectType(types, args))
-						continue;
 
-					ctor = ctors[n];
-					break;
-				}
+			Object[] arguments = ReflectionUtils.getValue(args, 1);
+			if (arguments == null) {
+				return BsError
+						.javaError("Unsupported type in invokation (is it really a Java type?)");
 			}
 
-			if (ctor == null) {
-				return BsError.javaError("No such Constructor");
-			}
-
-			Type[] types = ctor.getGenericParameterTypes();
-			if (types.length == 0) {
-				BsJavaData data = new BsJavaData(cls, ctor.newInstance());
-				BsObject obj = BsObject.value(BsConst.Java, data);
-				return obj;
-			} else {
-				Object[] arguments = new Object[types.length];
-				for (int n = 1; n < args.length; n++) {
-					Object obj = getValue(args[n].value());
-					if (obj == null) {
-						return BsError.typeError("new", BsConst.Nil,
-								BsConst.Java);
-					} else {
-						arguments[0] = obj;
-					}
-				}
-
-				BsJavaData data = new BsJavaData(cls,
-						ctor.newInstance(arguments));
-				return BsObject.value(BsConst.Java, data);
-			}
-
+			Object obj = ConstructorUtils.invokeConstructor(cls, arguments);
+			BsJavaData data = new BsJavaData(cls, obj);
+			return BsObject.value(BsConst.JavaInstance, data);
 		} catch (ClassNotFoundException e) {
 			return BsError.javaError("class not found: '%s'", e.getMessage());
 		} catch (Exception e) {
@@ -149,114 +46,4 @@ public class BsJava extends BsObject {
 		}
 	}
 
-	@BsRuntimeMessage(name = "toString", arity = 0)
-	public BsObject toString(BsObject self, BsObject... args) {
-		BsJavaData data = self.value();
-		return BsString.clone(data.instance.toString());
-	}
-
-	protected Class<?> convertClass(Class<?> cls) {
-		if (cls == int.class) {
-			return Integer.class;
-		} else if (cls == long.class) {
-			return Long.class;
-		} else if (cls == double.class) {
-			return Double.class;
-		} else if (cls == float.class) {
-			return Float.class;
-		} else if (cls == boolean.class) {
-			return Boolean.class;
-		} else if (cls == char.class) {
-			return Character.class;
-		} else if (cls == byte.class) {
-			return Byte.class;
-		} else {
-			return cls;
-		}
-	}
-
-	/**
-	 * 
-	 * @param obj
-	 * @return
-	 */
-	protected Class<?> getClass(Object obj) {
-		if (obj instanceof BsJavaData) {
-			return ((BsJavaData) obj).cls;
-		} else {
-			return obj.getClass();
-		}
-	}
-
-	protected Object getValue(Object obj) {
-		if (obj instanceof BsJavaData) {
-			return ((BsJavaData) obj).instance;
-		} else if (obj == BsConst.True) {
-			return true;
-		} else if (obj == BsConst.False) {
-			return false;
-		} else if (obj == BsConst.Nil) {
-			return null;
-		} else {
-			return obj;
-		}
-	}
-
-	@SuppressWarnings("unchecked")
-	protected BsObject getBsObject(Class<?> cls, Object value) {
-		if (value instanceof Number) {
-			return BsNumber.clone((Number) value);
-		} else if (value instanceof String) {
-			return BsString.clone((String) value);
-		} else if (value instanceof Boolean) {
-			if ((Boolean) value) {
-				return BsConst.True;
-			} else {
-				return BsConst.False;
-			}
-		} else if (value == null) {
-			return BsConst.Nil;
-		} else if (value instanceof List) {
-			List<BsObject> obj = new ArrayList<BsObject>();
-			List<Object> list = (List<Object>) value;
-			for (Object o : list) {
-				if (o == null) {
-					obj.add(BsConst.Nil);
-				} else {
-					obj.add(getBsObject(o.getClass(), o));
-				}
-			}
-			return BsList.create(obj);
-		} else if (cls.isArray()) {
-			List<BsObject> obj = new ArrayList<BsObject>();
-			Object[] list = (Object[]) value;
-			for (Object o : list) {
-				if (o == null) {
-					obj.add(BsConst.Nil);
-				} else {
-					obj.add(getBsObject(o.getClass(), o));
-				}
-			}
-			return BsList.create(obj);
-		} else {
-			return BsObject.value(BsConst.Java, new BsJavaData(cls, value));
-		}
-	}
-
-	/**
-	 * @param types
-	 * @param args
-	 * @return
-	 */
-	protected boolean isCorrectType(Type[] types, BsObject[] args) {
-		for (int i = 1; i < args.length; i++) {
-			Object object = args[i].value();
-			if (object != null) {
-				Class<?> cls = getClass(object);
-				if (!((Class<?>) types[i - 1]).isAssignableFrom(cls))
-					return false;
-			}
-		}
-		return true;
-	}
 }

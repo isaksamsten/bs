@@ -1,6 +1,19 @@
+Scanner := import("java.util.Scanner").
+sc := Scanner new System -> :in.
+
+{sc hasNextLine.} whileTrue {
+    line := sc nextLine.
+    (line = "exit") ifTrue {
+    	System puts "Line is exit".
+        return(Nil).
+    }.
+    System puts line.
+}.
+
+
 a := Module load "test.bs".
 person := Module load "Person.bs".
-pp := person -> :Person; clone("Olle").
+pp := person Person; clone("Olle").
 pp setName "isak".
 System puts pp getName().
 System puts a.

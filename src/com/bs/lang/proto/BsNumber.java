@@ -1,11 +1,12 @@
 package com.bs.lang.proto;
 
 import com.bs.lang.Bs;
+import com.bs.lang.BsAbstractProto;
 import com.bs.lang.BsConst;
 import com.bs.lang.BsObject;
 import com.bs.lang.annot.BsRuntimeMessage;
 
-public class BsNumber extends BsObject {
+public class BsNumber extends BsAbstractProto {
 
 	public static BsObject clone(Number number) {
 		if (number == null) {
@@ -16,7 +17,6 @@ public class BsNumber extends BsObject {
 
 	public BsNumber() {
 		super(BsConst.Comparable, "Number", BsNumber.class);
-		initRuntimeMethods();
 	}
 
 	@BsRuntimeMessage(name = "+", arity = 1)

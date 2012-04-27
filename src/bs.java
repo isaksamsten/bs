@@ -23,7 +23,7 @@ import com.bs.util.PrintStreamMessageListener;
 public class bs {
 
 	public static void main(String[] args) throws FileNotFoundException {
-		 args = new String[] { "Main.bs" };
+//		 args = new String[] { "Main.bs" };
 
 		if (args.length > 0) {
 			MessageHandler handler = new MessageHandler();
@@ -43,6 +43,9 @@ public class bs {
 
 			if (handler.errors() == 0) {
 				BsObject value = Bs.eval(code, BsStack.getDefault());
+				if (value == null) {
+					System.out.println("Wtf!?");
+				}
 				if (value.isError()) {
 					printError(value);
 				}
@@ -55,6 +58,9 @@ public class bs {
 			while (true) {
 				String code = read(scanner, ">> ");
 				BsObject obj = Bs.evalRepl(code, stack);
+				if (obj == null) {
+					continue;
+				}
 				if (obj.isError()) {
 					printError(obj);
 				} else {
@@ -69,7 +75,11 @@ public class bs {
 	 */
 	protected static void printError(BsObject value) {
 		System.out.println("Traceback (most recent call first):\n  " + value);
-		List<BsObject> stackTrace = value.slot(BsError.STACK_TRACE).value();
+		BsObject obj = value.getSlot(BsError.STACK_TRACE);
+		if (obj == null) {
+			return;
+		}
+		List<BsObject> stackTrace = obj.value();
 		if (stackTrace != null) {
 			for (BsObject str : stackTrace) {
 				System.out.println("\t" + Bs.asString(str));

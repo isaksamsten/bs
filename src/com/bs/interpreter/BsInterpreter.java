@@ -11,7 +11,6 @@ import com.bs.lang.BsConst;
 import com.bs.lang.BsObject;
 import com.bs.lang.proto.BsBlock;
 import com.bs.lang.proto.BsChar;
-import com.bs.lang.proto.BsError;
 import com.bs.lang.proto.BsNumber;
 import com.bs.lang.proto.BsString;
 import com.bs.lang.proto.BsSymbol;
@@ -58,11 +57,7 @@ public class BsInterpreter implements Interpreter {
 	public Object interpretVariable(IdentifierNode node) {
 		if (node.state() == State.LOAD) {
 			BsObject value = stack.lookup(node.variable());
-			if (Bs.isNil(value)) {
-				return BsError.nameError(node.variable());
-			} else {
-				return value;
-			}
+			return value;
 		}
 
 		return node.variable();
@@ -127,8 +122,11 @@ public class BsInterpreter implements Interpreter {
 		BsObject last = null;
 		for (Node n : node.childrens()) {
 			last = (BsObject) interpret(n);
-			if (last.isBreak()) {
+			if (last.isError()) {
 				Bs.updateError(last, node);
+				return last;
+			}
+			if (last.isReturning()) {
 				return last;
 			}
 		}

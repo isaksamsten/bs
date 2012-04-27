@@ -38,45 +38,50 @@ public final class Bs {
 	private static BsObject builtin;
 	static {
 		builtin = BsModule.create("builtin");
-		builtin.slot(Proto);
-		builtin.slot(Nil);
-		builtin.slot(System);
+		builtin.setSlot(Proto);
+		builtin.setSlot(Nil);
+		builtin.setSlot(System);
 
 		/*
 		 * Literal types
 		 */
-		builtin.slot(Symbol);
-		builtin.slot(BsConst.String);
-		builtin.slot(List);
-		builtin.slot(Number);
-		builtin.slot(Bool);
-		builtin.slot(True);
-		builtin.slot(False);
+		builtin.setSlot(Symbol);
+		builtin.setSlot(BsConst.String);
+		builtin.setSlot(List);
+		builtin.setSlot(Number);
+		builtin.setSlot(Bool);
+		builtin.setSlot(True);
+		builtin.setSlot(False);
 
-		builtin.slot(Module);
-		builtin.slot(Enumerable);
+		builtin.setSlot(Module);
+		builtin.setSlot(Enumerable);
 
 		/*
 		 * Java interop
 		 */
-		builtin.slot(BsConst.Java);
+		builtin.setSlot(BsConst.Java);
+		builtin.setSlot(BsConst.JavaInstance);
+		builtin.setSlot(BsConst.JavaClass);
 
 		/*
 		 * IO
 		 */
-		builtin.slot(BsConst.IO);
-		builtin.slot(BsConst.Reader);
-		builtin.slot(BsConst.Writer);
-		builtin.slot(BsConst.File);
+		builtin.setSlot(BsConst.IO);
+		builtin.setSlot(BsConst.Reader);
+		builtin.setSlot(BsConst.Writer);
+		builtin.setSlot(BsConst.File);
 
 		/*
 		 * Errors
 		 */
-		builtin.slot(Error);
-		builtin.slot(SyntaxError);
-		builtin.slot(NameError);
-		builtin.slot(TypeError);
-		builtin.slot(BsConst.IOError);
+		builtin.setSlot(Error);
+		builtin.setSlot(SyntaxError);
+		builtin.setSlot(NameError);
+		builtin.setSlot(TypeError);
+		builtin.setSlot(BsConst.IOError);
+		builtin.setSlot(BsConst.JavaError);
+		builtin.setSlot(BsConst.CloneError);
+		builtin.setSlot(BsConst.SubTypeError);
 	}
 
 	/**
@@ -259,7 +264,7 @@ public final class Bs {
 	 */
 	public static void updateError(BsObject o, Node node) {
 		if (o.isError()) {
-			BsObject obj = o.slot(BsError.STACK_TRACE);
+			BsObject obj = o.getSlot(BsError.STACK_TRACE);
 			BsObject str = BsString.clone(String.format(
 					"'%s' at line %d position %d", node.code().trim(),
 					node.line(), node.position()));
@@ -267,7 +272,7 @@ public final class Bs {
 				List<BsObject> objs = new ArrayList<BsObject>();
 				objs.add(str);
 				obj = BsList.create(objs);
-				o.slot(BsError.STACK_TRACE, obj);
+				o.setSlot(BsError.STACK_TRACE, obj);
 			} else {
 				ArrayList<BsObject> objs = obj.value();
 				objs.add(str);
@@ -289,5 +294,11 @@ public final class Bs {
 	public static final String NEW = "new";
 	public static final String CLONE = "clone";
 	public static final String METHOD_MISSING = "methodMissing";
+	public static final String GET_SLOT = "getSlot";
+	public static final String SET_SLOT = "setSlot";
+	public static final String HAS_SLOT = "hasSlot";
 
+	public static BsObject safe(BsObject slot) {
+		return slot == null ? BsConst.Nil : slot;
+	}
 }

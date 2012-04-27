@@ -100,6 +100,10 @@ public class BsObject {
 		id = ID++;
 	}
 
+	/**
+	 * Initialize any runtime methods defined by the {@link BsRuntimeMessage}
+	 * annotation and add them to the list of methods for this prototype
+	 */
 	protected void initRuntimeMethods() {
 		Method[] methods = klass.getMethods();
 		for (Method m : methods) {
@@ -107,11 +111,9 @@ public class BsObject {
 			if (brm != null) {
 				BsJavaCode proxy = new BsJavaCode(this, m);
 
-				messages.put(brm.name(), new BsMessageData(proxy, brm.arity(),
-						brm.name()));
+				addMessage(brm.name(), brm.arity(), proxy);
 				for (String alias : brm.aliases()) {
-					messages.put(alias, new BsMessageData(proxy, brm.arity(),
-							alias));
+					addMessage(alias, brm.arity(), proxy);
 				}
 			}
 		}
@@ -154,7 +156,7 @@ public class BsObject {
 	public boolean isError() {
 		BsObject proto = prototype();
 		return proto != null && proto.instanceOf(BsConst.Error)
-				&& !Bs.asBoolean(slot(BsError.IGNORED));
+				&& !Bs.asBoolean(getSlot(BsError.IGNORED));
 	}
 
 	/**
@@ -180,14 +182,14 @@ public class BsObject {
 		return (T) safeValue();
 	}
 
-	public BsMessage message(String name) {
+	public BsMessage getMessage(String name) {
 		BsMessageData data = messages.get(name);
 		if (data != null) {
 			return data.getMessage(this);
 		}
 
 		if (prototype != null) {
-			return prototype.message(name);
+			return prototype.getMessage(name);
 		} else {
 			return null;
 		}
@@ -197,36 +199,42 @@ public class BsObject {
 		return messages.containsKey(name);
 	}
 
-	public void message(String name, BsCodeData data) {
+	public void addMessage(String name, BsCodeData data) {
 		messages.put(name, new BsMessageData(new BsMessageCode(data),
 				data.arguments.size(), name));
 	}
 
+	public void addMessage(String name, int arity, BsJavaCode code) {
+		messages.put(name, new BsMessageData(code, arity, name));
+	}
+
 	public BsObject invoke(String message, BsObject... args) {
-		BsMessage msg = message(message);
+		BsMessage msg = getMessage(message);
+		BsObject obj = null;
 		if (msg != null) {
-			return msg.invoke(this, args);
-		} else if ((msg = message(Bs.METHOD_MISSING)) != null) {
+			obj = msg.invoke(this, args);
+		} else if ((msg = getMessage(Bs.METHOD_MISSING)) != null) {
 			args = ArrayUtils.add(args, 0, BsString.clone(message));
-			return msg.invoke(this, args);
+			obj = msg.invoke(this, args);
+		}
+
+		if (obj != null) {
+			return obj;
 		}
 
 		return BsError.nameError(message, this.prototype());
 	}
 
-	public BsObject slot(String key) {
+	public BsObject getSlot(String key) {
 		BsObject obj = slots.get(key);
-		if (obj == null) {
-			return BsConst.Nil;
-		}
 		return obj;
 	}
 
-	public void slot(String key, BsObject value) {
+	public void setSlot(String key, BsObject value) {
 		slots.put(key, value);
 	}
 
-	public void slot(BsObject value) {
+	public void setSlot(BsObject value) {
 		if (value.name() != null)
 			slots.put(value.name(), value);
 	}
@@ -242,6 +250,10 @@ public class BsObject {
 
 	public boolean hasSlot(String key) {
 		return slots.containsKey(key);
+	}
+
+	public BsObject removeSlot(String key) {
+		return slots.remove(key);
 	}
 
 	public boolean isNil() {

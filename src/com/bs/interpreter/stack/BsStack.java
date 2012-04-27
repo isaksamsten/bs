@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import com.bs.lang.Bs;
 import com.bs.lang.BsObject;
+import com.bs.lang.proto.BsError;
 
 public class BsStack implements Stack {
 
@@ -46,11 +47,14 @@ public class BsStack implements Stack {
 	@Override
 	public BsObject lookup(String key) {
 		BsObject found = null;
-		for (int i = current; i >= 0 && Bs.isNil(found); i--) {
-			found = stack.get(i).slot(key);
+		for (int i = current; i >= 0 && found == null; i--) {
+			found = stack.get(i).getSlot(key);
 		}
-		if (Bs.isNil(found)) {
-			found = global.slot(key);
+		if (found == null) {
+			found = global.getSlot(key);
+		}
+		if (found == null) {
+			found = BsError.nameError(key);
 		}
 
 		return found;
@@ -66,7 +70,7 @@ public class BsStack implements Stack {
 			c = local();
 		}
 
-		c.slot(key, value);
+		c.setSlot(key, value);
 		return value;
 	}
 
@@ -91,8 +95,13 @@ public class BsStack implements Stack {
 
 	@Override
 	public BsObject enterGlobal(String key, BsObject value) {
-		global.slot(key, value);
+		global.setSlot(key, value);
 		return value;
+	}
+
+	@Override
+	public int depth() {
+		return current;
 	}
 
 }

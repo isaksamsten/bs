@@ -1,14 +1,14 @@
 package com.bs.lang.proto;
 
+import com.bs.lang.BsAbstractProto;
 import com.bs.lang.BsConst;
 import com.bs.lang.BsObject;
 import com.bs.lang.annot.BsRuntimeMessage;
 
-public class BsNil extends BsObject {
+public class BsNil extends BsAbstractProto {
 
 	public BsNil() {
 		super(BsConst.Proto, "Nil", BsNil.class);
-		initRuntimeMethods();
 	}
 
 	@BsRuntimeMessage(name = "toString", arity = 0)

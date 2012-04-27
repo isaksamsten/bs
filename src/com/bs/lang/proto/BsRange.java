@@ -1,11 +1,12 @@
 package com.bs.lang.proto;
 
 import com.bs.lang.Bs;
+import com.bs.lang.BsAbstractProto;
 import com.bs.lang.BsConst;
 import com.bs.lang.BsObject;
 import com.bs.lang.annot.BsRuntimeMessage;
 
-public class BsRange extends BsObject {
+public class BsRange extends BsAbstractProto {
 
 	public static final String MIN = "min";
 	public static final String MAX = "max";
@@ -17,20 +18,19 @@ public class BsRange extends BsObject {
 
 	public static BsObject clone(BsObject min, BsObject max) {
 		BsObject obj = new BsObject(BsConst.Range);
-		obj.slot(MIN, min);
-		obj.slot(MAX, max);
+		obj.setSlot(MIN, min);
+		obj.setSlot(MAX, max);
 		return obj;
 	}
 
 	public BsRange() {
 		super(BsConst.Enumerable, "Range", BsRange.class);
-		initRuntimeMethods();
 	}
 
 	@BsRuntimeMessage(name = "toString", arity = 0)
 	public BsObject toString(BsObject self, BsObject... args) {
-		return BsString.clone(Bs.asString(self.slot(MIN).invoke("toString")) + "--"
-				+ Bs.asString(self.slot(MAX).invoke("toString")));
+		return BsString.clone(Bs.asString(self.getSlot(MIN).invoke("toString")) + "--"
+				+ Bs.asString(self.getSlot(MAX).invoke("toString")));
 	}
 
 	@BsRuntimeMessage(name = "each", arity = 1)
@@ -40,8 +40,8 @@ public class BsRange extends BsObject {
 		}
 
 		BsObject value = BsConst.Nil;
-		BsObject min = self.slot(MIN);
-		BsObject max = self.slot(MAX);
+		BsObject min = self.getSlot(MIN);
+		BsObject max = self.getSlot(MAX);
 		BsObject block = args[0];
 
 		while (Bs.asBoolean(min.invoke("<=", max))) {
@@ -75,8 +75,8 @@ public class BsRange extends BsObject {
 
 	@BsRuntimeMessage(name = "init", arity = 2)
 	public BsObject init(BsObject self, BsObject... args) {
-		self.slot(MIN, args[0]);
-		self.slot(MAX, args[1]);
+		self.setSlot(MIN, args[0]);
+		self.setSlot(MAX, args[1]);
 		return self;
 	}
 }

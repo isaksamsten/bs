@@ -1,16 +1,16 @@
 package com.bs.lang.proto;
 
 import com.bs.lang.Bs;
+import com.bs.lang.BsAbstractProto;
 import com.bs.lang.BsCodeData;
 import com.bs.lang.BsConst;
 import com.bs.lang.BsObject;
 import com.bs.lang.annot.BsRuntimeMessage;
 
-public class BsProto extends BsObject {
+public class BsProto extends BsAbstractProto {
 
 	public BsProto() {
 		super(null, "Proto", BsProto.class);
-		initRuntimeMethods();
 	}
 
 	@BsRuntimeMessage(name = "toString", arity = 0)
@@ -28,7 +28,7 @@ public class BsProto extends BsObject {
 		BsObject block = args[0];
 		BsObject ret = block.invoke("call");
 		if (ret.isError()) {
-			ret.slot(BsError.IGNORED, BsConst.True);
+			ret.setSlot(BsError.IGNORED, BsConst.True);
 		}
 
 		return ret;
@@ -82,7 +82,7 @@ public class BsProto extends BsObject {
 			return BsError.typeError("getSlot", args[0].prototype(),
 					BsConst.Symbol);
 		}
-		return self.slot(Bs.asString(args[0]));
+		return Bs.safe(self.getSlot(Bs.asString(args[0])));
 	}
 
 	@BsRuntimeMessage(name = "setSlot", arity = 2, aliases = { "<-" })
@@ -91,13 +91,18 @@ public class BsProto extends BsObject {
 			return BsError.typeError("setSlot", args[0].prototype(),
 					BsConst.Symbol);
 		}
-		self.slot(Bs.asString(args[0]), args[1]);
+		self.setSlot(Bs.asString(args[0]), args[1]);
 		return self;
 	}
 
 	@BsRuntimeMessage(name = "new", arity = -1)
 	public BsObject new_(BsObject self, BsObject... args) {
 		return BsConst.Java.invoke("new", args);
+	}
+
+	@BsRuntimeMessage(name = "import", arity = -1)
+	public BsObject static_(BsObject self, BsObject... args) {
+		return BsConst.Java.invoke("import", args);
 	}
 
 	@BsRuntimeMessage(name = "isNil?", arity = 0)
@@ -144,7 +149,7 @@ public class BsProto extends BsObject {
 					BsConst.Block);
 		}
 		BsCodeData data = args[1].value();
-		self.message(Bs.asString(args[0]), data);
+		self.addMessage(Bs.asString(args[0]), data);
 
 		return self;
 	}

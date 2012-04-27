@@ -36,7 +36,7 @@ public class BsWriter extends BsObject {
 		return self;
 	}
 
-	@BsRuntimeMessage(name = "println", arity = 1)
+	@BsRuntimeMessage(name = "println", arity = 1, aliases = { "<<" })
 	public BsObject println(BsObject self, BsObject... args) {
 		PrintStream writer = self.value();
 		writer.println(Bs.asString(args[0].invoke("toString")));

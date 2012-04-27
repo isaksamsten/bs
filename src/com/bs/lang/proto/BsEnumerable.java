@@ -1,16 +1,16 @@
 package com.bs.lang.proto;
 
 import com.bs.lang.Bs;
+import com.bs.lang.BsAbstractProto;
 import com.bs.lang.BsCodeData;
 import com.bs.lang.BsConst;
 import com.bs.lang.BsObject;
 import com.bs.lang.annot.BsRuntimeMessage;
 
-public class BsEnumerable extends BsObject {
+public class BsEnumerable extends BsAbstractProto {
 
 	public BsEnumerable() {
 		super(BsConst.Proto, "Enumerable", BsEnumerable.class);
-		initRuntimeMethods();
 	}
 
 	@BsRuntimeMessage(name = "each", arity = 1)
@@ -35,7 +35,7 @@ public class BsEnumerable extends BsObject {
 
 		return each("(block call e) ifTrue { list << e. }.", self, args[0]);
 	}
-	
+
 	@BsRuntimeMessage(name = "any?", arity = 1)
 	public BsObject any(BsObject self, BsObject... args) {
 		if (!args[0].instanceOf(BsConst.Block)) {
@@ -44,7 +44,7 @@ public class BsEnumerable extends BsObject {
 
 		return each("(block call e) ifTrue { return(True). }.", self, args[0]);
 	}
-	
+
 	@BsRuntimeMessage(name = "all?", arity = 1)
 	public BsObject all(BsObject self, BsObject... args) {
 		if (!args[0].instanceOf(BsConst.Block)) {
@@ -53,7 +53,6 @@ public class BsEnumerable extends BsObject {
 
 		return each("(block call e) ifFalse { return(False). }.", self, args[0]);
 	}
-	
 
 	/**
 	 * Iterate over subclass, executing code in context of each object
@@ -71,8 +70,8 @@ public class BsEnumerable extends BsObject {
 		BsObject list = BsList.create();
 
 		BsObject each = Bs.compile(code, mapData.stack);
-		each.slot("list", list);
-		each.slot("block", block);
+		each.setSlot("list", list);
+		each.setSlot("block", block);
 		BsCodeData data = each.value();
 		data.arguments.add("e");
 		data.stack = mapData.stack;

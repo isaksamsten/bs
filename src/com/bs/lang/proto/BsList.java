@@ -5,15 +5,15 @@ import java.util.Arrays;
 import java.util.List;
 
 import com.bs.lang.Bs;
+import com.bs.lang.BsAbstractProto;
 import com.bs.lang.BsConst;
 import com.bs.lang.BsObject;
 import com.bs.lang.annot.BsRuntimeMessage;
 
-public class BsList extends BsObject {
+public class BsList extends BsAbstractProto {
 
 	public BsList() {
 		super(BsConst.Enumerable, "List", BsList.class);
-		initRuntimeMethods();
 	}
 
 	@BsRuntimeMessage(name = "each", arity = 1)
@@ -24,7 +24,7 @@ public class BsList extends BsObject {
 		BsObject last = BsConst.False;
 		for (BsObject obj : data) {
 			last = block.invoke("call", obj);
-			if (Bs.asBoolean(block.slot(BsBlock.HAS_RETURNED))) {
+			if (Bs.asBoolean(block.getSlot(BsBlock.HAS_RETURNED))) {
 				break;
 			}
 		}

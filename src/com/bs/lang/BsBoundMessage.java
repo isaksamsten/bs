@@ -14,6 +14,12 @@ public class BsBoundMessage extends BsMessage {
 	@Override
 	public BsObject invoke(BsObject self, BsObject... args) {
 		args = ArrayUtils.add(args, 0, binder);
-		return super.invoke(self, args);
+		BsObject obj = super.invoke(self, args);
+
+		if (obj.isReturning()) {
+			obj.setReturning(false);
+		}
+
+		return obj;
 	}
 }
