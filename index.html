@@ -50,15 +50,12 @@
 	</p>
 
 	<h4>Source code</h4>
-	
+	<p>
 	<pre><code>
 	    $ git clone https://github.com/isakkarlsson/bs
 	</code></pre>
+	</p>
 	
-	<p>If you're using the GitHub for Mac, simply sync your repository and
-	  you'll see the new branch.</p>
-	
-
 	<h4>Installation</h4>
 	<p>
 	  Download the <em>bs.jar</em> file and;
@@ -74,21 +71,30 @@
 	<h4>Running programs</h4>
 	<p>
 	  A program is a text file containing
-	  some <em>bs</em>-code. There are no <code>main()</code> or
-	  equivalent. Programs are evaluated from top to bottom.
+	  some <em>bs</em>-code. There are no <code>main()</code>
+	  methods or equivalent. Programs are evaluated from top to
+	  bottom.
 	  <pre><code>
 	      java -jar bs.jar Main.bs
 	  </code></pre>
+
+	  Main.bs:
+	  <pre><code>
+	      Person := Proto clone :Person.
+	      p := Person clone.
+	      p <- :name, "John".
+	      System puts p -> :name.
+	  </code></pre>
+
 	</p>
 
 	<h4>Interactive mode</h4>
 	<p>
-	  Issue:
+	  Issue to enter interactive mode:
 	  <pre><code>
 	      java -jar bs.jar
 	  </code></pre>
 
-	  To enter interactive mode.
 	  <pre><code>
 	      >> [1, 2] map { | x | x * 2. }.
 	      [2, 4]
@@ -132,7 +138,17 @@
 
         <h4>Messages</h4>
 
-	
+	Messages always have a receiver. If no receiver is explicitly
+	stated, the currently active object is used.
+
+	<pre><code>
+	    System puts("Hello World").
+	    load("Main.bs").
+	</code></pre>
+
+	The message <code>puts</code> is, thus, invoked
+	with <code>System</code> as receiver and <code>load</code>
+	, implicitly, with <code>Module</code>.
 
 	
 
