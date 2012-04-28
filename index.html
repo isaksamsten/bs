@@ -52,7 +52,7 @@
 	<h4>Source code</h4>
 	<p>
 	<pre><code>
-	    $ git clone https://github.com/isakkarlsson/bs
+$ git clone https://github.com/isakkarlsson/bs
 	</code></pre>
 	</p>
 	
@@ -61,7 +61,7 @@
 	  Download the <em>bs.jar</em> file and;
 
 	  <pre><code>
-	      java -jar bs.jar [file]
+java -jar bs.jar [file]
 	  </code></pre>
 
 	  Alternatively can the source be downloaded and compiled
@@ -75,15 +75,15 @@
 	  methods or equivalent. Programs are evaluated from top to
 	  bottom.
 	  <pre><code>
-	      java -jar bs.jar Main.bs
+java -jar bs.jar Main.bs
 	  </code></pre>
 
 	  Main.bs:
 	  <pre><code>
-	      Person := Proto clone :Person.
-	      p := Person clone.
-	      p <- :name, "John".
-	      System puts p -> :name.
+Person := Proto clone :Person.
+p := Person clone.
+p <- :name, "John".
+System puts p -> :name.
 	  </code></pre>
 
 	</p>
@@ -96,8 +96,8 @@
 	  </code></pre>
 
 	  <pre><code>
-	      >> [1, 2] map { | x | x * 2. }.
-	      [2, 4]
+>> [1, 2] map { | x | x * 2. }.
+[2, 4]
 	  </code></pre>
 	  
 	  All code is invoked in the context of <em>Module</em>.
@@ -109,8 +109,8 @@
 	
 	<p>There are two statements; assignment (<code>a := 1.</code>) and expressions.
 	  <pre></code>
-              statement ::= assign | expression "."
-              assign    ::= identifier := expression
+statement ::= assign | expression "."
+assign    ::= identifier := expression
           </code></pre>
 	</p>
 
@@ -124,15 +124,15 @@
 	runnable) <a href="https://github.com/isakkarlsson/bs/blob/master/src/prolog/syntax.pl">here</a>):
 
 	 <pre></code>
-              expression ::= symbol | call
-              call       ::= symbol { message }
-              call       ::= message
-              message    ::= identifier [ expression ["," {expression}]]
-              message    ::= identifier "(" [ expression ["," {expression}]] ")"
-              list       ::= "[" expression ["," { expression }] "]"
-              block      ::= "{" "|" [identifier ["," {identifier}]] "|" 
-                                 statement { statement } "}"
-              symbol     ::= identifier | number | string | list | block
+expression ::= symbol | call
+call       ::= symbol { message }
+call       ::= message
+message    ::= identifier [ expression ["," {expression}]]
+message    ::= identifier "(" [ expression ["," {expression}]] ")"
+list       ::= "[" expression ["," { expression }] "]"
+block      ::= "{" "|" [identifier ["," {identifier}]] "|" 
+                   statement { statement } "}"
+symbol     ::= identifier | number | string | list | block
           </code></pre>
 	</p>
 
@@ -142,13 +142,19 @@
 	stated, the currently active object is used.
 
 	<pre><code>
-	    System puts("Hello World").
-	    load("Main.bs").
+System puts("Hello World").
+load("Main.bs").
 	</code></pre>
 
-	The message <code>puts</code> is, thus, invoked
-	with <code>System</code> as receiver and <code>load</code>
-	, implicitly, with <code>Module</code>.
+	The message <code>puts</code> is, thus in the example above,
+	invoked with <code>System</code> as receiver
+	and <code>load</code>, implicitly, with <code>Module</code> as
+	receiver. Parentheses can be omitted if the receiver is
+	explicitly stated. For example:
+
+	<pre><code>
+System puts "Hello" + " World".
+	</code></pre>
 
 	
 
