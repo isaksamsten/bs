@@ -113,7 +113,9 @@
 	All else are expressions and everything in <em>bs</em> has a
 	return value - even assignment, which return what is
 	assigned. If a method does not explicitly return anything the
-	receiver is returned.
+	receiver is returned. There are no keywords, only messages and
+	assignments. The informal BNF (more formal but incomplete (and
+	runnable) <a href="https://github.com/isakkarlsson/bs/blob/master/src/prolog/syntax.pl">here</a>):
 
 	 <pre></code>
               expression ::= symbol | call
@@ -127,6 +129,12 @@
               symbol     ::= identifier | number | string | list | block
           </code></pre>
 	</p>
+
+        <h4>Messages</h4>
+
+	
+
+	
 
 
 	<h3>Authors and Contributors</h3>
