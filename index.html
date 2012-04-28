@@ -8,7 +8,7 @@
     <link rel="stylesheet" type="text/css" href="stylesheets/pygment_trac.css" media="screen" />
     <link rel="stylesheet" type="text/css" href="stylesheets/print.css" media="print" />
 
-    <title>Bs by isakkarlsson</title>
+    <title>bs - programming language </title>
   </head>
 
   <body>
@@ -16,7 +16,7 @@
     <header>
       <div class="container">
         <h1>Bs</h1>
-        <h2>bs is a programming language designed to be concise and simple </h2>
+        <h2><em>bs</em> is a programming language designed to be concise and simple </h2>
 
         <section id="downloads">
           <a href="https://github.com/isakkarlsson/bs/zipball/master" class="btn">Download as .zip</a>
@@ -28,16 +28,7 @@
 
     <div class="container">
       <section id="main_content">
-        <h3>Get it!?</h3>
-	
-	<pre><code>
-	    $ git clone https://github.com/isakkarlsson/bs
-	</code></pre>
-	
-	<p>If you're using the GitHub for Mac, simply sync your repository and
-	  you'll see the new branch.</p>
-	
-	<h3>Documentation</h3>
+        <h3>Introduction</h3>
 	<h4>Overview</h4>
 	<p>
 	  <em>bs</em> ('bullshit' or 'bullstund') is a prototype based
@@ -58,6 +49,16 @@
 	  </ul>
 	</p>
 
+	<h4>Source code</h4>
+	
+	<pre><code>
+	    $ git clone https://github.com/isakkarlsson/bs
+	</code></pre>
+	
+	<p>If you're using the GitHub for Mac, simply sync your repository and
+	  you'll see the new branch.</p>
+	
+
 	<h4>Installation</h4>
 	<p>
 	  Download the <em>bs.jar</em> file and;
@@ -70,7 +71,7 @@
 	  using Eclipse.
 	</p>
 
-	<h4>Running program</h4>
+	<h4>Running programs</h4>
 	<p>
 	  A program is a text file containing
 	  some <em>bs</em>-code. There are no <code>main()</code> or
@@ -80,7 +81,7 @@
 	  </code></pre>
 	</p>
 
-	<h4>Interactive mode (REPL)</h4>
+	<h4>Interactive mode</h4>
 	<p>
 	  Issue:
 	  <pre><code>
@@ -94,6 +95,37 @@
 	  </code></pre>
 	  
 	  All code is invoked in the context of <em>Module</em>.
+	</p>
+
+	<h3>Syntax</h3>
+
+	<h4>Statements</h4>
+	
+	<p>There are two statements; assignment (<code>a := 1.</code>) and expressions.
+	  <pre></code>
+              statement ::= assign | expression "."
+              assign    ::= identifier := expression
+          </code></pre>
+	</p>
+
+	<h4>Expressions</h4> 
+	<p>
+	All else are expressions and everything in <em>bs</em> has a
+	return value - even assignment, which return what is
+	assigned. If a method does not explicitly return anything the
+	receiver is returned.
+
+	 <pre></code>
+              expression ::= symbol | call
+              call       ::= symbol { message }
+              call       ::= message
+              message    ::= identifier [ expression ["," {expression}]]
+              message    ::= identifier "(" [ expression ["," {expression}]] ")"
+              list       ::= "[" expression ["," { expression }] "]"
+              block      ::= "{" "|" [identifier ["," {identifier}]] "|" 
+                                 statement { statement } "}"
+              symbol     ::= identifier | number | string | list | block
+          </code></pre>
 	</p>
 
 
