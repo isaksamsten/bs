@@ -43,10 +43,60 @@
 	  <em>bs</em> ('bullshit' or 'bullstund') is a prototype based
 	  programming language inspired
 	  by <em>io</em>, <em>smalltalk</em> and to some
-	  degree <em>Javascript</m>. Everything is an object and
-	  everything is an method invocation. There are, only one
-	  deviation from that rule; assignment.
+	  degree <em>Javascript</m>. Everything is an object and every
+	  modification is done by a method invocation. There are, only
+	  one deviation from that rule; assignment.
 	</p>
+
+        <h4>Goals</h4>
+	<p>
+	  The goal of <em>bs</em> are to be;
+	  <ul>
+	    <li>Consistent</li>
+	    <li>Expressive</li>
+	    <li>(relatively) Simple</li>
+	  </ul>
+	</p>
+
+	<h4>Installation</h4>
+	<p>
+	  Download the <em>bs.jar</em> file and;
+
+	  <pre><code>
+	      java -jar bs.jar [file]
+	  </code></pre>
+
+	  Alternatively can the source be downloaded and compiled
+	  using Eclipse.
+	</p>
+
+	<h4>Running program</h4>
+	<p>
+	  A program is a text file containing
+	  some <em>bs</em>-code. There are no <code>main()</code> or
+	  equivalent. Programs are evaluated from top to bottom.
+	  <pre><code>
+	      java -jar bs.jar Main.bs
+	  </code></pre>
+	</p>
+
+	<h4>Interactive mode (REPL)</h4>
+	<p>
+	  Issue:
+	  <pre><code>
+	      java -jar bs.jar
+	  </code></pre>
+
+	  To enter interactive mode.
+	  <pre><code>
+	      >> [1, 2] map { | x | x * 2. }.
+	      [2, 4]
+	  </code></pre>
+	  
+	  All code is invoked in the context of <em>Module</em>.
+	</p>
+
+
 	<h3>Authors and Contributors</h3>
 	
 	<p>
