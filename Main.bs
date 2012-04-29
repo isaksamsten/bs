@@ -9,8 +9,9 @@
 #    }.
 #    System puts line.
 #}.
-
-<<=(:fib, { | self, n |
+isak := 10.
+<<=(:fib, { | n |
+   System puts isak.
    (n <= 1) ifTrue {
       return(n).
    }, {
@@ -64,8 +65,8 @@ line := scanner nextLine.
 
 # Print the character after, after, i
 System puts ('i' next; next).
+System puts "END".
 ('a'--'d') each { | c |
-	return('d').
 	System puts c.
 }.
 
@@ -105,10 +106,7 @@ System puts 10 next; next; next.
    System puts y.
    b := x each { | z |
 		System puts z.
-		Proto return y.
    }.
-   	
-   Proto return b.
 }.
 
 num := 0.

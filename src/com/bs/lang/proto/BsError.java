@@ -97,7 +97,7 @@ public class BsError extends BsAbstractProto {
 	public static BsObject typeError(String method, BsObject got,
 			BsObject expected) {
 		return raise(BsConst.TypeError, "%s argument must be %s, got %s",
-				method, expected.name(), got.name());
+				method, expected.name(), got.prototype().name());
 	}
 
 	/**

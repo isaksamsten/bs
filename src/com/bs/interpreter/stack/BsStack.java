@@ -14,7 +14,7 @@ public class BsStack implements Stack {
 		return instance;
 	}
 
-	private ArrayList<BsObject> stack = new ArrayList<BsObject>();
+	private ArrayList<StackFrame> stack = new ArrayList<StackFrame>(100);
 	private BsObject global = Bs.builtin();
 	private int current = -1;
 
@@ -27,19 +27,19 @@ public class BsStack implements Stack {
 	}
 
 	@Override
-	public BsObject local() {
+	public StackFrame local() {
 		return stack.get(current);
 	}
 
 	@Override
-	public BsObject push(BsObject obj) {
+	public StackFrame push(StackFrame obj) {
 		stack.add(obj);
 		current++;
 		return obj;
 	}
 
 	@Override
-	public BsObject pop() {
+	public StackFrame pop() {
 		current--;
 		return stack.remove(current + 1);
 	}
@@ -48,6 +48,9 @@ public class BsStack implements Stack {
 	public BsObject lookup(String key) {
 		BsObject found = null;
 		for (int i = current; i >= 0 && found == null; i--) {
+			if (!stack.get(i).searchParent())
+				break;
+
 			found = stack.get(i).getSlot(key);
 		}
 		if (found == null) {
@@ -63,7 +66,7 @@ public class BsStack implements Stack {
 	@Override
 	public BsObject enter(String key, BsObject value) {
 		int idx = foundAt(key);
-		BsObject c = null;
+		StackFrame c = null;
 		if (idx >= 0) {
 			c = stack.get(idx);
 		} else {
@@ -76,9 +79,13 @@ public class BsStack implements Stack {
 
 	protected int foundAt(String key) {
 		for (int i = current; i >= 0; i--) {
+			if (!stack.get(i).searchParent()) {
+				break;
+			}
 			if (stack.get(i).hasSlot(key)) {
 				return i;
 			}
+
 		}
 		return -1;
 	}
@@ -89,7 +96,7 @@ public class BsStack implements Stack {
 	}
 
 	@Override
-	public BsObject root() {
+	public StackFrame root() {
 		return stack.get(0);
 	}
 

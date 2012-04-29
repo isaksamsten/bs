@@ -95,6 +95,18 @@ public class BsProto extends BsAbstractProto {
 		return self;
 	}
 
+	@BsRuntimeMessage(name = "initSlots", arity = -1, aliases = { "<<-" })
+	public BsObject initSlots(BsObject self, BsObject... args) {
+		for (BsObject obj : args) {
+			if (!obj.instanceOf(BsConst.Symbol)) {
+				return BsError.typeError("initSlots", obj, BsConst.Symbol);
+			}
+			self.setSlot(Bs.asString(obj), BsConst.Nil);
+		}
+
+		return self;
+	}
+
 	@BsRuntimeMessage(name = "new", arity = -1)
 	public BsObject new_(BsObject self, BsObject... args) {
 		return BsConst.Java.invoke("new", args);

@@ -6,6 +6,7 @@ import java.util.Map;
 
 import org.apache.commons.lang3.ArrayUtils;
 
+import com.bs.interpreter.stack.StackFrame;
 import com.bs.lang.annot.BsRuntimeMessage;
 import com.bs.lang.proto.BsError;
 import com.bs.lang.proto.BsString;
@@ -15,7 +16,7 @@ import com.bs.lang.proto.BsString;
  * @author isak
  * 
  */
-public class BsObject {
+public class BsObject implements StackFrame {
 
 	/**
 	 * 
@@ -182,14 +183,29 @@ public class BsObject {
 		return (T) safeValue();
 	}
 
+	/**
+	 * Get this, or supertype method
+	 * 
+	 * @param name
+	 * @return
+	 */
 	public BsMessage getMessage(String name) {
-		BsMessageData data = messages.get(name);
+		BsMessageData data = getMessageData(name);
 		if (data != null) {
 			return data.getMessage(this);
+		} else {
+			return null;
+		}
+	}
+
+	public BsMessageData getMessageData(String name) {
+		BsMessageData data = messages.get(name);
+		if (data != null) {
+			return data;
 		}
 
 		if (prototype != null) {
-			return prototype.getMessage(name);
+			return prototype.getMessageData(name);
 		} else {
 			return null;
 		}
@@ -225,11 +241,13 @@ public class BsObject {
 		return BsError.nameError(message, this.prototype());
 	}
 
+	@Override
 	public BsObject getSlot(String key) {
 		BsObject obj = slots.get(key);
 		return obj;
 	}
 
+	@Override
 	public void setSlot(String key, BsObject value) {
 		slots.put(key, value);
 	}
@@ -248,16 +266,23 @@ public class BsObject {
 		return (name != null ? name : "anonymous") + "@" + id;
 	}
 
+	@Override
 	public boolean hasSlot(String key) {
 		return slots.containsKey(key);
 	}
 
+	@Override
 	public BsObject removeSlot(String key) {
 		return slots.remove(key);
 	}
 
 	public boolean isNil() {
 		return instanceOf(BsConst.Nil);
+	}
+
+	@Override
+	public boolean searchParent() {
+		return true;
 	}
 
 }

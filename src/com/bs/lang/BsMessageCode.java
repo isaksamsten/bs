@@ -1,5 +1,6 @@
 package com.bs.lang;
 
+import com.bs.interpreter.stack.BreakFrame;
 import com.bs.lang.proto.BsBlock;
 
 public class BsMessageCode implements BsCode {
@@ -11,8 +12,15 @@ public class BsMessageCode implements BsCode {
 
 	@Override
 	public BsObject execute(BsObject self, BsObject... args) {
-		BsObject object = BsObject.clone(BsConst.Block); // exteral scope
-		return BsBlock.execute(data, object, args);
+		BsObject scope = BsObject.clone(BsConst.Block); // external scope
+		scope.setSlot("self", self);
+
+		data.stack.push(BreakFrame.BREAK);
+		data.stack.push(self);
+		BsObject obj = BsBlock.execute(data, scope, args);
+		data.stack.pop();
+		data.stack.pop();
+		return obj;
 	}
 
 	@Override

@@ -1,6 +1,5 @@
 package com.bs.lang;
 
-import org.apache.commons.lang3.ArrayUtils;
 
 public class BsBoundMessage extends BsMessage {
 
@@ -13,8 +12,7 @@ public class BsBoundMessage extends BsMessage {
 
 	@Override
 	public BsObject invoke(BsObject self, BsObject... args) {
-		args = ArrayUtils.add(args, 0, binder);
-		BsObject obj = super.invoke(self, args);
+		BsObject obj = super.invoke(binder, args);
 
 		if (obj.isReturning()) {
 			obj.setReturning(false);

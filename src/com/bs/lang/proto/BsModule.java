@@ -53,7 +53,7 @@ public class BsModule extends BsAbstractProto {
 		if (error.isError()) {
 			return error;
 		}
-		return stack.root();
+		return (BsObject) stack.root();
 	}
 
 }

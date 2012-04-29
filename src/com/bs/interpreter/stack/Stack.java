@@ -6,21 +6,21 @@ public interface Stack {
 
 	BsObject[] stack();
 
-	BsObject local();
+	StackFrame local();
 
 	BsObject enter(String key, BsObject value);
 
 	BsObject enterGlobal(String key, BsObject value);
-	
-	BsObject push(BsObject obj);
 
-	BsObject pop();
-	
+	StackFrame push(StackFrame obj);
+
+	StackFrame pop();
+
 	BsObject global();
-	
-	BsObject root();
+
+	StackFrame root();
 
 	BsObject lookup(String key);
-	
+
 	int depth();
 }

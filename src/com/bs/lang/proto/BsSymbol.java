@@ -13,7 +13,7 @@ public class BsSymbol extends BsAbstractProto {
 	private static final Map<String, BsObject> symbols = new HashMap<String, BsObject>();
 
 	public BsSymbol() {
-		super(BsConst.Comparable, "Symbol", BsSymbol.class);
+		super(BsConst.String, "Symbol", BsSymbol.class);
 	}
 
 	@BsRuntimeMessage(name = "toString", arity = 0)

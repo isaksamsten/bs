@@ -6,4 +6,8 @@ public abstract class BsAbstractProto extends BsObject {
 		super(prototype, name, me);
 		initRuntimeMethods();
 	}
+
+	protected boolean isError(BsObject... args) {
+		return false;
+	}
 }

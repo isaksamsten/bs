@@ -86,9 +86,6 @@ public class BsObjectTests {
 		BsObject obj = BsConst.Proto.invoke("clone");
 		BsObject block = Bs.compile("self return 10.");
 
-		BsCodeData data = block.value();
-		data.arguments.add("self"); // a method always take one arg
-
 		BsConst.Proto.invoke("<<=", BsSymbol.get("test2"), block);
 		obj.invoke("<<=", BsSymbol.get("test"), block);
 
@@ -166,7 +163,6 @@ public class BsObjectTests {
 		obj = Bs.eval("Proto clone()");
 		BsObject method = Bs.compile("Proto return 10.");
 		BsCodeData data = method.value();
-		data.arguments.add("self");
 		obj.invoke("<<=", BsSymbol.get("getTen"), method);
 
 		assertEquals(10, Bs.asNumber(obj.invoke("getTen")));

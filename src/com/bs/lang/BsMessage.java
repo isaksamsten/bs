@@ -3,9 +3,10 @@ package com.bs.lang;
 import com.bs.lang.proto.BsError;
 
 /**
- * Instances of this class should not be 
+ * Instances of this class should not be
+ * 
  * @author isak
- *
+ * 
  */
 public class BsMessage {
 	private int arity;
@@ -27,10 +28,6 @@ public class BsMessage {
 
 	public BsMessage(String name, BsCode code) {
 		this(name, -1, code);
-	}
-
-	public boolean isJavaCode() {
-		return code instanceof BsJavaCode;
 	}
 
 	/**

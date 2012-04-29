@@ -26,6 +26,9 @@ public class BsString extends BsAbstractProto {
 
 	@BsRuntimeMessage(name = "+", arity = 1)
 	public BsObject concat(BsObject self, BsObject... args) {
+		if (!args[0].instanceOf(BsConst.String)) {
+			return BsError.typeError("+", args[0], BsConst.String);
+		}
 		String me = Bs.asString(self);
 		String other = Bs.asString(args[0]);
 		return BsString.clone(me + other);

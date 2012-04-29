@@ -1,31 +1,39 @@
 load("test.bs").
 
 Person := Proto clone :Person.
-Person <<= :init, { | self, name | 
-	System puts name.
+Person <<= :init, { | name |
+	self <<- :name, :age.
+	age := 10.
 }.
 
-<<=(:test, { | self, str | 
+<<=(:test, { | str | 
 	System puts str.
 }).
 
 test("Testar en modulmetod").
 
-Person <<= :setName, { | self, name |
-	self <- :name, name.
+Person <<= :setName, { | n |
+	name := n.
 }.
-Person <<= :getName, { | self |
-	return(self -> :name).
+Person <<= :getName, {
+	return(name).
 }.
-Person <<= :toString, { | self |
-	return(self -> :name).
+Person <<= :toString, {
+	name + age toString.
+}.
+
+isak := "Skittt".
+Person <<= :getAge, {
+	System puts isak.
+	age.
 }.
 
 p := Person clone("isak").
 p setName "isak".
 p getName.
 System puts(p getName()).
-System puts p.
+System puts p toString.
+System puts(p getAge).
 
 (1 < 10) or ((2 > 20) and (10 > 20)) or True; ifTrue {
 	System puts "2 i less than 20 and 1 less than ten".

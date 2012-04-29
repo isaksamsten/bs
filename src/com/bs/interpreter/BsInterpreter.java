@@ -88,7 +88,7 @@ public class BsInterpreter implements Interpreter {
 		/*
 		 * Thus, set lhs to the local object if lhs is null
 		 */
-		lhs = lhs != null ? lhs : stack.local();
+		lhs = (BsObject) (lhs != null ? lhs : stack.local());
 		Interpreter interpreter = new BsCallInterpreter(this, lhs);
 		return interpreter.interpret(node.messages());
 	}
