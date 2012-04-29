@@ -51,18 +51,14 @@
 
 	<h4>Source code</h4>
 	<p>
-	<pre><code>
-$ git clone https://github.com/isakkarlsson/bs
-	</code></pre>
+	<pre><code>$ git clone https://github.com/isakkarlsson/bs</code></pre>
 	</p>
 	
 	<h4>Installation</h4>
 	<p>
 	  Download the <em>bs.jar</em> file and;
 
-	  <pre><code>
-java -jar bs.jar [file]
-	  </code></pre>
+	  <pre><code>$ java -jar bs.jar [file]</code></pre>
 
 	  Alternatively can the source be downloaded and compiled
 	  using Eclipse.
@@ -74,33 +70,26 @@ java -jar bs.jar [file]
 	  some <em>bs</em>-code. There are no <code>main()</code>
 	  methods or equivalent. Programs are evaluated from top to
 	  bottom.
-	  <pre><code>
-java -jar bs.jar Main.bs
-	  </code></pre>
+	  <pre><code>$ java -jar bs.jar Main.bs
+John</code></pre>
 
 	  Main.bs:
-	  <pre><code>
-Person := Proto clone :Person.
+	  <pre><code>Person := Proto clone :Person.
 p := Person clone.
 p <- :name, "John".
-System puts p -> :name.
-	  </code></pre>
-
+System puts p -> :name.</code></pre>
 	</p>
 
 	<h4>Interactive mode</h4>
 	<p>
 	  Issue to enter interactive mode:
-	  <pre><code>
-	      java -jar bs.jar
-	  </code></pre>
+	  <pre><code>$ java -jar bs.jar</code></pre>
 
-	  <pre><code>
->> [1, 2] map { | x | x * 2. }.
-[2, 4]
-	  </code></pre>
+	  <pre><code> [1, 2] map { | x | x * 2. }.
+[2, 4]</code></pre>
 	  
-	  All code is invoked in the context of <em>Module</em>.
+	  All code, in the REPL, is invoked in the context
+	  of <em>Module</em>.
 	</p>
 
 	<h3>Syntax</h3>
@@ -108,10 +97,10 @@ System puts p -> :name.
 	<h4>Statements</h4>
 	
 	<p>There are two statements; assignment (<code>a := 1.</code>) and expressions.
-	  <pre></code>
-statement ::= assign | expression "."
-assign    ::= identifier := expression
-          </code></pre>
+	  <pre></code>program    ::= statements
+statements ::= statement { statement }
+statement  ::= assign | expression "."
+assign     ::= identifier := expression </code></pre>
 	</p>
 
 	<h4>Expressions</h4> 
@@ -123,41 +112,75 @@ assign    ::= identifier := expression
 	assignments. The informal BNF (more formal but incomplete (and
 	runnable) <a href="https://github.com/isakkarlsson/bs/blob/master/src/prolog/syntax.pl">here</a>):
 
-	 <pre></code>
-expression ::= symbol | call
-call       ::= symbol { message }
-call       ::= message
+	 <pre></code>expression ::= symbol | call
+call       ::= symbol [message { message }]
+call       ::= message { message } # with parentheses
 message    ::= identifier [ expression ["," {expression}]]
 message    ::= identifier "(" [ expression ["," {expression}]] ")"
+symbol     ::= identifier | number | string | list | block
 list       ::= "[" expression ["," { expression }] "]"
 block      ::= "{" "|" [identifier ["," {identifier}]] "|" 
-                   statement { statement } "}"
-symbol     ::= identifier | number | string | list | block
-          </code></pre>
+                   statement { statement } "}"</code></pre>
 	</p>
 
         <h4>Messages</h4>
-
-	Messages always have a receiver. If no receiver is explicitly
-	stated, the currently active object is used.
-
-	<pre><code>
-System puts("Hello World").
-load("Main.bs").
-	</code></pre>
-
-	The message <code>puts</code> is, thus in the example above,
-	invoked with <code>System</code> as receiver
-	and <code>load</code>, implicitly, with <code>Module</code> as
-	receiver. Parentheses can be omitted if the receiver is
-	explicitly stated. For example:
-
-	<pre><code>
-System puts "Hello" + " World".
-	</code></pre>
-
+	<p>
+	  Messages always have a receiver. If no receiver is explicitly
+	  stated, the currently active object is used.
+	</p>
 	
+	  <pre><code>System puts("Hello World").
+load("Main.bs").</code></pre>
+        <p>
+	  The message <code>puts</code> is, thus in the example above,
+	  invoked with <code>System</code> as receiver
+	  and <code>load</code>, implicitly, with <code>Module</code> as
+	  receiver. Parentheses can be omitted if the receiver is
+	  explicitly stated. For example:
+	</p>  
+	  <pre><code>System puts "Hello" + " World".</code></pre>
+        <p>
+	  is equivalent to:
+	</p>  
+	  <pre><code>System puts("Hello" +(" World")).</code></pre>
+        <p>
+	  Noteworthy is the fact that <code>+</code> is just an other
+	  message. Thus is operators implemented as messages and adhere
+	  to the same rules. That is, they are executed from right to
+	  left (starting with the arguments).
+	  
+	  For example:
+        </p>
+	  <pre><code>10 + 10.        # 20
+10 +(10).       # 20
+10 * 10 + 10.   # 200 i.e. 10 * (10 + 10) in C
+10 *(10 +(10)). # 200 </code></pre>
+        <p>
+	  Messages can be forced to change precedence by using
+	  <code>;</code> and parenthesis. For example:
+        </p>
+	  <pre></code>10 * 10; + 10.  # == (10 * 10) + 10 = 110
+(10 * 10) + 10. # == (10 * 10) + 10 = 110
+System puts 10 * 10; 10 + 10.
+100
+20</code></pre>
 
+        <p>Valid names for identifiers are: any letter or symbol
+        except: <code>| { } [ ] ( ) . , : ;</code></p>
+
+	<pre><code>Account := Proto clone :Account.
+Account <<= :init, { | self |
+  self <- :balance, 0.
+}.
+Account <<= :deposit, { | self, amount |
+  self <- :balance, self -> :balance; + amount.
+}.
+
+a := Account clone.
+a deposit 10.
+System puts a -> :balance.</code></pre>
+
+	<h4>Operators</h4>
 
 	<h3>Authors and Contributors</h3>
 	
