@@ -169,11 +169,11 @@ System puts 10 * 10; 10 + 10.
         except: <code>| { } [ ] ( ) . , : ;</code></p>
 
 	<pre><code>Account := Proto clone :Account.
-Account <<= :init, { | self |
-  self <- :balance, 0.
+Account <<= :init, {
+  self <<- :balance.
 }.
-Account <<= :deposit, { | self, amount |
-  self <- :balance, self -> :balance; + amount.
+Account <<= :deposit, { | amount |
+  return(balance + amount)
 }.
 
 a := Account clone.
