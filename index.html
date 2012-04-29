@@ -170,15 +170,42 @@ System puts 10 * 10; 10 + 10.
 
 	<pre><code>Account := Proto clone :Account.
 Account <<= :init, {
-  self <<- :balance.
+  self <<- :balance. # create an instance field in self
 }.
 Account <<= :deposit, { | amount |
-  return(balance + amount)
+  return(balance + amount) # add the balance and amount
 }.
 
 a := Account clone.
 a deposit 10.
 System puts a -> :balance.</code></pre>
+
+	<p>
+	  Scopes are handled farily intuitively, a <em>message</em>
+	  can only access arguments explicitly sent to it and the
+	  reciver implicitly named <code>self</code>. The search are
+	  conducted from the inner most nesting level outwards,
+	  stopping at the message declaration. It is thus not possible
+	  to get variables from outside a method (unless explicitly
+	  sent). Further are variables already defined in an outer
+	  scope <em>not</em> hidden by a new declaration. The value is
+	  instead updated. This is to allow for, for example,
+	  the <code>whileTrue</code> message.
+
+	  Example:
+	  <pre><code>outer := "Outer value".
+<<=(:test, {
+   System puts outer. # NameError
+}).
+
+n := 1.
+{n < 10.} whileTrue {
+   System puts n.
+   n := n + 1. # Update the value
+}.
+
+</code></pre>
+	</p>
 
 	<h4>Operators</h4>
 
