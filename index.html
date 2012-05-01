@@ -286,6 +286,87 @@ n := 1.
 	
 	<h3>Object</h3>
 
+	<h4>Prototypes</h4>
+	<p>
+	  In <em>bs</em> is everything an object. Locals, namespaces,
+	  modules, instances, prototypes etc., are all objects. Every
+	  object has slots, and methods and a (optional)
+	  prototype. Generally every object inherits from
+	  the <code>Proto</code> object. Excluded are
+	  the <code>Java</code>, <code>JavaInstance</code>
+	  and <code>JavaClass</code> objects (to not interfere with
+	  built in java methods).
+
+	  To create a new instance an already existing object is
+	  cloned. If the clone method exist, and/or do not raise any
+	  exception is a new clone of that object returned. For example:
+
+	  <pre><code>dog := Proto clone.</code></pre>
+
+	  To add a method, and a slot:
+
+	  <pre><code>dog <- :name, "Fido".
+dog <<= :bark, { System puts name + " barks".}.
+</code></pre>
+
+	  <code><-</code> and <code><<=</code> are aliases
+	  for <code>setSlot(name, value)</code>
+	  and <code>addMethod(name, block)</code> respectively. Slots
+	  for an object are made availible in the local scope of a
+	  method and via the <code>self</code> variable. For example:
+
+	  <pre><code> <<= :barkAgain, { System puts self <- :name; + " barks".}.</code></pre>
+          Is the same as above.
+	</p>
+
+	<h4>Inheritance</h4>
+	<p>
+	  Inheritance is simple in <em>bs</em>. If a method is not
+	  found in the local object, the check continues to the
+	  prototype and recursively until a method is found or until
+	  a <code>NameError</code> is raised.
+
+	  	  <pre><code>Dog := Proto clone :Dog.
+Dog <<= :bark, { System puts "Dog barks". }.
+d := Dog clone. # Dog has no method clone, check proto. Found, 
+                  bind self to Dog.
+d bark. # d has no method bark, check Dog, found.
+	  Bind self to d.
+</code></pre>
+
+	The inheritance chain can be changed at runtime. For example, using the example above.
+
+	 <pre><code>Wolf := Proto clone :Wolf.
+Wolf <<= :bark, { System puts "Wolf barks". }.
+d setProto Wolf.
+d bark. # "Wolf barks"
+</code></pre>	  
+	</p>
+
+
+	<h4>Methods</h4>
+	<p>
+	  Methods are blocks bound to a received using
+	  the <code>Proto#addMethod(name, block)</code> message.
+
+	  Methods can be returned:
+	  <pre><code>plusTen := 10 =>> :+.
+plusTen call 20. # 30</code></pre>
+
+	 They can take arguments:
+	 <pre><code>addMethod(:test, { | argOne, argTwo |
+  return(argOne call argTwo).
+}.</code></pre>
+	</p>
+
+	<h4>Block</h4>
+	<p>
+	  Blocks are the same as methods. They are, however, lexically scoped. That is:
+
+	  <pre><code>name := "Scarlett".
+printName := { System puts name. }.
+printName call. # prints "Scarlett"</code></pre>
+	</p>
 	<h3>Authors and Contributors</h3>
 	
 	<p>
