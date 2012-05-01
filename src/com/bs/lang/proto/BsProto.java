@@ -2,10 +2,12 @@ package com.bs.lang.proto;
 
 import com.bs.lang.Bs;
 import com.bs.lang.BsAbstractProto;
-import com.bs.lang.BsCodeData;
 import com.bs.lang.BsConst;
 import com.bs.lang.BsObject;
 import com.bs.lang.annot.BsRuntimeMessage;
+import com.bs.lang.message.BsBlockCode;
+import com.bs.lang.message.BsCode;
+import com.bs.lang.message.BsMessage;
 
 public class BsProto extends BsAbstractProto {
 
@@ -21,6 +23,17 @@ public class BsProto extends BsAbstractProto {
 		}
 		return BsObject.value(BsConst.String, value != null ? value.toString()
 				: value);
+	}
+
+	@BsRuntimeMessage(name = "getProto", arity = 0)
+	public BsObject getProto(BsObject self, BsObject... args) {
+		return Bs.safe(self.getPrototype());
+	}
+
+	@BsRuntimeMessage(name = "setProto", arity = 1)
+	public BsObject setProto(BsObject self, BsObject... args) {
+		self.setPrototype(args[0]);
+		return self;
 	}
 
 	@BsRuntimeMessage(name = "try", arity = 1)
@@ -61,7 +74,7 @@ public class BsProto extends BsAbstractProto {
 	@BsRuntimeMessage(name = "eval", arity = 1)
 	public BsObject eval(BsObject self, BsObject... args) {
 		if (!args[0].instanceOf(BsConst.String)) {
-			return BsError.typeError("eval", args[0].prototype(),
+			return BsError.typeError("eval", args[0].getPrototype(),
 					BsConst.String);
 		}
 		return Bs.eval(Bs.asString(args[0]));
@@ -70,7 +83,7 @@ public class BsProto extends BsAbstractProto {
 	@BsRuntimeMessage(name = "compile", arity = 1)
 	public BsObject compile(BsObject self, BsObject... args) {
 		if (!args[0].instanceOf(BsConst.String)) {
-			return BsError.typeError("compile", args[0].prototype(),
+			return BsError.typeError("compile", args[0].getPrototype(),
 					BsConst.String);
 		}
 		return Bs.compile(Bs.asString(args[0]));
@@ -79,7 +92,7 @@ public class BsProto extends BsAbstractProto {
 	@BsRuntimeMessage(name = "getSlot", arity = 1, aliases = { "->" })
 	public BsObject getSlot(BsObject self, BsObject... args) {
 		if (!args[0].instanceOf(BsConst.Symbol)) {
-			return BsError.typeError("getSlot", args[0].prototype(),
+			return BsError.typeError("getSlot", args[0].getPrototype(),
 					BsConst.Symbol);
 		}
 		return Bs.safe(self.getSlot(Bs.asString(args[0])));
@@ -88,7 +101,7 @@ public class BsProto extends BsAbstractProto {
 	@BsRuntimeMessage(name = "setSlot", arity = 2, aliases = { "<-" })
 	public BsObject setSlot(BsObject self, BsObject... args) {
 		if (!args[0].instanceOf(BsConst.Symbol)) {
-			return BsError.typeError("setSlot", args[0].prototype(),
+			return BsError.typeError("setSlot", args[0].getPrototype(),
 					BsConst.Symbol);
 		}
 		self.setSlot(Bs.asString(args[0]), args[1]);
@@ -153,17 +166,28 @@ public class BsProto extends BsAbstractProto {
 	@BsRuntimeMessage(name = "setMethod", arity = 2, aliases = { "<<=" })
 	public BsObject addMethod(BsObject self, BsObject... args) {
 		if (!args[0].instanceOf(BsConst.Symbol)) {
-			return BsError.typeError("setMethod", args[0].prototype(),
+			return BsError.typeError("setMethod", args[0].getPrototype(),
 					BsConst.String);
 		}
 		if (!args[1].instanceOf(BsConst.Block)) {
-			return BsError.typeError("setMethod", args[1].prototype(),
+			return BsError.typeError("setMethod", args[1].getPrototype(),
 					BsConst.Block);
 		}
-		BsCodeData data = args[1].value();
-		self.addMessage(Bs.asString(args[0]), data);
+		BsCode code = args[1].value();
+		if (!(code instanceof BsBlockCode)) {
+			return BsError.typeError("Cannot add an already bound method");
+		}
+
+		self.addMessage(Bs.asString(args[0]), ((BsBlockCode) code).data);
 
 		return self;
+	}
+
+	@BsRuntimeMessage(name = "getMethod", arity = 1, aliases = { "=>>" })
+	public BsObject getMethod(BsObject self, BsObject... args) {
+		BsMessage code = self.getMessage(Bs.asString(args[0]));
+
+		return BsBlock.create(code);
 	}
 
 	@BsRuntimeMessage(name = "return", arity = 1)

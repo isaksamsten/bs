@@ -5,6 +5,7 @@ import com.bs.lang.BsAbstractProto;
 import com.bs.lang.BsConst;
 import com.bs.lang.BsObject;
 import com.bs.lang.annot.BsRuntimeMessage;
+import com.bs.lang.message.BsCode;
 
 public class BsError extends BsAbstractProto {
 
@@ -97,7 +98,7 @@ public class BsError extends BsAbstractProto {
 	public static BsObject typeError(String method, BsObject got,
 			BsObject expected) {
 		return raise(BsConst.TypeError, "%s argument must be %s, got %s",
-				method, expected.name(), got.prototype().name());
+				method, expected.name(), got.getPrototype().name());
 	}
 
 	/**
@@ -112,7 +113,7 @@ public class BsError extends BsAbstractProto {
 	public static BsObject typeError(BsObject self, String method, int got,
 			int expected) {
 		return raise(BsConst.TypeError,
-				"%s %s() takes %d arguments (%d given)", self.prototype()
+				"%s %s() takes %d arguments (%d given)", self.getPrototype()
 						.name(), method, expected, got);
 	}
 
@@ -158,7 +159,7 @@ public class BsError extends BsAbstractProto {
 
 	@BsRuntimeMessage(name = "toString", arity = 0)
 	public BsObject toString(BsObject self, BsObject... args) {
-		return BsString.clone(self.prototype().name() + ": ").invoke("+",
+		return BsString.clone(self.getPrototype().name() + ": ").invoke("+",
 				self.getSlot(MESSAGE));
 	}
 
@@ -179,7 +180,7 @@ public class BsError extends BsAbstractProto {
 	}
 
 	@BsRuntimeMessage(name = "catch", arity = 2)
-	public BsObject catchit(BsObject self, BsObject... args) {
+	public BsObject catch_(BsObject self, BsObject... args) {
 		if (!args[0].instanceOf(BsConst.Symbol)) {
 			return typeError("catch", args[0], BsConst.Symbol);
 		}
@@ -188,10 +189,10 @@ public class BsError extends BsAbstractProto {
 			return typeError("catch", args[1], BsConst.Block);
 		}
 
-		String type = self.prototype().name();
+		String type = self.getPrototype().name();
 		String toCatch = Bs.asString(args[0]);
 		if (type.equals(toCatch) && !Bs.asBoolean(args[1].getSlot(CAUGHT))) {
-			int arity = Bs.asNumber(args[1].getSlot(BsBlock.ARITY)).intValue();
+			int arity = ((BsCode) args[1].value()).getArity();
 			args[1].setSlot(CAUGHT, BsConst.True);
 			if (arity == 1) {
 				return args[1].invoke("call", self);
@@ -210,7 +211,7 @@ public class BsError extends BsAbstractProto {
 	@BsRuntimeMessage(name = "raise", arity = 1)
 	public BsObject raise(BsObject self, BsObject... args) {
 		if (!args[0].instanceOf(BsConst.String)) {
-			return BsError.typeError("raise", args[0].prototype(),
+			return BsError.typeError("raise", args[0].getPrototype(),
 					BsConst.String);
 		}
 		return BsError.raise(self, Bs.asString(args[0]));
@@ -219,7 +220,7 @@ public class BsError extends BsAbstractProto {
 	@BsRuntimeMessage(name = "clone", arity = 1)
 	public BsObject clone(BsObject self, BsObject... args) {
 		if (!args[0].instanceOf(BsConst.Symbol)) {
-			return BsError.typeError("clone", args[0].prototype(),
+			return BsError.typeError("clone", args[0].getPrototype(),
 					BsConst.Symbol);
 		}
 

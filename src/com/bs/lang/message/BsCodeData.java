@@ -1,4 +1,4 @@
-package com.bs.lang;
+package com.bs.lang.message;
 
 import java.util.List;
 

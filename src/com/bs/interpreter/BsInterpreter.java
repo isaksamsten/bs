@@ -6,9 +6,9 @@ import java.util.List;
 import com.bs.interpreter.stack.BsStack;
 import com.bs.interpreter.stack.Stack;
 import com.bs.lang.Bs;
-import com.bs.lang.BsCodeData;
 import com.bs.lang.BsConst;
 import com.bs.lang.BsObject;
+import com.bs.lang.message.BsCodeData;
 import com.bs.lang.proto.BsBlock;
 import com.bs.lang.proto.BsChar;
 import com.bs.lang.proto.BsNumber;
@@ -154,9 +154,11 @@ public class BsInterpreter implements Interpreter {
 		if (args == null) {
 			args = new ArrayList<String>();
 		}
-		BsObject block = BsBlock.create(args, blockNode.statements());
-		BsCodeData data = block.value();
+
+		BsCodeData data = new BsCodeData(args, blockNode.statements());
 		data.stack = stack;
+
+		BsObject block = BsBlock.create(data);
 
 		return block;
 	}

@@ -4,7 +4,6 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.bs.lang.Bs;
-import com.bs.lang.BsCodeData;
 import com.bs.lang.BsConst;
 import com.bs.lang.BsObject;
 import com.bs.lang.proto.BsNumber;
@@ -162,7 +161,6 @@ public class BsObjectTests {
 
 		obj = Bs.eval("Proto clone()");
 		BsObject method = Bs.compile("Proto return 10.");
-		BsCodeData data = method.value();
 		obj.invoke("<<=", BsSymbol.get("getTen"), method);
 
 		assertEquals(10, Bs.asNumber(obj.invoke("getTen")));

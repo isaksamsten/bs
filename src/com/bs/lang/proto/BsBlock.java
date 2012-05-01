@@ -1,24 +1,24 @@
 package com.bs.lang.proto;
 
-import java.util.List;
-
-import com.bs.interpreter.stack.Stack;
 import com.bs.lang.Bs;
 import com.bs.lang.BsAbstractProto;
-import com.bs.lang.BsCodeData;
 import com.bs.lang.BsConst;
 import com.bs.lang.BsObject;
 import com.bs.lang.annot.BsProto;
 import com.bs.lang.annot.BsRuntimeMessage;
-import com.bs.parser.tree.Node;
+import com.bs.lang.message.BsBlockCode;
+import com.bs.lang.message.BsCode;
+import com.bs.lang.message.BsCodeData;
 
 @BsProto(name = "Block")
 public class BsBlock extends BsAbstractProto {
 
-	public static BsObject create(List<String> args, Node statements) {
-		BsObject obj = BsObject.value(BsConst.Block, new BsCodeData(args,
-				statements));
-		obj.setSlot(ARITY, BsNumber.clone(args.size()));
+	public static BsObject create(BsCodeData data) {
+		return create(new BsBlockCode(data));
+	}
+
+	public static BsObject create(BsCode code) {
+		BsObject obj = BsObject.value(BsConst.Block, code);
 		return obj;
 	}
 
@@ -33,9 +33,9 @@ public class BsBlock extends BsAbstractProto {
 		super(BsConst.Proto, "Block", c);
 	}
 
-	@BsRuntimeMessage(name = "arity", arity = 0)
+	@BsRuntimeMessage(name = "getArity", arity = 0)
 	public BsObject arity(BsObject self, BsObject... args) {
-		return self.getSlot(ARITY);
+		return BsNumber.clone(((BsCode) self.value()).getArity());
 	}
 
 	@BsRuntimeMessage(name = "hasReturned", arity = 0)
@@ -52,9 +52,26 @@ public class BsBlock extends BsAbstractProto {
 		return self;
 	}
 
-	@BsRuntimeMessage(name = "call", arity = -1)
+	@BsRuntimeMessage(name = "call", arity = -1, aliases = { "=>" })
 	public BsObject call(BsObject self, BsObject... args) {
-		return execute((BsCodeData) self.value(), self, args);
+		return ((BsCode) self.value()).invoke(self, args);
+	}
+
+	@BsRuntimeMessage(name = "addArgument", arity = 1)
+	public BsObject addArgument(BsObject self, BsObject... args) {
+		if (!args[0].instanceOf(BsConst.String)) {
+			return BsError.typeError("addArgument", args[0], BsConst.String);
+		}
+
+		BsCode code = self.value();
+		if (code.isInternal()) {
+			return BsError
+					.typeError("Impossible to add arguments to internal method");
+		} else {
+			code.addArgument(Bs.asString(args[0]));
+		}
+
+		return self;
 	}
 
 	@BsRuntimeMessage(name = "whileTrue", arity = 1)
@@ -64,7 +81,7 @@ public class BsBlock extends BsAbstractProto {
 			return w;
 		}
 
-		BsObject last = BsConst.False;
+		BsObject last = BsConst.Nil;
 		while (Bs.asBoolean(w) && !Bs.asBoolean(args[0].getSlot(HAS_RETURNED))) {
 			last = args[0].invoke("call");
 			if (last.isBreak()) {
@@ -75,34 +92,5 @@ public class BsBlock extends BsAbstractProto {
 		}
 
 		return last;
-	}
-
-	/**
-	 * Execute a BsCodeData object in the context of self, with args arguments.
-	 * 
-	 * @param data
-	 * @param self
-	 * @param args
-	 * @return
-	 */
-	public static BsObject execute(BsCodeData data, BsObject self,
-			BsObject... args) {
-		if (data.arguments.size() == args.length) {
-			for (int n = 0; n < args.length; n++) {
-				self.setSlot(data.arguments.get(n), args[n]);
-			}
-
-			Stack stack = data.stack;
-			stack.push(self);
-			BsObject ret = Bs.eval(data.code, stack);
-			stack.pop();
-			if (ret.isBreak()) {
-				self.setSlot(HAS_RETURNED, BsConst.True);
-			}
-
-			return ret;
-		} else {
-			return BsError.raise("Invalid arity");
-		}
 	}
 }

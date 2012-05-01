@@ -6,9 +6,9 @@ import java.util.ArrayList;
 
 import com.bs.interpreter.stack.BsStack;
 import com.bs.interpreter.stack.Stack;
-import com.bs.lang.BsCodeData;
 import com.bs.lang.BsConst;
 import com.bs.lang.BsObject;
+import com.bs.lang.message.BsCodeData;
 import com.bs.lang.proto.BsBlock;
 import com.bs.lang.proto.BsError;
 import com.bs.parser.StatementsParser;
@@ -75,9 +75,11 @@ public class BsCompiler {
 			return message.error;
 		}
 
-		BsObject code = BsBlock.create(new ArrayList<String>(), node);
-		BsCodeData data = code.value();
+
+		BsCodeData data = new BsCodeData(new ArrayList<String>(), node);
 		data.stack = stack;
+		
+		BsObject code = BsBlock.create(data);
 		return code;
 	}
 

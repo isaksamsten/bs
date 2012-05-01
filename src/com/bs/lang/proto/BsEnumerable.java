@@ -1,11 +1,12 @@
 package com.bs.lang.proto;
 
+import com.bs.interpreter.stack.BsStack;
 import com.bs.lang.Bs;
 import com.bs.lang.BsAbstractProto;
-import com.bs.lang.BsCodeData;
 import com.bs.lang.BsConst;
 import com.bs.lang.BsObject;
 import com.bs.lang.annot.BsRuntimeMessage;
+import com.bs.lang.message.BsCode;
 
 public class BsEnumerable extends BsAbstractProto {
 
@@ -66,15 +67,15 @@ public class BsEnumerable extends BsAbstractProto {
 	 * @return
 	 */
 	protected BsObject each(String code, BsObject self, BsObject block) {
-		BsCodeData mapData = block.value();
+		BsCode mapData = block.value();
 		BsObject list = BsList.create();
 
-		BsObject each = Bs.compile(code, mapData.stack);
+		BsObject each = Bs.compile(code, mapData.getStack());
 		each.setSlot("list", list);
 		each.setSlot("block", block);
-		BsCodeData data = each.value();
-		data.arguments.add("e");
-		data.stack = mapData.stack;
+		BsCode data = each.value();
+		data.addArgument("e");
+		data.setStack(new BsStack());
 
 		BsObject ret = self.invoke("each", each);
 		if (ret.isError()) {

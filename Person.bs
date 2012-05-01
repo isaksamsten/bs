@@ -22,11 +22,14 @@ Person <<= :toString, {
 	name + age toString.
 }.
 
-isak := "Skittt".
 Person <<= :getAge, {
-	System puts isak.
 	age.
 }.
+
+pp := Proto clone.
+pp setProto Person.
+
+pp setName "olle".
 
 p := Person clone("isak").
 p setName "isak".

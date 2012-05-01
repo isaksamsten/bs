@@ -8,6 +8,11 @@ import org.apache.commons.lang3.ArrayUtils;
 
 import com.bs.interpreter.stack.StackFrame;
 import com.bs.lang.annot.BsRuntimeMessage;
+import com.bs.lang.message.BsCodeData;
+import com.bs.lang.message.BsJavaCode;
+import com.bs.lang.message.BsMessage;
+import com.bs.lang.message.BsMessageCode;
+import com.bs.lang.message.BsMessageData;
 import com.bs.lang.proto.BsError;
 import com.bs.lang.proto.BsString;
 
@@ -17,28 +22,6 @@ import com.bs.lang.proto.BsString;
  * 
  */
 public class BsObject implements StackFrame {
-
-	/**
-	 * 
-	 * @author isak
-	 * 
-	 */
-	private class BsMessageData {
-		public BsCode code;
-		public int arity;
-		public String name;
-
-		public BsMessageData(BsCode code, int arity, String name) {
-			this.code = code;
-			this.arity = arity;
-			this.name = name;
-		}
-
-		public BsMessage getMessage(BsObject binder) {
-			return code.getMessage(name, arity, binder);
-		}
-
-	}
 
 	/**
 	 * Create a bs object with proto as Prototype and value as a java value
@@ -136,7 +119,7 @@ public class BsObject implements StackFrame {
 		return value;
 	}
 
-	public BsObject prototype() {
+	public BsObject getPrototype() {
 		return prototype;
 	}
 
@@ -155,7 +138,7 @@ public class BsObject implements StackFrame {
 	}
 
 	public boolean isError() {
-		BsObject proto = prototype();
+		BsObject proto = getPrototype();
 		return proto != null && proto.instanceOf(BsConst.Error)
 				&& !Bs.asBoolean(getSlot(BsError.IGNORED));
 	}
@@ -215,13 +198,13 @@ public class BsObject implements StackFrame {
 		return messages.containsKey(name);
 	}
 
-	public void addMessage(String name, BsCodeData data) {
-		messages.put(name, new BsMessageData(new BsMessageCode(data),
-				data.arguments.size(), name));
+	public void addMessage(String name, BsCodeData code) {
+		messages.put(name, new BsMessageData(name, code.arguments.size(),
+				new BsMessageCode(code)));
 	}
 
 	public void addMessage(String name, int arity, BsJavaCode code) {
-		messages.put(name, new BsMessageData(code, arity, name));
+		messages.put(name, new BsMessageData(name, arity, code));
 	}
 
 	public BsObject invoke(String message, BsObject... args) {
@@ -238,7 +221,7 @@ public class BsObject implements StackFrame {
 			return obj;
 		}
 
-		return BsError.nameError(message, this.prototype());
+		return BsError.nameError(message, this.getPrototype());
 	}
 
 	@Override
@@ -283,6 +266,10 @@ public class BsObject implements StackFrame {
 	@Override
 	public boolean searchParent() {
 		return true;
+	}
+
+	public void setPrototype(BsObject bsObject) {
+		this.prototype = bsObject;
 	}
 
 }
