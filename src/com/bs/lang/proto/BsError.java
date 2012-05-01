@@ -53,7 +53,8 @@ public class BsError extends BsAbstractProto {
 	 * @return
 	 */
 	public static BsObject nameError(String message, BsObject obj) {
-		return raise(BsConst.NameError, "No method '%s' for '%s'", message, obj);
+		return raise(BsConst.NameError, "No method '%s' for '%s'", message,
+				(obj.getPrototype() == null ? obj : obj.getPrototype()));
 	}
 
 	/**
@@ -98,7 +99,8 @@ public class BsError extends BsAbstractProto {
 	public static BsObject typeError(String method, BsObject got,
 			BsObject expected) {
 		return raise(BsConst.TypeError, "%s argument must be %s, got %s",
-				method, expected.name(), got.getPrototype().name());
+				method, expected.name(), (got.getPrototype() == null ? got
+						: got.getPrototype()).name());
 	}
 
 	/**
@@ -113,7 +115,8 @@ public class BsError extends BsAbstractProto {
 	public static BsObject typeError(BsObject self, String method, int got,
 			int expected) {
 		return raise(BsConst.TypeError,
-				"%s %s() takes %d arguments (%d given)", self.getPrototype()
+				"%s %s() takes %d arguments (%d given)",
+				(self.getPrototype() == null ? self : self.getPrototype())
 						.name(), method, expected, got);
 	}
 

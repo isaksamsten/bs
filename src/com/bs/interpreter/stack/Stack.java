@@ -23,4 +23,6 @@ public interface Stack {
 	BsObject lookup(String key);
 
 	int depth();
+
+	Stack clone();
 }

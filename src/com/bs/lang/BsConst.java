@@ -7,6 +7,7 @@ import com.bs.lang.proto.BsComparable;
 import com.bs.lang.proto.BsEnumerable;
 import com.bs.lang.proto.BsError;
 import com.bs.lang.proto.BsFalse;
+import com.bs.lang.proto.BsFuture;
 import com.bs.lang.proto.BsList;
 import com.bs.lang.proto.BsModule;
 import com.bs.lang.proto.BsNil;
@@ -64,5 +65,6 @@ public final class BsConst {
 	public static final BsObject Java = new BsJava();
 	public static final BsObject JavaInstance = new BsJavaInstance();
 	public static final BsObject JavaClass = new BsJavaClass();
+	public static final BsObject Future = new BsFuture();
 
 }

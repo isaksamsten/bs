@@ -156,7 +156,7 @@ public class BsInterpreter implements Interpreter {
 		}
 
 		BsCodeData data = new BsCodeData(args, blockNode.statements());
-		data.stack = stack;
+		data.stack = stack.clone();
 
 		BsObject block = BsBlock.create(data);
 

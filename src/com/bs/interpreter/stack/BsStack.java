@@ -90,6 +90,17 @@ public class BsStack implements Stack {
 		return -1;
 	}
 
+	@SuppressWarnings("unchecked")
+	@Override
+	public Stack clone() {
+		BsStack stack = new BsStack();
+		stack.current = current;
+		stack.global = global;
+		stack.stack = (ArrayList<StackFrame>) this.stack.clone();
+
+		return stack;
+	}
+
 	@Override
 	public BsObject global() {
 		return global;

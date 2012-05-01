@@ -221,7 +221,7 @@ public class BsObject implements StackFrame {
 			return obj;
 		}
 
-		return BsError.nameError(message, this.getPrototype());
+		return BsError.nameError(message, this);
 	}
 
 	@Override

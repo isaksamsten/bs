@@ -1,5 +1,8 @@
 package com.bs.lang.proto;
 
+import java.util.concurrent.Callable;
+import java.util.concurrent.FutureTask;
+
 import com.bs.lang.Bs;
 import com.bs.lang.BsAbstractProto;
 import com.bs.lang.BsConst;
@@ -55,6 +58,21 @@ public class BsBlock extends BsAbstractProto {
 	@BsRuntimeMessage(name = "call", arity = -1, aliases = { "=>" })
 	public BsObject call(BsObject self, BsObject... args) {
 		return ((BsCode) self.value()).invoke(self, args);
+	}
+
+	@BsRuntimeMessage(name = "futureCall", arity = -1, aliases = { "==>" })
+	public BsObject callFuture(final BsObject self, final BsObject... args) {
+
+		FutureTask<BsObject> future = new FutureTask<BsObject>(
+				new Callable<BsObject>() {
+
+					@Override
+					public BsObject call() throws Exception {
+						return ((BsCode) self.value()).invoke(self, args);
+					}
+				});
+
+		return BsFuture.create(future);
 	}
 
 	@BsRuntimeMessage(name = "addArgument", arity = 1)

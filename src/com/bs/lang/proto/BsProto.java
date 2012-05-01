@@ -189,6 +189,13 @@ public class BsProto extends BsAbstractProto {
 
 		return BsBlock.create(code);
 	}
+	
+	@BsRuntimeMessage(name = "sendFuture", arity = -1)
+	public BsObject sendFuture(BsObject self, BsObject... args) {
+		BsMessage code = self.getMessage(Bs.asString(args[0]));
+
+		return BsBlock.create(code);
+	}
 
 	@BsRuntimeMessage(name = "return", arity = 1)
 	public BsObject returnit(BsObject self, BsObject... args) {
