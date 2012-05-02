@@ -142,7 +142,11 @@ public class BsInterpreter implements Interpreter {
 			Bs.updateError(value, node);
 			return value;
 		}
-		stack.enter(var, value);
+		if (Character.isUpperCase(var.charAt(0))) {
+			stack.enterGlobal(var, value);
+		} else {
+			stack.enter(var, value);
+		}
 
 		return value;
 	}

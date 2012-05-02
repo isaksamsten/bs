@@ -1,5 +1,7 @@
 package com.bs.lang.proto;
 
+import org.apache.commons.lang3.ArrayUtils;
+
 import com.bs.lang.Bs;
 import com.bs.lang.BsAbstractProto;
 import com.bs.lang.BsConst;
@@ -183,18 +185,30 @@ public class BsProto extends BsAbstractProto {
 		return self;
 	}
 
+	@BsRuntimeMessage(name = "lock", arity = 1)
+	public BsObject lock(BsObject self, BsObject... args) {
+		synchronized (self) {
+			BsObject ret = args[0].invoke("call");
+			return ret;
+		}
+	}
+
 	@BsRuntimeMessage(name = "getMethod", arity = 1, aliases = { "=>>" })
 	public BsObject getMethod(BsObject self, BsObject... args) {
 		BsMessage code = self.getMessage(Bs.asString(args[0]));
 
 		return BsBlock.create(code);
 	}
-	
-	@BsRuntimeMessage(name = "sendFuture", arity = -1)
+
+	@BsRuntimeMessage(name = "futureSend", arity = -1)
 	public BsObject sendFuture(BsObject self, BsObject... args) {
+		if (!args[0].instanceOf(BsConst.Symbol)) {
+			return BsError.typeError("futureSend", args[0], BsConst.Symbol);
+		}
 		BsMessage code = self.getMessage(Bs.asString(args[0]));
 
-		return BsBlock.create(code);
+		args = ArrayUtils.subarray(args, 1, args.length); // remove symbol
+		return BsBlock.create(code).invoke("futureCall", args);
 	}
 
 	@BsRuntimeMessage(name = "return", arity = 1)

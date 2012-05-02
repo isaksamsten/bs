@@ -6,6 +6,8 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.FutureTask;
 
+import org.apache.commons.lang3.ArrayUtils;
+
 import com.bs.lang.Bs;
 import com.bs.lang.BsAbstractProto;
 import com.bs.lang.BsConst;
@@ -47,7 +49,8 @@ public class BsFuture extends BsAbstractProto {
 		Future<BsObject> future = self.value();
 		try {
 			BsObject obj = future.get();
-			return obj.invoke(Bs.asString(args[0]), args);
+			return obj.invoke(Bs.asString(args[0]),
+					ArrayUtils.subarray(args, 1, args.length));
 		} catch (Exception e) {
 			return BsError.raise(e.getMessage());
 		}
