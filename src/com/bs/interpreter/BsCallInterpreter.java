@@ -21,7 +21,7 @@ public class BsCallInterpreter extends BsInterpreter {
 	public Object interpretMessages(MessagesNode node) {
 		for (Node n : node.childrens()) {
 			receiver = (BsObject) interpret(n);
-			if (receiver.isBreak()) {
+			if (receiver.isBreakingContext()) {
 				Bs.updateError(receiver, node);
 				return receiver;
 			}
@@ -34,7 +34,7 @@ public class BsCallInterpreter extends BsInterpreter {
 	@Override
 	public Object interpretMessage(MessageNode node) {
 		Object exprs = interpret(node.expressions());
-		if (exprs instanceof BsObject && ((BsObject) exprs).isBreak()) {
+		if (exprs instanceof BsObject && ((BsObject) exprs).isBreakingContext()) {
 			return exprs;
 		}
 
@@ -46,7 +46,7 @@ public class BsCallInterpreter extends BsInterpreter {
 			arguments = new BsObject[list.size()];
 			for (int n = 0; n < arguments.length; n++) {
 				BsObject o = list.get(n);
-				if (o.isBreak()) {
+				if (o.isBreakingContext()) {
 					Bs.updateError(o, node);
 					return o;
 				} else {

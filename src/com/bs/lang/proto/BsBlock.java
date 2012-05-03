@@ -1,8 +1,5 @@
 package com.bs.lang.proto;
 
-import java.util.concurrent.Callable;
-import java.util.concurrent.FutureTask;
-
 import com.bs.lang.Bs;
 import com.bs.lang.BsAbstractProto;
 import com.bs.lang.BsConst;
@@ -41,38 +38,23 @@ public class BsBlock extends BsAbstractProto {
 		return BsNumber.clone(((BsCode) self.value()).getArity());
 	}
 
-	@BsRuntimeMessage(name = "hasReturned", arity = 0)
-	public BsObject hasReturned(BsObject self, BsObject... args) {
-		return self.getSlot(HAS_RETURNED);
-	}
-
-	@BsRuntimeMessage(name = "setReturned", arity = 1)
-	public BsObject setReturned(BsObject self, BsObject... args) {
-		if (!args[0].instanceOf(BsConst.Bool)) {
-			return BsError.typeError("setReturned", args[0], BsConst.Bool);
-		}
-		self.setSlot(HAS_RETURNED, args[0]);
-		return self;
-	}
-
 	@BsRuntimeMessage(name = "call", arity = -1, aliases = { "=>" })
 	public BsObject call(BsObject self, BsObject... args) {
 		return ((BsCode) self.value()).invoke(self, args);
 	}
 
-	@BsRuntimeMessage(name = "futureCall", arity = -1, aliases = { "==>" })
-	public BsObject callFuture(final BsObject self, final BsObject... args) {
+	@BsRuntimeMessage(name = "callFuture", arity = -1, aliases = { "==>" })
+	public BsObject callFuture(BsObject self, BsObject... args) {
+		return BsFuture.create((BsCode) self.value(), self, args);
+	}
 
-		FutureTask<BsObject> future = new FutureTask<BsObject>(
-				new Callable<BsObject>() {
-
-					@Override
-					public BsObject call() throws Exception {
-						return ((BsCode) self.value()).invoke(self, args);
-					}
-				});
-
-		return BsFuture.create(future);
+	@BsRuntimeMessage(name = "callAsync", arity = -1, aliases = { "===>" })
+	public BsObject callAsync(final BsObject self, final BsObject... args) {
+		final BsCode code = self.value();
+		BsObject obj = BsThread.create(code, self, args);
+		Thread t = obj.value();
+		t.start();
+		return obj;
 	}
 
 	@BsRuntimeMessage(name = "addArgument", arity = 1)
@@ -95,18 +77,21 @@ public class BsBlock extends BsAbstractProto {
 	@BsRuntimeMessage(name = "whileTrue", arity = 1)
 	public BsObject whileTrue(BsObject self, BsObject... args) {
 		BsObject w = self.invoke("call");
-		if (w.isError()) {
+		if (w.isBreakingContext()) {
 			return w;
 		}
 
 		BsObject last = BsConst.Nil;
-		while (Bs.asBoolean(w) && !Bs.asBoolean(args[0].getSlot(HAS_RETURNED))) {
+		while (Bs.asBoolean(w)) {
 			last = args[0].invoke("call");
-			if (last.isBreak()) {
+			if (last.isBreakingContext()) {
 				return last;
 			}
 
 			w = self.invoke("call");
+			if (w.isBreakingContext()) {
+				return last;
+			}
 		}
 
 		return last;

@@ -157,7 +157,7 @@ public class BsObjectTests {
 	public void testReturn() {
 		BsObject obj = BsConst.Proto.invoke("return",
 				BsString.clone("Hello world"));
-		assertEquals(true, obj.isReturning() && obj.isBreak());
+		assertEquals(true, obj.isReturning() && obj.isBreakingContext());
 
 		obj = Bs.eval("Proto clone()");
 		BsObject method = Bs.compile("Proto return 10.");
@@ -168,7 +168,6 @@ public class BsObjectTests {
 		obj = Bs.compile("10. return(30). 20.");
 		assertEquals(true, obj.instanceOf(BsConst.Block));
 		assertEquals(30, Bs.asNumber(obj.invoke("call")));
-		assertEquals(true, Bs.asBoolean(obj.invoke("hasReturned")));
 
 		obj = Bs.eval("10. return(30). 20.");
 		assertEquals(30, Bs.asNumber(obj));

@@ -80,7 +80,7 @@ public class BsInterpreter implements Interpreter {
 		/*
 		 * Null left hand side == call without a receiver
 		 */
-		if (lhs != null && lhs.isBreak()) {
+		if (lhs != null && lhs.isBreakingContext()) {
 			Bs.updateError(lhs, node);
 			return lhs;
 		}
@@ -98,7 +98,7 @@ public class BsInterpreter implements Interpreter {
 		List<BsObject> objects = new ArrayList<BsObject>();
 		for (Node expr : node.childrens()) {
 			BsObject obj = (BsObject) interpret(expr);
-			if (obj.isBreak()) {
+			if (obj.isBreakingContext()) {
 				return obj;
 			}
 			objects.add(obj);
@@ -142,11 +142,11 @@ public class BsInterpreter implements Interpreter {
 			Bs.updateError(value, node);
 			return value;
 		}
-		if (Character.isUpperCase(var.charAt(0))) {
-			stack.enterGlobal(var, value);
-		} else {
-			stack.enter(var, value);
-		}
+		// if (Character.isUpperCase(var.charAt(0))) {
+		// stack.enterGlobal(var, value);
+		// } else {
+		stack.enter(var, value);
+		// }
 
 		return value;
 	}
@@ -192,6 +192,9 @@ public class BsInterpreter implements Interpreter {
 		if (objects instanceof BsObject && ((BsObject) objects).isError()) {
 			Bs.updateError((BsObject) objects, node);
 			return objects;
+		}
+		if (objects == null) {
+			objects = new ArrayList<BsObject>();
 		}
 
 		BsObject list = BsObject.value(BsConst.List, objects);

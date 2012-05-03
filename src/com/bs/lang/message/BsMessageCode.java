@@ -19,6 +19,11 @@ public class BsMessageCode extends BsBlockCode {
 		BsObject obj = super.invoke(scope, args);
 		data.stack.pop();
 		data.stack.pop();
+
+		if (obj.isReturning()) {
+			obj.setReturning(false);
+		}
+
 		return obj;
 	}
 }

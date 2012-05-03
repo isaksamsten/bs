@@ -19,7 +19,7 @@ public class BsString extends BsAbstractProto {
 		super(BsConst.Comparable, "String", BsString.class);
 	}
 
-	@BsRuntimeMessage(name = "length", arity = 0)
+	@BsRuntimeMessage(name = "length?", arity = 0)
 	public BsObject length(BsObject self, BsObject... args) {
 		return BsObject.value(BsConst.Number, self.value().toString().length());
 	}

@@ -22,4 +22,6 @@ public interface BsCode {
 	void setStack(Stack s);
 
 	void addArgument(String str);
+
+	void cloneStack();
 }

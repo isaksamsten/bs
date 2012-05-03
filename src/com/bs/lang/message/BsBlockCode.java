@@ -2,9 +2,7 @@ package com.bs.lang.message;
 
 import com.bs.interpreter.stack.Stack;
 import com.bs.lang.Bs;
-import com.bs.lang.BsConst;
 import com.bs.lang.BsObject;
-import com.bs.lang.proto.BsBlock;
 import com.bs.lang.proto.BsError;
 
 public class BsBlockCode implements BsCode {
@@ -26,13 +24,15 @@ public class BsBlockCode implements BsCode {
 			stack.push(self);
 			BsObject ret = Bs.eval(data.code, stack);
 			stack.pop();
-			if (ret.isBreak()) {
-				self.setSlot(BsBlock.HAS_RETURNED, BsConst.True);
+
+			if (ret.isBreaking()) {
+				self.setBreaking(false);
 			}
 
 			return ret;
 		} else {
-			return BsError.raise("Invalid arity");
+			return BsError.typeError(self, "call", args.length,
+					data.arguments.size());
 		}
 	}
 
@@ -59,5 +59,10 @@ public class BsBlockCode implements BsCode {
 	@Override
 	public boolean isInternal() {
 		return false;
+	}
+
+	@Override
+	public void cloneStack() {
+		data.stack = data.stack.clone();
 	}
 }

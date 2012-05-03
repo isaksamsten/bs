@@ -68,6 +68,8 @@ public class BsObject implements StackFrame {
 
 	private boolean isReturning;
 
+	private boolean isBreaking;
+
 	public BsObject(BsObject prototype, String name) {
 		this(prototype, name, BsObject.class);
 	}
@@ -81,6 +83,7 @@ public class BsObject implements StackFrame {
 		this.prototype = prototype;
 		this.klass = me;
 		this.isReturning = false;
+		this.isBreaking = false;
 		id = ID++;
 	}
 
@@ -133,8 +136,8 @@ public class BsObject implements StackFrame {
 		}
 	}
 
-	public boolean isBreak() {
-		return isError() || isReturning();
+	public boolean isBreakingContext() {
+		return isReturning() || isBreaking() || isError();
 	}
 
 	public boolean isError() {
@@ -143,9 +146,23 @@ public class BsObject implements StackFrame {
 				&& !Bs.asBoolean(getSlot(BsError.IGNORED));
 	}
 
+	public void setBreaking(boolean b) {
+		this.isBreaking = b;
+	}
+
+	/**
+	 * If we should break from the currently executing context. Stops when the
+	 * context is exited.
+	 * 
+	 * @return
+	 */
+	public boolean isBreaking() {
+		return this.isBreaking;
+	}
+
 	/**
 	 * Set if this object should be returned from the currently executing
-	 * context
+	 * method. Stop when method has returned.
 	 * 
 	 * @param b
 	 */

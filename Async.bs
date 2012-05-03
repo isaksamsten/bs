@@ -1,0 +1,27 @@
+list := [].
+b := { 1--10; each { | x | 
+		lock(list, {
+			list << x.
+		}). 
+	}. 
+} ===>.
+
+a := { 10--20; each { | x | 
+	lock(list, {
+		e := try({
+			list << x.
+			Thread sleep 100.
+		}).
+		e catch(Error, { | e |
+			System puts e getMessage().
+		}).
+	}). 	
+}. 
+} ===>.
+
+a join.
+b join.
+System puts list.
+
+f := { System puts "Hello world". Error raise "Nooooo!". } callFuture.
+f puts "Hello".

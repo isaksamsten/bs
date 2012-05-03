@@ -9,9 +9,7 @@
 #    }.
 #    System puts line.
 #}.
-isak := 10.
 <<=(:fib, { | n |
-   System puts isak.
    (n <= 1) ifTrue {
       return(n).
    }, {
@@ -20,6 +18,8 @@ isak := 10.
 }).
 System puts "fib".
 System puts fib(8).
+
+
 
 a := Module load "test.bs".
 person := Module load "Person.bs".
@@ -131,7 +131,7 @@ e := Proto try {
     }.
 }.
 
-e catch :NameError, { | e |
+e catch NameError, { | e |
   	System puts "Caught NameError: " + e getMessage().
   	e getStacktrace; each { | s | System puts s.}.
 }.

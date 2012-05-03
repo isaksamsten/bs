@@ -24,7 +24,7 @@ public class BsList extends BsAbstractProto {
 		BsObject last = BsConst.False;
 		for (BsObject obj : data) {
 			last = block.invoke("call", obj);
-			if (Bs.asBoolean(block.getSlot(BsBlock.HAS_RETURNED))) {
+			if (last.isBreakingContext()) {
 				break;
 			}
 		}

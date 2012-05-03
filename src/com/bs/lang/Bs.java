@@ -12,7 +12,6 @@ import static com.bs.lang.BsConst.Number;
 import static com.bs.lang.BsConst.Proto;
 import static com.bs.lang.BsConst.Symbol;
 import static com.bs.lang.BsConst.SyntaxError;
-import static com.bs.lang.BsConst.System;
 import static com.bs.lang.BsConst.True;
 import static com.bs.lang.BsConst.TypeError;
 
@@ -40,7 +39,7 @@ public final class Bs {
 		builtin = BsModule.create("builtin");
 		builtin.setSlot(Proto);
 		builtin.setSlot(Nil);
-		builtin.setSlot(System);
+		builtin.setSlot(BsConst.System);
 
 		/*
 		 * Literal types
@@ -55,6 +54,9 @@ public final class Bs {
 
 		builtin.setSlot(Module);
 		builtin.setSlot(Enumerable);
+
+		builtin.setSlot(BsConst.Thread);
+		builtin.setSlot(BsConst.Future);
 
 		/*
 		 * Java interop
@@ -279,6 +281,25 @@ public final class Bs {
 			}
 
 		}
+	}
+
+	/**
+	 * @param value
+	 */
+	public static void breakError(BsObject value) {
+		System.out.println("Traceback (most recent call first):\n  " + value);
+		BsObject obj = value.getSlot(BsError.STACK_TRACE);
+		if (obj == null) {
+			return;
+		}
+		List<BsObject> stackTrace = obj.value();
+		if (stackTrace != null) {
+			for (BsObject str : stackTrace) {
+				System.out.println("\t" + Bs.asString(str));
+			}
+		}
+
+		System.exit(0);
 	}
 
 	/**

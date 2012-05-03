@@ -132,12 +132,12 @@ public class BsProto extends BsAbstractProto {
 		return BsConst.Java.invoke("import", args);
 	}
 
-	@BsRuntimeMessage(name = "isNil?", arity = 0)
+	@BsRuntimeMessage(name = "nil?", arity = 0)
 	public BsObject isNil(BsObject self, BsObject... args) {
 		return BsConst.False;
 	}
 
-	@BsRuntimeMessage(name = "isNonNil?", arity = 0)
+	@BsRuntimeMessage(name = "nonNil?", arity = 0)
 	public BsObject isNonNil(BsObject self, BsObject... args) {
 		return BsConst.True;
 	}
@@ -185,10 +185,10 @@ public class BsProto extends BsAbstractProto {
 		return self;
 	}
 
-	@BsRuntimeMessage(name = "lock", arity = 1)
+	@BsRuntimeMessage(name = "lock", arity = 2)
 	public BsObject lock(BsObject self, BsObject... args) {
-		synchronized (self) {
-			BsObject ret = args[0].invoke("call");
+		synchronized (args[0]) {
+			BsObject ret = args[1].invoke("call");
 			return ret;
 		}
 	}
@@ -212,7 +212,7 @@ public class BsProto extends BsAbstractProto {
 	}
 
 	@BsRuntimeMessage(name = "return", arity = 1)
-	public BsObject returnit(BsObject self, BsObject... args) {
+	public BsObject return_(BsObject self, BsObject... args) {
 		args[0].setReturning(true);
 		return args[0];
 	}

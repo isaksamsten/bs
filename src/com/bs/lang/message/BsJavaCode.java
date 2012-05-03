@@ -14,7 +14,7 @@ public class BsJavaCode implements BsCode {
 
 	public BsJavaCode(Object invoker, Method m) {
 		method = m;
-		arity = m.getParameterTypes().length;
+		arity = m.getParameterTypes().length - 1;
 		this.invoker = invoker;
 	}
 
@@ -23,8 +23,7 @@ public class BsJavaCode implements BsCode {
 		try {
 			return (BsObject) method.invoke(invoker, self, args);
 		} catch (Exception e) {
-			e.printStackTrace();
-			return BsError.raise("Java invokation failed. This is a bug.");
+			return BsError.javaError(e.getMessage());
 		}
 	}
 
@@ -50,5 +49,11 @@ public class BsJavaCode implements BsCode {
 	@Override
 	public boolean isInternal() {
 		return true;
+	}
+
+	@Override
+	public void cloneStack() {
+		// TODO Auto-generated method stub
+
 	}
 }

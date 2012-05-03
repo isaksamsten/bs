@@ -184,7 +184,7 @@ public class BsError extends BsAbstractProto {
 
 	@BsRuntimeMessage(name = "catch", arity = 2)
 	public BsObject catch_(BsObject self, BsObject... args) {
-		if (!args[0].instanceOf(BsConst.Symbol)) {
+		if (!args[0].instanceOf(BsConst.Error)) {
 			return typeError("catch", args[0], BsConst.Symbol);
 		}
 
@@ -192,9 +192,8 @@ public class BsError extends BsAbstractProto {
 			return typeError("catch", args[1], BsConst.Block);
 		}
 
-		String type = self.getPrototype().name();
-		String toCatch = Bs.asString(args[0]);
-		if (type.equals(toCatch) && !Bs.asBoolean(args[1].getSlot(CAUGHT))) {
+		BsObject type = self.getPrototype();
+		if (type.instanceOf(args[0]) && !Bs.asBoolean(args[1].getSlot(CAUGHT))) {
 			int arity = ((BsCode) args[1].value()).getArity();
 			args[1].setSlot(CAUGHT, BsConst.True);
 			if (arity == 1) {

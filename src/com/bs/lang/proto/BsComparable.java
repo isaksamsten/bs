@@ -14,7 +14,7 @@ public class BsComparable extends BsAbstractProto {
 		super(BsConst.Proto, "Comparable", BsComparable.class);
 	}
 
-	@BsRuntimeMessage(name = "equal", arity = 1, aliases = { "=" })
+	@BsRuntimeMessage(name = "equal?", arity = 1, aliases = { "=" })
 	public BsObject equal(BsObject self, BsObject... other) {
 		BsObject cmp = self.invoke("compareTo", other[0]);
 		if (cmp.instanceOf(BsConst.Number)) {
@@ -24,7 +24,7 @@ public class BsComparable extends BsAbstractProto {
 		}
 	}
 
-	@BsRuntimeMessage(name = "notEqual", arity = 1, aliases = { "!=" })
+	@BsRuntimeMessage(name = "notEqual?", arity = 1, aliases = { "!=" })
 	public BsObject notEqual(BsObject self, BsObject... other) {
 		BsObject cmp = self.invoke("compareTo", other[0]);
 		if (cmp.instanceOf(BsConst.Number)) {
@@ -34,7 +34,7 @@ public class BsComparable extends BsAbstractProto {
 		}
 	}
 
-	@BsRuntimeMessage(name = "lessThan", arity = 1, aliases = { "<" })
+	@BsRuntimeMessage(name = "lessThan?", arity = 1, aliases = { "<" })
 	public BsObject lessThan(BsObject self, BsObject... other) {
 		BsObject cmp = self.invoke("compareTo", other[0]);
 		if (cmp.instanceOf(BsConst.Number)) {
@@ -44,7 +44,7 @@ public class BsComparable extends BsAbstractProto {
 		}
 	}
 
-	@BsRuntimeMessage(name = "greaterThan", arity = 1, aliases = { ">" })
+	@BsRuntimeMessage(name = "greaterThan?", arity = 1, aliases = { ">" })
 	public BsObject greaterThan(BsObject self, BsObject... other) {
 		BsObject cmp = self.invoke("compareTo", other[0]);
 		if (cmp.instanceOf(BsConst.Number)) {
@@ -54,7 +54,7 @@ public class BsComparable extends BsAbstractProto {
 		}
 	}
 
-	@BsRuntimeMessage(name = "greaterThanEqual", arity = 1, aliases = { ">=" })
+	@BsRuntimeMessage(name = "greaterThanEqual?", arity = 1, aliases = { ">=" })
 	public BsObject greaterThanEqual(BsObject self, BsObject... other) {
 		BsObject cmp = self.invoke("compareTo", other[0]);
 		if (cmp.instanceOf(BsConst.Number)) {
@@ -65,7 +65,7 @@ public class BsComparable extends BsAbstractProto {
 		}
 	}
 
-	@BsRuntimeMessage(name = "lessThanEqual", arity = 1, aliases = { "<=" })
+	@BsRuntimeMessage(name = "lessThanEqual?", arity = 1, aliases = { "<=" })
 	public BsObject lessThanEqual(BsObject self, BsObject... other) {
 		BsObject cmp = self.invoke("compareTo", other[0]);
 		if (cmp.instanceOf(BsConst.Number)) {

@@ -29,8 +29,8 @@ public class BsRange extends BsAbstractProto {
 
 	@BsRuntimeMessage(name = "toString", arity = 0)
 	public BsObject toString(BsObject self, BsObject... args) {
-		return BsString.clone(Bs.asString(self.getSlot(MIN).invoke("toString")) + "--"
-				+ Bs.asString(self.getSlot(MAX).invoke("toString")));
+		return BsString.clone(Bs.asString(self.getSlot(MIN).invoke("toString"))
+				+ "--" + Bs.asString(self.getSlot(MAX).invoke("toString")));
 	}
 
 	@BsRuntimeMessage(name = "each", arity = 1)
@@ -46,7 +46,7 @@ public class BsRange extends BsAbstractProto {
 
 		while (Bs.asBoolean(min.invoke("<=", max))) {
 			value = block.invoke("call", min);
-			if (value.isBreak()) {
+			if (value.isBreakingContext()) {
 				break;
 			}
 
@@ -57,18 +57,6 @@ public class BsRange extends BsAbstractProto {
 			}
 
 		}
-
-		// BsObject value = BsConst.False;
-		// int min = Bs.asNumber(self.slot(MIN)).intValue(), max = Bs.asNumber(
-		// self.slot(MAX)).intValue();
-		//
-		// for (int n = min; n < max
-		// && !Bs.asBoolean(args[0].slot(BsBlock.HAS_RETURNED)); n++) {
-		// value = args[0].invoke("call", BsNumber.clone(n));
-		// if (value.isError()) {
-		// return value;
-		// }
-		// }
 
 		return value;
 	}

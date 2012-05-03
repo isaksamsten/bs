@@ -33,12 +33,12 @@ public class BsMessage implements BsCode {
 
 	protected BsObject execute(BsObject... args) {
 		BsObject obj = getData().code.invoke(getBinder(), args);
-
-		if (obj.isReturning()) {
-			obj.setReturning(false);
-		}
-
 		return obj;
+	}
+
+	@Override
+	public void cloneStack() {
+		data.code.cloneStack();
 	}
 
 	@Override
@@ -65,5 +65,5 @@ public class BsMessage implements BsCode {
 	public boolean isInternal() {
 		return data.code.isInternal();
 	}
-	
+
 }

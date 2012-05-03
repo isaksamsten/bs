@@ -1,13 +1,11 @@
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
-import java.util.List;
 
 import com.bs.interpreter.stack.BsStack;
 import com.bs.interpreter.stack.Stack;
 import com.bs.lang.Bs;
 import com.bs.lang.BsObject;
-import com.bs.lang.proto.BsError;
 import com.bs.lang.proto.BsModule;
 import com.bs.parser.StatementsParser;
 import com.bs.parser.source.BsScanner;
@@ -23,7 +21,7 @@ import com.bs.util.PrintStreamMessageListener;
 public class bs {
 
 	public static void main(String[] args) throws FileNotFoundException {
-//		 args = new String[] { "Main.bs" };
+		 args = new String[] { "Async.bs" };
 
 		if (args.length > 0) {
 			MessageHandler handler = new MessageHandler();
@@ -47,7 +45,7 @@ public class bs {
 					System.out.println("Wtf!?");
 				}
 				if (value.isError()) {
-					printError(value);
+					Bs.breakError(value);
 				}
 			}
 		} else {
@@ -62,30 +60,12 @@ public class bs {
 					continue;
 				}
 				if (obj.isError()) {
-					printError(obj);
+					Bs.breakError(obj);
 				} else {
 					System.out.println(obj);
 				}
 			}
 		}
-	}
-
-	/**
-	 * @param value
-	 */
-	protected static void printError(BsObject value) {
-		System.out.println("Traceback (most recent call first):\n  " + value);
-		BsObject obj = value.getSlot(BsError.STACK_TRACE);
-		if (obj == null) {
-			return;
-		}
-		List<BsObject> stackTrace = obj.value();
-		if (stackTrace != null) {
-			for (BsObject str : stackTrace) {
-				System.out.println("\t" + Bs.asString(str));
-			}
-		}
-
 	}
 
 	private static String read(java.util.Scanner scanner, String promt) {

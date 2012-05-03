@@ -1,6 +1,6 @@
 package com.bs.lang.proto;
 
-import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
@@ -13,6 +13,7 @@ import com.bs.lang.BsAbstractProto;
 import com.bs.lang.BsConst;
 import com.bs.lang.BsObject;
 import com.bs.lang.annot.BsRuntimeMessage;
+import com.bs.lang.message.BsCode;
 
 public class BsFuture extends BsAbstractProto {
 
@@ -28,17 +29,29 @@ public class BsFuture extends BsAbstractProto {
 		executor.execute(obj);
 	}
 
+	public static BsObject create(final BsCode code, final BsObject self,
+			final BsObject[] args) {
+		code.setStack(code.getStack().clone());
+		return create(new FutureTask<BsObject>(new Callable<BsObject>() {
+
+			@Override
+			public BsObject call() throws Exception {
+				return code.invoke(self, args);
+			}
+		}));
+	}
+
 	public BsFuture() {
 		super(BsConst.Proto, "Future", BsFuture.class);
 	}
 
-	@BsRuntimeMessage(name = "isDone", arity = 0)
+	@BsRuntimeMessage(name = "done?", arity = 0)
 	public BsObject isDone(BsObject self, BsObject... args) {
 		Future<BsObject> future = self.value();
 		return Bs.bool(future.isDone());
 	}
 
-	@BsRuntimeMessage(name = "isCancelled", arity = 0)
+	@BsRuntimeMessage(name = "cancelled?", arity = 0)
 	public BsObject isCancelled(BsObject self, BsObject... args) {
 		Future<BsObject> future = self.value();
 		return Bs.bool(future.isCancelled());
@@ -49,6 +62,9 @@ public class BsFuture extends BsAbstractProto {
 		Future<BsObject> future = self.value();
 		try {
 			BsObject obj = future.get();
+			if (obj.isError()) {
+				return obj;
+			}
 			return obj.invoke(Bs.asString(args[0]),
 					ArrayUtils.subarray(args, 1, args.length));
 		} catch (Exception e) {
@@ -56,7 +72,7 @@ public class BsFuture extends BsAbstractProto {
 		}
 	}
 
-	@BsRuntimeMessage(name = "get", arity = 0)
+	@BsRuntimeMessage(name = "return", arity = 0)
 	public BsObject get(BsObject self, BsObject... args) {
 		Future<BsObject> future = self.value();
 		try {
@@ -73,8 +89,9 @@ public class BsFuture extends BsAbstractProto {
 		builder.append("Future <");
 		if (future.isDone()) {
 			try {
-				builder.append("done>"
+				builder.append("done"
 						+ Bs.asString(future.get().invoke("toString")));
+				builder.append(">");
 			} catch (Exception e) {
 				return BsError.raise(e.getMessage());
 			}

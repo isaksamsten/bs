@@ -92,7 +92,7 @@ public class BsStack implements Stack {
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public Stack clone() {
+	public synchronized Stack clone() {
 		BsStack stack = new BsStack();
 		stack.current = current;
 		stack.global = global;

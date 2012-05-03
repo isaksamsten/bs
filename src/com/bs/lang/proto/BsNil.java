@@ -24,13 +24,13 @@ public class BsNil extends BsAbstractProto {
 
 		return BsError.typeError("ifNil", args[0], BsConst.Block);
 	}
-	
-	@BsRuntimeMessage(name = "isNil?", arity = 0)
+
+	@BsRuntimeMessage(name = "nil?", arity = 0)
 	public BsObject isNil(BsObject self, BsObject... args) {
 		return BsConst.True;
 	}
-	
-	@BsRuntimeMessage(name = "isNonNil?", arity = 0)
+
+	@BsRuntimeMessage(name = "nonNil?", arity = 0)
 	public BsObject isNonNil(BsObject self, BsObject... args) {
 		return BsConst.False;
 	}

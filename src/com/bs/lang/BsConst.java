@@ -17,6 +17,7 @@ import com.bs.lang.proto.BsRange;
 import com.bs.lang.proto.BsString;
 import com.bs.lang.proto.BsSymbol;
 import com.bs.lang.proto.BsSystem;
+import com.bs.lang.proto.BsThread;
 import com.bs.lang.proto.BsTrue;
 import com.bs.lang.proto.io.BsFile;
 import com.bs.lang.proto.io.BsIO;
@@ -66,5 +67,6 @@ public final class BsConst {
 	public static final BsObject JavaInstance = new BsJavaInstance();
 	public static final BsObject JavaClass = new BsJavaClass();
 	public static final BsObject Future = new BsFuture();
+	public static final BsObject Thread = new BsThread();
 
 }
