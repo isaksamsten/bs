@@ -32,6 +32,13 @@ public class BsList extends BsAbstractProto {
 		return last;
 	}
 
+	@BsRuntimeMessage(name = "toString", arity = 0)
+	public BsObject toString(BsObject self, BsObject... args) {
+		ArrayList<BsObject> value = self.value();
+
+		return BsString.clone(value.toString());
+	}
+
 	@BsRuntimeMessage(name = "size?", arity = 0)
 	public BsObject size(BsObject self, BsObject... args) {
 		ArrayList<BsObject> value = self.value();

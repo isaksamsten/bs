@@ -113,7 +113,11 @@ public class BsTokenizer implements Tokenizer {
 		char c = scanner().next();
 		while (validIdentifierStart(c, false)) {
 			builder.append(c);
+			
 			c = scanner().next();
+			if (c == '.' && !validIdentifierStart(scanner().peek(), false)) {
+				break;
+			}
 		}
 
 		return factory.symbol(

@@ -1,0 +1,10 @@
+System puts Module loadPath.
+
+
+Person := load("Person.bs").
+
+p := Person Person; clone("isak").
+
+Async := load("Async.bs").
+
+System puts Async.

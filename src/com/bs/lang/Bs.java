@@ -37,7 +37,8 @@ import com.bs.parser.tree.Node;
 public final class Bs {
 
 	private static BsObject builtin;
-	static {
+
+	public static void init() {
 		builtin = BsModule.create("builtin");
 		builtin.setSlot(Proto);
 		builtin.setSlot(Nil);
@@ -86,6 +87,12 @@ public final class Bs {
 		builtin.setSlot(BsConst.JavaError);
 		builtin.setSlot(BsConst.CloneError);
 		builtin.setSlot(BsConst.SubTypeError);
+
+		// Fields in the Module proto.
+
+		List<BsObject> path = new ArrayList<BsObject>();
+		path.add(BsString.clone("."));
+		Module.setSlot(BsModule.LOAD_PATH, BsList.create(path));
 	}
 
 	/**
@@ -310,6 +317,23 @@ public final class Bs {
 		}
 
 		System.exit(0);
+	}
+
+	public static File findModule(List<BsObject> loadPath, BsObject fileName) {
+		for (BsObject obj : loadPath) {
+			String path = Bs.asString(obj);
+			String file = Bs.asString(fileName);
+			if (path == null || file == null) {
+				return null;
+			}
+
+			File filePath = new File(path, file);
+			if (filePath.exists()) {
+				return filePath;
+			}
+		}
+
+		return null;
 	}
 
 	/**
