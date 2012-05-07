@@ -1,6 +1,7 @@
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.net.URL;
 import java.util.List;
 
 import org.apache.commons.cli.CommandLine;
@@ -16,6 +17,7 @@ import com.bs.interpreter.stack.BsStack;
 import com.bs.interpreter.stack.Stack;
 import com.bs.lang.Bs;
 import com.bs.lang.BsConst;
+import com.bs.lang.BsJarFileLoader;
 import com.bs.lang.BsObject;
 import com.bs.lang.proto.BsModule;
 import com.bs.lang.proto.BsString;
@@ -33,18 +35,26 @@ import com.bs.util.PrintStreamMessageListener;
 public class bs {
 
 	private static Option help = new Option("help", "Print this message");
-	private static Option loadPath = OptionBuilder.withArgName("loadPath")
-			.isRequired(false).hasArg()
+
+	// @formatter:off
+	
+	@SuppressWarnings("static-access")
+	private static Option loadPath = OptionBuilder
+			.withArgName("loadPath")
+			.isRequired(false)
+			.hasArg()
 			.withDescription("Append <loadPath> to the load path")
 			.create("loadPath");
+		
+	//@formatter:on
 
 	public static void main(String[] args) throws FileNotFoundException {
+		BsJarFileLoader loader = new BsJarFileLoader(new URL[] {});
+
 		Options options = new Options();
 		options.addOption(help);
 		options.addOption(loadPath);
-
-		args = new String[] { "--loadPath", "/home/isak/desktop", "Modules.bs" };
-
+	
 		try {
 			Bs.init();
 

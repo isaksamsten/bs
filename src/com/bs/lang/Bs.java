@@ -22,6 +22,7 @@ import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.tuple.Pair;
 
 import com.bs.interpreter.BsCompiler;
@@ -326,8 +327,8 @@ public final class Bs {
 			if (path == null || file == null) {
 				return null;
 			}
-
-			File filePath = new File(path, file);
+			File filePath = new File(FilenameUtils.getFullPath(FilenameUtils
+					.concat(path, file)));
 			if (filePath.exists()) {
 				return filePath;
 			}
