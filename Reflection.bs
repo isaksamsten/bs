@@ -1,0 +1,47 @@
+java.lang.Runnable := import("java.lang.Runnable").
+java.lang.Thread := import("java.lang.Thread").
+
+
+# invocations _inside_ a proxy block must be caught
+# they can't thus be caugth when run.
+a := java.lang.Runnable proxy :run, { 
+	e := try({
+		1 -- 10; each { | x |
+			System puts y.
+		}.
+	}).
+	e catch Error, { | e | System puts e getMessage(). }.
+}.
+
+
+b := java.lang.Runnable proxy :run, { 
+	1 -- 10; each { | x |
+		System puts x.
+	}.
+}.
+System puts "Creating a thread".
+t := java.lang.Thread new a.
+t2 := java.lang.Thread new b.
+System puts "Thread created".
+
+t start().
+t2 start().
+
+JFrame := import("javax.swing.JFrame").
+JButton := import("javax.swing.JButton").
+ActionListener := import("java.awt.event.ActionListener").
+
+listener := ActionListener proxy :actionPerformed, { | evt |
+	System puts evt.
+	System puts "Button clicked".
+	
+	b setText "clicked".
+}.
+
+b := JButton new "Click Me".
+b addActionListener listener.
+f := JFrame new "Hello world".
+f add b.
+
+f pack.
+f show.

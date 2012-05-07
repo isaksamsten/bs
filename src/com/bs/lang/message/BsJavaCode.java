@@ -5,6 +5,7 @@ import java.lang.reflect.Method;
 import com.bs.interpreter.stack.Stack;
 import com.bs.lang.BsObject;
 import com.bs.lang.proto.BsError;
+import com.bs.parser.tree.Node;
 
 public class BsJavaCode implements BsCode {
 
@@ -55,5 +56,16 @@ public class BsJavaCode implements BsCode {
 	public void cloneStack() {
 		// TODO Auto-generated method stub
 
+	}
+
+	@Override
+	public Node getCode() {
+		return null;
+	}
+
+	@Override
+	public Node getLastEvaluatedCode() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

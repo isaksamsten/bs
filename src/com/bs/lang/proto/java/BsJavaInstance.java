@@ -23,7 +23,7 @@ public class BsJavaInstance extends BsAbstractProto {
 		String name = Bs.asString(args[0]);
 
 		BsJavaData data = self.value();
-		Object[] arguments = ReflectionUtils.getValue(args, 1);
+		Object[] arguments = ReflectionUtils.getValues(args, 1);
 
 		try {
 			Object ret = MethodUtils.invokeMethod(data.instance, name,

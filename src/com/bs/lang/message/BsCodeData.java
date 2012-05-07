@@ -10,6 +10,7 @@ public class BsCodeData {
 	public List<String> arguments;
 	public Node code;
 	public Stack stack;
+	public Node lastEval;
 
 	public BsCodeData(List<String> arguments, Node code) {
 		this.arguments = arguments;

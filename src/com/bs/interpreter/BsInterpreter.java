@@ -35,6 +35,7 @@ import com.bs.parser.tree.SymbolNode;
 public class BsInterpreter implements Interpreter {
 
 	private Stack stack;
+	private Node lastNode;
 
 	public BsInterpreter(Stack stack) {
 		this.stack = stack;
@@ -44,8 +45,8 @@ public class BsInterpreter implements Interpreter {
 		this(BsStack.getDefault());
 	}
 
-	public BsInterpreter(BsInterpreter inter) {
-		this(inter.stack);
+	public BsInterpreter(BsInterpreter interpreter) {
+		this(interpreter.stack);
 	}
 
 	@Override
@@ -180,8 +181,10 @@ public class BsInterpreter implements Interpreter {
 
 	@Override
 	public Object interpret(Node node) {
-		if (node != null)
+		if (node != null) {
+			lastNode = node;
 			return node.visit(this);
+		}
 
 		return null;
 	}
@@ -209,5 +212,9 @@ public class BsInterpreter implements Interpreter {
 	@Override
 	public Object interpretCharacter(CharacterNode node) {
 		return BsChar.clone((Character) node.value());
+	}
+
+	public Node lastNode() {
+		return lastNode;
 	}
 }

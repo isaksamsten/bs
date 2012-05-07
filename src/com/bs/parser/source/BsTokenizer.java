@@ -111,7 +111,7 @@ public class BsTokenizer implements Tokenizer {
 	protected Token extractSymbol() {
 		StringBuilder builder = new StringBuilder();
 		char c = scanner().next();
-		while (validIdentifierStart(c)) {
+		while (validIdentifierStart(c, false)) {
 			builder.append(c);
 			c = scanner().next();
 		}
@@ -194,18 +194,23 @@ public class BsTokenizer implements Tokenizer {
 	private Token extractIdentifier() {
 		StringBuilder builder = new StringBuilder();
 		char c = scanner().current();
-		while (validIdentifierStart(c)) {
+		while (validIdentifierStart(c, false)) {
 			builder.append(c);
 
 			c = scanner().next();
+			if (c == '.' && !validIdentifierStart(scanner().peek(), false)) {
+				break;
+			}
 		}
 
 		return factory.identifier(builder.toString(), scanner().line(),
 				scanner().position());
 	}
 
-	protected boolean validIdentifierStart(char current) {
+	protected boolean validIdentifierStart(char current, boolean isStart) {
 		if (Character.isLetter(current)) {
+			return true;
+		} else if (!isStart && (Character.isDigit(current) || current == '.')) {
 			return true;
 		} else {
 			switch (current) {
@@ -222,11 +227,16 @@ public class BsTokenizer implements Tokenizer {
 			case '&':
 			case '?':
 			case '!':
+			case '_':
 				return true;
 			default:
 				return false;
 			}
 		}
+	}
+
+	protected boolean validIdentifierStart(char current) {
+		return validIdentifierStart(current, true);
 	}
 
 	protected void consumeWhitespace() {

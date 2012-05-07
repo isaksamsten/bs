@@ -21,7 +21,7 @@ import com.bs.util.PrintStreamMessageListener;
 public class bs {
 
 	public static void main(String[] args) throws FileNotFoundException {
-		 args = new String[] { "Async.bs" };
+		 args = new String[] { "Reflection.bs" };
 
 		if (args.length > 0) {
 			MessageHandler handler = new MessageHandler();

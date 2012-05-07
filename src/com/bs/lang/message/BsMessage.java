@@ -3,6 +3,7 @@ package com.bs.lang.message;
 import com.bs.interpreter.stack.Stack;
 import com.bs.lang.BsObject;
 import com.bs.lang.proto.BsError;
+import com.bs.parser.tree.Node;
 
 public class BsMessage implements BsCode {
 
@@ -64,6 +65,16 @@ public class BsMessage implements BsCode {
 	@Override
 	public boolean isInternal() {
 		return data.code.isInternal();
+	}
+
+	@Override
+	public Node getCode() {
+		return data.code.getCode();
+	}
+
+	@Override
+	public Node getLastEvaluatedCode() {
+		return data.code.getLastEvaluatedCode();
 	}
 
 }

@@ -4,6 +4,7 @@ import com.bs.interpreter.stack.Stack;
 import com.bs.lang.Bs;
 import com.bs.lang.BsObject;
 import com.bs.lang.proto.BsError;
+import com.bs.parser.tree.Node;
 
 public class BsBlockCode implements BsCode {
 
@@ -24,11 +25,6 @@ public class BsBlockCode implements BsCode {
 			stack.push(self);
 			BsObject ret = Bs.eval(data.code, stack);
 			stack.pop();
-
-			if (ret.isBreaking()) {
-				self.setBreaking(false);
-			}
-
 			return ret;
 		} else {
 			return BsError.typeError(self, "call", args.length,
@@ -64,5 +60,15 @@ public class BsBlockCode implements BsCode {
 	@Override
 	public void cloneStack() {
 		data.stack = data.stack.clone();
+	}
+
+	@Override
+	public Node getCode() {
+		return data.code;
+	}
+
+	@Override
+	public Node getLastEvaluatedCode() {
+		return data.lastEval;
 	}
 }

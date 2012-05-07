@@ -22,6 +22,8 @@ import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang3.tuple.Pair;
+
 import com.bs.interpreter.BsCompiler;
 import com.bs.interpreter.BsInterpreter;
 import com.bs.interpreter.stack.BsStack;
@@ -224,6 +226,14 @@ public final class Bs {
 	public static BsObject eval(Node node, Stack stack) {
 		BsInterpreter i = new BsInterpreter(stack);
 		return (BsObject) i.interpret(node);
+	}
+
+	public static Pair<Node, BsObject> evalYield(Node node, Stack stack) {
+		BsInterpreter i = new BsInterpreter(stack);
+		BsObject ret = (BsObject) i.interpret(node);
+		Pair<Node, BsObject> pair = Pair.of(i.lastNode(), ret);
+
+		return pair;
 	}
 
 	/**

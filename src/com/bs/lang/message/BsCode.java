@@ -2,6 +2,7 @@ package com.bs.lang.message;
 
 import com.bs.interpreter.stack.Stack;
 import com.bs.lang.BsObject;
+import com.bs.parser.tree.Node;
 
 public interface BsCode {
 
@@ -14,6 +15,10 @@ public interface BsCode {
 	BsObject invoke(BsObject self, BsObject... args);
 
 	boolean isInternal();
+	
+	Node getCode();
+	
+	Node getLastEvaluatedCode();
 
 	int getArity();
 

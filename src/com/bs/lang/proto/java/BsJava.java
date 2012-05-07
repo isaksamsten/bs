@@ -30,7 +30,7 @@ public class BsJava extends BsAbstractProto {
 		try {
 			Class<?> cls = Class.forName(Bs.asString(args[0]));
 
-			Object[] arguments = ReflectionUtils.getValue(args, 1);
+			Object[] arguments = ReflectionUtils.getValues(args, 1);
 			if (arguments == null) {
 				return BsError
 						.javaError("Unsupported type in invokation (is it really a Java type?)");
