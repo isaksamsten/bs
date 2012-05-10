@@ -304,7 +304,7 @@ public final class Bs {
 	/**
 	 * @param value
 	 */
-	public static void breakError(BsObject value) {
+	public static void breakError(BsObject value, boolean exit) {
 		System.out.println("Traceback (most recent call first):\n  " + value);
 		BsObject obj = value.getSlot(BsError.STACK_TRACE);
 		if (obj == null) {
@@ -317,7 +317,12 @@ public final class Bs {
 			}
 		}
 
-		System.exit(0);
+		if (exit)
+			System.exit(0);
+	}
+
+	public static void breakError(BsObject value) {
+		breakError(value, true);
 	}
 
 	public static File findModule(List<BsObject> loadPath, BsObject fileName) {

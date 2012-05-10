@@ -32,11 +32,14 @@ import com.bs.util.PrintStreamMessageListener;
 
 public class bs {
 
+	private static final String EVAL = "eval";
+
 	private static final String HELP = "help";
 
 	private static final String LOAD_PATH = "loadPath";
 
-	private static Option help = new Option(HELP, "Print this message");
+	private static Option help = new Option("h", HELP, false,
+			"Print this message");
 
 	// @formatter:off
 
@@ -44,7 +47,13 @@ public class bs {
 	private static Option loadPath = OptionBuilder.withArgName(LOAD_PATH)
 			.isRequired(false).hasArg()
 			.withDescription("Append <loadPath> to the load path")
-			.create(LOAD_PATH);
+			.withLongOpt(LOAD_PATH).create('l');
+
+	@SuppressWarnings("static-access")
+	private static Option eval = OptionBuilder.withArgName(EVAL)
+			.isRequired(false).hasArg()
+			.withDescription("Evaluate code and exit").withLongOpt(EVAL)
+			.create('e');
 
 	// @formatter:on
 
@@ -52,6 +61,7 @@ public class bs {
 		Options options = new Options();
 		options.addOption(help);
 		options.addOption(loadPath);
+		options.addOption(eval);
 
 		try {
 			Bs.init();
@@ -60,69 +70,114 @@ public class bs {
 			CommandLine line = argParser.parse(options, args);
 
 			if (line.hasOption(HELP)) {
-				HelpFormatter formatter = new HelpFormatter();
-				formatter.printHelp("bs", options);
-				System.exit(0);
+				help(options);
 			}
 
 			if (line.hasOption(LOAD_PATH)) {
-				List<BsObject> loadPath = BsConst.Module.getSlot(
-						BsModule.LOAD_PATH).value();
+				loadPath(line.getOptionValue(LOAD_PATH));
+			}
 
-				loadPath.add(BsString.clone(line.getOptionValue(LOAD_PATH)));
+			if (line.hasOption(EVAL)) {
+				eval(line.getOptionValue(EVAL));
 			}
 
 			List<?> rest = line.getArgList();
 
 			if (rest.size() > 0) {
-				MessageHandler handler = new MessageHandler();
-				handler.add(new PrintStreamMessageListener(System.out));
-
-				String file = (String) rest.get(0);
-				BsObject module = BsModule.create(file);
-				Stack stack = BsStack.getDefault();
-				stack.push(module);
-
-				Scanner sc = new BsScanner(new FileReader(new File(file)));
-				Tokenizer tz = new BsTokenizer(sc, new DefaultTokenFactory(),
-						handler, '#');
-				StatementsParser parser = new StatementsParser(tz,
-						new DefaultNodeFactory(), handler);
-
-				Node code = parser.parse();
-
-				if (handler.errors() == 0) {
-					BsObject value = Bs.eval(code, BsStack.getDefault());
-					if (value == null) {
-						System.out.println("Wtf!?");
-					}
-					if (value.isError()) {
-						Bs.breakError(value);
-					}
-				}
+				eval(rest);
 			} else {
-				java.util.Scanner scanner = new java.util.Scanner(System.in);
-				BsObject module = BsModule.create("<stdin>");
-				Stack stack = BsStack.getDefault();
-				stack.push(module);
-				while (true) {
-					String code = read(scanner, ">> ");
-					BsObject obj = Bs.evalRepl(code, stack);
-					if (obj == null) {
-						continue;
-					}
-					if (obj.isError()) {
-						Bs.breakError(obj);
-					} else {
-						System.out.println(obj);
-					}
-				}
+				repl();
 			}
 
 		} catch (ParseException e) {
-			e.printStackTrace();
+			help(options);
 		}
 
+	}
+
+	/**
+	 * 
+	 */
+	protected static void repl() {
+		java.util.Scanner scanner = new java.util.Scanner(System.in);
+		BsObject module = BsModule.create("<stdin>");
+		Stack stack = BsStack.getDefault();
+		stack.push(module);
+		while (true) {
+			String code = read(scanner, ">> ");
+			BsObject obj = Bs.evalRepl(code, stack);
+			if (obj == null) {
+				continue;
+			}
+			if (obj.isError()) {
+				Bs.breakError(obj, false);
+			} else {
+				System.out.println(obj);
+			}
+		}
+	}
+
+	/**
+	 * @param rest
+	 * @throws FileNotFoundException
+	 */
+	protected static void eval(List<?> rest) throws FileNotFoundException {
+		MessageHandler handler = new MessageHandler();
+		handler.add(new PrintStreamMessageListener(System.out));
+
+		String file = (String) rest.get(0);
+		BsObject module = BsModule.create(file);
+		Stack stack = BsStack.getDefault();
+		stack.push(module);
+
+		Scanner sc = new BsScanner(new FileReader(new File(file)));
+		Tokenizer tz = new BsTokenizer(sc, new DefaultTokenFactory(), handler,
+				'#');
+		StatementsParser parser = new StatementsParser(tz,
+				new DefaultNodeFactory(), handler);
+
+		Node code = parser.parse();
+
+		if (handler.errors() == 0) {
+			BsObject value = Bs.eval(code, BsStack.getDefault());
+			if (value == null) {
+				System.out.println("Wtf!?");
+			}
+			if (value.isError()) {
+				Bs.breakError(value);
+			}
+		}
+	}
+
+	/**
+	 * @param code
+	 */
+	protected static void eval(String code) {
+		BsObject obj = Bs.eval(code);
+		if (obj.isError()) {
+			Bs.breakError(obj);
+		}
+
+		System.exit(1);
+	}
+
+	/**
+	 * @param path
+	 */
+	protected static void loadPath(String path) {
+		List<BsObject> loadPath = BsConst.Module.getSlot(BsModule.LOAD_PATH)
+				.value();
+
+		loadPath.add(BsString.clone(path));
+	}
+
+	/**
+	 * @param options
+	 */
+	protected static void help(Options options) {
+		HelpFormatter formatter = new HelpFormatter();
+		formatter.printHelp("bs", options);
+		System.exit(0);
 	}
 
 	private static String read(java.util.Scanner scanner, String promt) {
