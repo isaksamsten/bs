@@ -206,7 +206,7 @@ Account <<= :init, {
   self <<- :balance. # create an instance field in self
 }.
 Account <<= :deposit, { | amount |
-  return(balance + amount) # add the balance and amount
+  balance := balance + amount.
 }.
 
 a := Account clone.
@@ -357,6 +357,32 @@ plusTen call 20. # 30</code></pre>
 	 <pre><code>addMethod(:test, { | argOne, argTwo |
   return(argOne call argTwo).
 }.</code></pre>
+
+	 If a method that does not exist, in an object or its
+	 prototypes, is called a <code>NameError</code> is raised.
+
+	 <pre><code>beer := Proto clone.
+beer drink.
+Traceback (most recent call first):
+  NameError: No method 'drint' for 'Proto'
+	'beer drink.' at line 1 position 4
+	'beer drink.' at line 1 position 4
+</code></pre>
+	  
+	  However, if there exist a method <code>methodMissing</code>
+	  method. Than this method is called. For example:
+
+	  <pre><code>beer := Proto clone.
+beer <<= :methodMissing, { | name | 
+   System puts name + " called".
+}.
+
+beer drink.
+drink called
+</code></pre>
+	 
+	  The method missing hook is utilized by, for
+	  example, <code>Module</code> to get the value of a slot.
 	</p>
 
 	<h4>Block</h4>
