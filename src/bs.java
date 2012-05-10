@@ -1,7 +1,6 @@
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
-import java.net.URL;
 import java.util.List;
 
 import org.apache.commons.cli.CommandLine;
@@ -17,7 +16,6 @@ import com.bs.interpreter.stack.BsStack;
 import com.bs.interpreter.stack.Stack;
 import com.bs.lang.Bs;
 import com.bs.lang.BsConst;
-import com.bs.lang.BsJarFileLoader;
 import com.bs.lang.BsObject;
 import com.bs.lang.proto.BsModule;
 import com.bs.lang.proto.BsString;
@@ -34,44 +32,44 @@ import com.bs.util.PrintStreamMessageListener;
 
 public class bs {
 
-	private static Option help = new Option("help", "Print this message");
+	private static final String HELP = "help";
+
+	private static final String LOAD_PATH = "loadPath";
+
+	private static Option help = new Option(HELP, "Print this message");
 
 	// @formatter:off
-	
+
 	@SuppressWarnings("static-access")
-	private static Option loadPath = OptionBuilder
-			.withArgName("loadPath")
-			.isRequired(false)
-			.hasArg()
+	private static Option loadPath = OptionBuilder.withArgName(LOAD_PATH)
+			.isRequired(false).hasArg()
 			.withDescription("Append <loadPath> to the load path")
-			.create("loadPath");
-		
-	//@formatter:on
+			.create(LOAD_PATH);
+
+	// @formatter:on
 
 	public static void main(String[] args) throws FileNotFoundException {
-		BsJarFileLoader loader = new BsJarFileLoader(new URL[] {});
-
 		Options options = new Options();
 		options.addOption(help);
 		options.addOption(loadPath);
-	
+
 		try {
 			Bs.init();
 
 			CommandLineParser argParser = new PosixParser();
 			CommandLine line = argParser.parse(options, args);
 
-			if (line.hasOption("help")) {
+			if (line.hasOption(HELP)) {
 				HelpFormatter formatter = new HelpFormatter();
 				formatter.printHelp("bs", options);
 				System.exit(0);
 			}
 
-			if (line.hasOption("loadPath")) {
+			if (line.hasOption(LOAD_PATH)) {
 				List<BsObject> loadPath = BsConst.Module.getSlot(
 						BsModule.LOAD_PATH).value();
 
-				loadPath.add(BsString.clone(line.getOptionValue("loadPath")));
+				loadPath.add(BsString.clone(line.getOptionValue(LOAD_PATH)));
 			}
 
 			List<?> rest = line.getArgList();

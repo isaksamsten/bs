@@ -1,7 +1,6 @@
 package com.bs.lang.proto;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import com.bs.lang.Bs;
@@ -77,10 +76,6 @@ public class BsList extends BsAbstractProto {
 
 	public static BsObject create() {
 		return BsObject.value(BsConst.List, new ArrayList<BsObject>());
-	}
-
-	public static BsObject create(BsObject... args) {
-		return BsObject.value(BsConst.List, Arrays.asList(args));
 	}
 
 	public static BsObject create(List<BsObject> list) {

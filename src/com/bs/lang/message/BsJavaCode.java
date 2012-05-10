@@ -24,6 +24,7 @@ public class BsJavaCode implements BsCode {
 		try {
 			return (BsObject) method.invoke(invoker, self, args);
 		} catch (Exception e) {
+			e.printStackTrace();
 			return BsError.javaError(e.getMessage());
 		}
 	}

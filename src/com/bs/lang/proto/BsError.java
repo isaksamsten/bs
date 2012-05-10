@@ -19,7 +19,7 @@ public class BsError extends BsAbstractProto {
 	 */
 	public static BsObject raise(BsObject type, String message, Object... args) {
 		BsObject obj = BsObject.clone(type);
-		obj.setSlot("message",
+		obj.setSlot(MESSAGE,
 				BsObject.value(BsConst.String, String.format(message, args)));
 		return obj;
 	}

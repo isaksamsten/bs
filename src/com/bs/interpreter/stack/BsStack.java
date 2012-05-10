@@ -8,9 +8,14 @@ import com.bs.lang.proto.BsError;
 
 public class BsStack implements Stack {
 
-	private static final BsStack instance = new BsStack();
+	private static BsStack instance;
+
+	private static final int MAX_STACK_DEPTH = 100;
 
 	public static BsStack getDefault() {
+		if (instance == null)
+			instance = new BsStack();
+
 		return instance;
 	}
 

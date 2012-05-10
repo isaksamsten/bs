@@ -14,6 +14,7 @@ public class BsObjectTests {
 
 	@Before
 	public void setUp() {
+		Bs.init();
 	}
 
 	@Test
@@ -40,18 +41,18 @@ public class BsObjectTests {
 
 	@Test
 	public void testJavaIterop() {
-		BsObject java = BsConst.Java.invoke("new",
-				BsString.clone("java.lang.String"), BsString.clone("Value"));
-
-		BsObject ret = java.invoke("toString");
-		System.out.println(ret);
-
-		java = BsConst.Java.invoke("new", BsString.clone("java.io.File"),
-				BsString.clone("test.bs"));
-
-		System.out.println(java.invoke("exists").value());
-
-		System.out.println(java.value());
+//		BsObject java = BsConst.Java.invoke("new",
+//				BsString.clone("java.lang.String"), BsString.clone("Value"));
+//
+//		BsObject ret = java.invoke("toString");
+//		System.out.println(ret);
+//
+//		java = BsConst.Java.invoke("new", BsString.clone("java.io.File"),
+//				BsString.clone("test.bs"));
+//
+//		System.out.println(java.invoke("exists").value());
+//
+//		System.out.println(java.value());
 	}
 
 	@Test
@@ -147,7 +148,7 @@ public class BsObjectTests {
 	@Test
 	public void testString() {
 		BsObject str = BsString.clone("Hello");
-		assertEquals(5, Bs.asNumber(str.invoke("length")));
+		assertEquals(5, Bs.asNumber(str.invoke("length?")));
 		assertEquals("Hello world",
 				Bs.asString(str.invoke("+", BsString.clone(" world"))));
 		assertEquals("Hello", Bs.asString(str));
@@ -182,16 +183,16 @@ public class BsObjectTests {
 		assertEquals(true, obj.instanceOf(BsConst.SyntaxError));
 
 		BsObject block = BsConst.Proto.invoke("compile",
-				BsString.clone("10+10+10."));
+				BsString.clone("10 + 10 + 10."));
 
 		obj = block.invoke("call");
 		assertEquals(30, Bs.asNumber(obj));
 
-		block = Bs.eval("Proto compile(\"10+10+10.\").");
+		block = Bs.eval("Proto compile(\"10 + 10 + 10.\").");
 		obj = block.invoke("call");
 		assertEquals(30, Bs.asNumber(obj));
 
-		obj = Bs.eval("Proto eval \"10+10+10.\".");
+		obj = Bs.eval("Proto eval \"10 + 10 + 10.\".");
 		assertEquals(30, Bs.asNumber(obj));
 	}
 }
