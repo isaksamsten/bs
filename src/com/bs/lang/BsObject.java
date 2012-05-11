@@ -216,7 +216,7 @@ public class BsObject implements StackFrame {
 	}
 
 	public void addMessage(String name, BsCodeData code) {
-		messages.put(name, new BsMessageData(name, code.arguments.size(),
+		messages.put(name, new BsMessageData(name, code.arity,
 				new BsMessageCode(code)));
 	}
 

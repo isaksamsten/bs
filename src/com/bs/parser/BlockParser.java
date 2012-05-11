@@ -35,6 +35,10 @@ public class BlockParser extends BsParser<BlockNode> {
 							tokenizer().current().text());
 				} else {
 					tokenizer().next();
+					if(tokenizer().current().type() == TokenType.PIPE) {
+						node.variable(true);
+						tokenizer().next();
+					}
 				}
 			}
 

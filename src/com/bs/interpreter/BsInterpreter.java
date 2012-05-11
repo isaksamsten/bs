@@ -154,14 +154,17 @@ public class BsInterpreter implements Interpreter {
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public Object interpretBlock(BlockNode blockNode) {
-		List<String> args = (List<String>) interpret(blockNode.arguments());
+	public Object interpretBlock(BlockNode node) {
+		List<String> args = (List<String>) interpret(node.arguments());
 		if (args == null) {
 			args = new ArrayList<String>();
 		}
 
-		BsCodeData data = new BsCodeData(args, blockNode.statements());
+		BsCodeData data = new BsCodeData(args, node.statements());
 		data.stack = stack.clone();
+		if (node.isVariable()) {
+			data.arity = -1;
+		}
 
 		BsObject block = BsBlock.create(data);
 

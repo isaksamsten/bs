@@ -8,6 +8,7 @@ import com.bs.parser.token.Token;
 
 public class BlockNode extends ExpressionNode {
 
+	private boolean variable = false;
 	private ArgumentsNode arguments;
 	private StatementsNode statements;
 
@@ -46,6 +47,14 @@ public class BlockNode extends ExpressionNode {
 	@Override
 	public Object visit(Interpreter visitor) {
 		return visitor.interpretBlock(this);
+	}
+
+	public boolean isVariable() {
+		return variable;
+	}
+
+	public void variable(boolean variable) {
+		this.variable = variable;
 	}
 
 }

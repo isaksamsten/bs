@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+
+    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen" />
+    <link rel="stylesheet" type="text/css" href="stylesheets/pygment_trac.css" media="screen" />
+    <link rel="stylesheet" type="text/css" href="stylesheets/print.css" media="print" />
+
+    <title>bs - programming language </title>
+  </head>
+
+  <body>
+
+    <header>
+      <div class="container">
+        <h1>Bs</h1>
+        <h2><em>bs</em> is a programming language designed to be concise and simple </h2>
+
+        <section id="downloads">
+          <a href="https://github.com/isakkarlsson/bs/zipball/master" class="btn">Download as .zip</a>
+          <a href="https://github.com/isakkarlsson/bs/tarball/master" class="btn">Download as .tar.gz</a>
+          <a href="https://github.com/isakkarlsson/bs" class="btn btn-github"><span class="icon"></span>View on GitHub</a>
+        </section>
+      </div>
+    </header>
+
+    <div class="container">
+      <h3>Contents</h3>
+      <div style="height: 210px; width:100%; font-size:10px;">
+	<div style="float:left; padding: 20px">
+	  <strong>Introduction</strong>
+	  <ul>
+	    <li>Overview</li>
+	    <li>Goals</li>
+	    <li>Source code</li>
+	    <li>Installation</li>
+	    <li>Running programs</li>
+	    <li>Interactive mode</li>
+ 	  </ul>	  
+	</div>	
+	<div style="float:left; padding: 20px">
+	  <strong>Syntax</strong>
+	  <ul>
+	    <li>Statements</li>
+	    <li>Expressions</li>
+	    <li>Messages</li>
+	    <li>Operators</li>
+	    <li>Assignment</li>
+	    <li>Numbers</li>
+	    <li>Strings</li>
+	    <li>Symbols</li>
+	  </ul>	  
+	</div>
+	<div style="float:left; padding: 20px">
+	  <strong>Objects</strong>
+	  <ul>
+	    <li></li>
+	  </ul>	  
+	</div>
+      </div>
+      <section id="main_content">
+        <h3>Introduction</h3>
+	<h4>Overview</h4>
+	<p>
+	  <em>bs</em> ('bullshit' or 'bullstund') is a prototype based
+	  programming language inspired
+	  by <em>io</em>, <em>smalltalk</em> and to some
+	  degree <em>Javascript</em>. Everything is an object and every
+	  modification is done by a method invocation. There are, only
+	  one deviation from that rule; assignment.
+	</p>
+
+        <h4>Goals</h4>
+	<p>
+	  The goal of <em>bs</em> are to be;
+	  <ul>
+	    <li>Consistent</li>
+	    <li>Expressive</li>
+	    <li>(relatively) Simple</li>
+	  </ul>
+	</p>
+
+	<h4>Source code</h4>
+	<p>
+	<pre><code>$ git clone https://github.com/isakkarlsson/bs</code></pre>
+	</p>
+	
+	<h4>Installation</h4>
+	<p>
+	  Download the <em>bs.jar</em> file and;
+
+	  <pre><code>$ java -jar bs.jar [file]</code></pre>
+
+	  Alternatively can the source be downloaded and compiled
+	  using Eclipse.
+	</p>
+
+	<h4>Running programs</h4>
+	<p>
+	  A program is a text file containing
+	  some <em>bs</em>-code. There are no <code>main()</code>
+	  methods or equivalent. Programs are evaluated from top to
+	  bottom.
+	  <pre><code>$ java -jar bs.jar Main.bs
+John</code></pre>
+
+	  Main.bs:
+	  <pre><code>Person := Proto clone :Person.
+p := Person clone.
+p <- :name, "John".
+System puts p -> :name.</code></pre>
+	</p>
+
+	<h4>Interactive mode</h4>
+	<p>
+	  Issue to enter interactive mode:
+	  <pre><code>$ java -jar bs.jar</code></pre>
+
+	  <pre><code> [1, 2] map { | x | x * 2. }.
+[2, 4]</code></pre>
+	  
+	  All code, in the REPL, is invoked in the context
+	  of <em>Module</em>.
+	</p>
+
+	<h3>Syntax</h3>
+
+	<h4>Statements</h4>
+	
+	<p>There are two statements; assignment (<code>a := 1.</code>) and expressions.
+	  <pre></code>program    ::= statements
+statements ::= statement { statement }
+statement  ::= assign | expression "."
+assign     ::= identifier := expression </code></pre>
+	</p>
+
+	<h4>Expressions</h4> 
+	<p>
+	All else are expressions and everything in <em>bs</em> has a
+	return value - even assignment, which return what is
+	assigned. If a method does not explicitly return anything the
+	receiver is returned. There are no keywords, only messages and
+	assignments. The informal BNF (more formal but incomplete (and
+	runnable) <a href="https://github.com/isakkarlsson/bs/blob/master/src/prolog/syntax.pl">here</a>):
+
+	 <pre></code>expression ::= symbol | call
+call       ::= symbol [message { message }]
+call       ::= message { message } # with parentheses
+message    ::= identifier [ expression ["," {expression}]]
+message    ::= identifier "(" [ expression ["," {expression}]] ")"
+symbol     ::= identifier | number | string | list | block
+list       ::= "[" expression ["," { expression }] "]"
+block      ::= "{" "|" [identifier ["," {identifier}]] "|" 
+                   statement { statement } "}"</code></pre>
+	</p>
+
+        <h4>Messages</h4>
+	<p>
+	  Messages always have a receiver. If no receiver is explicitly
+	  stated, the currently active object is used.
+	</p>
+	
+	  <pre><code>System puts("Hello World").
+load("Main.bs").</code></pre>
+        <p>
+	  The message <code>puts</code> is, thus in the example above,
+	  invoked with <code>System</code> as receiver
+	  and <code>load</code>, implicitly, with <code>Module</code> as
+	  receiver. Parentheses can be omitted if the receiver is
+	  explicitly stated. For example:
+	</p>  
+	  <pre><code>System puts "Hello" + " World".</code></pre>
+        <p>
+	  is equivalent to:
+	</p>  
+	  <pre><code>System puts("Hello" +(" World")).</code></pre>
+        <p>
+	  Noteworthy is the fact that <code>+</code> is just an other
+	  message. Thus is operators implemented as messages and adhere
+	  to the same rules. That is, they are executed from right to
+	  left (starting with the arguments).
+	  
+	  For example:
+        </p>
+	  <pre><code>10 + 10.        # 20
+10 +(10).       # 20
+10 * 10 + 10.   # 200 i.e. 10 * (10 + 10) in C
+10 *(10 +(10)). # 200 </code></pre>
+        <p>
+	  Messages can be forced to change precedence by using
+	  <code>;</code> and parenthesis. For example:
+        </p>
+	  <pre></code>10 * 10; + 10.  # == (10 * 10) + 10 = 110
+(10 * 10) + 10. # == (10 * 10) + 10 = 110
+System puts 10 * 10; 10 + 10.
+100
+20</code></pre>
+
+        <p>Valid names for identifiers are: any letter or symbol
+        except: <code>| { } [ ] ( ) . , : ;</code></p>
+
+	<pre><code>Account := Proto clone :Account.
+Account <<= :init, {
+  self <<- :balance. # create an instance field in self
+}.
+Account <<= :deposit, { | amount |
+  balance := balance + amount.
+}.
+
+a := Account clone.
+a deposit 10.
+System puts a -> :balance.</code></pre>
+
+	<p>
+	  Scopes are handled farily intuitively, a <em>message</em>
+	  can only access arguments explicitly sent to it and the
+	  reciver implicitly named <code>self</code>. The search are
+	  conducted from the inner most nesting level outwards,
+	  stopping at the message declaration. It is thus not possible
+	  to get variables from outside a method (unless explicitly
+	  sent). Further are variables already defined in an outer
+	  scope <em>not</em> hidden by a new declaration. The value is
+	  instead updated. This is to allow for, for example,
+	  the <code>whileTrue</code> message.
+
+	  Example:
+	  <pre><code>outer := "Outer value".
+<<=(:test, {
+   System puts outer. # NameError
+}).
+
+n := 1.
+{n < 10.} whileTrue {
+   System puts n.
+   n := n + 1. # Update the value
+}.
+
+</code></pre>
+	</p>
+
+	<h4>Operators</h4>
+	<p>
+	  There is only one operator in <em>bs</em>. Assignment.
+	</p>
+
+	<h4>Assignment</h4>
+	<p>
+	  Assignment is done by the operator <code>:=</code>. If a
+	  variable exist in a outer nesting level, is that value
+	  updated instead of temporarily overwritten by a new
+	  assignment.
+	</p>
+
+	<h4>Numbers</h4>
+	<p>The following are valid number:
+	  <ul>
+	    <li>1</li>
+	    <li>1.1</li>
+	    <li>738217832</li>
+	  </ul>
+	</p>
+
+	<h4>Strings</h4>
+	<p>
+	  Strings are surrounded by <code>&quot;</code>. For
+	  example; <code>&quot;hello world&quot;</code>. Characters
+	  are escaped as
+	  java: <code>&quot;hello\tworld\&quot;bye\&quot;\n&quot;</code>
+	</p>
+
+	<h4>Symbols</h4>
+	<p>
+	  An identifier initiated by <code>:</code> are a
+	  symbol. Symbols are strings cached, thus is: <code>:code
+	  getId; = :code getId</code> true.
+	</p>
+
+	<h4>Comments</h4>
+        <p>
+	  Comments are initiated by <code>#</code>.
+
+	  For example: <code># This is a comment</code>.
+	</p>
+	
+	<h3>Object</h3>
+
+	<h4>Prototypes</h4>
+	<p>
+	  In <em>bs</em> is everything an object. Locals, namespaces,
+	  modules, instances, prototypes etc., are all objects. Every
+	  object has slots, and methods and a (optional)
+	  prototype. Generally every object inherits from
+	  the <code>Proto</code> object. Excluded are
+	  the <code>Java</code>, <code>JavaInstance</code>
+	  and <code>JavaClass</code> objects (to not interfere with
+	  built in java methods).
+
+	  To create a new instance an already existing object is
+	  cloned. If the clone method exist, and/or do not raise any
+	  exception is a new clone of that object returned. For example:
+
+	  <pre><code>dog := Proto clone.</code></pre>
+
+	  To add a method, and a slot:
+
+	  <pre><code>dog <- :name, "Fido".
+dog <<= :bark, { System puts name + " barks".}.
+</code></pre>
+
+	  <code><-</code> and <code><<=</code> are aliases
+	  for <code>setSlot(name, value)</code>
+	  and <code>addMethod(name, block)</code> respectively. Slots
+	  for an object are made availible in the local scope of a
+	  method and via the <code>self</code> variable. For example:
+
+	  <pre><code> <<= :barkAgain, { System puts self <- :name; + " barks".}.</code></pre>
+          Is the same as above.
+	</p>
+
+	<h4>Inheritance</h4>
+	<p>
+	  Inheritance is simple in <em>bs</em>. If a method is not
+	  found in the local object, the check continues to the
+	  prototype and recursively until a method is found or until
+	  a <code>NameError</code> is raised.
+
+	  	  <pre><code>Dog := Proto clone :Dog.
+Dog <<= :bark, { System puts "Dog barks". }.
+d := Dog clone. # Dog has no method clone, check proto. Found, 
+                  bind self to Dog.
+d bark. # d has no method bark, check Dog, found.
+	  Bind self to d.
+</code></pre>
+
+	The inheritance chain can be changed at runtime. For example, using the example above.
+
+	 <pre><code>Wolf := Proto clone :Wolf.
+Wolf <<= :bark, { System puts "Wolf barks". }.
+d setProto Wolf.
+d bark. # "Wolf barks"
+</code></pre>	  
+	</p>
+
+
+	<h4>Methods</h4>
+	<p>
+	  Methods are blocks bound to a received using
+	  the <code>Proto#addMethod(name, block)</code> message.
+
+	  Methods can be returned:
+	  <pre><code>plusTen := 10 =>> :+.
+plusTen call 20. # 30</code></pre>
+
+	 They can take arguments:
+	 <pre><code>addMethod(:test, { | argOne, argTwo |
+  return(argOne call argTwo).
+}.</code></pre>
+
+	 If a method that does not exist, in an object or its
+	 prototypes, is called a <code>NameError</code> is raised.
+
+	 <pre><code>beer := Proto clone.
+beer drink.
+Traceback (most recent call first):
+  NameError: No method 'drint' for 'Proto'
+	'beer drink.' at line 1 position 4
+	'beer drink.' at line 1 position 4
+</code></pre>
+	  
+	  However, if there exist a method <code>methodMissing</code>
+	  method. Than this method is called. For example:
+
+	  <pre><code>beer := Proto clone.
+beer <<= :methodMissing, { | name | 
+   System puts name + " called".
+}.
+
+beer drink.
+drink called
+</code></pre>
+	 
+	  The method missing hook is utilized by, for
+	  example, <code>Module</code> to get the value of a slot.
+	</p>
+
+	<h4>Block</h4>
+	<p>
+	  Blocks are the same as methods. They are, however, lexically scoped. That is:
+
+	  <pre><code>name := "Scarlett".
+printName := { System puts name. }.
+printName call. # prints "Scarlett"</code></pre>
+	</p>
+	<h3>Authors and Contributors</h3>
+	
+	<p>
+	  Bs is written
+	  by <a href="mailto:isak.karlsson@gmail.com">Isak
+	  Karlsson</a>.
+	</p>
+	  	
+	<h3>Support or Contact</h3>
+	<p>Having trouble with bs? File a issue or
+	  contact <a href="mailto:isak.karlsson@gmail.com">isak.karlsson@gmail.com</a>
+	</p>
+      </section>
+    </div>
+    
+    <script type="text/javascript">
+      var gaJsHost = (("https:" == document.location.protocol) ?
+      "https://ssl." : "http://www.");
+      document.write(unescape("%3Cscript src='" + gaJsHost +
+      "google-analytics.com/ga.js'
+      type='text/javascript'%3E%3C/script%3E"));
+    </script>
+    <script type="text/javascript">
+      try {
+      var pageTracker = _gat._getTracker("UA-31068540-1");
+      pageTracker._trackPageview();
+      } catch(err) {}
+    </script>
+    
+  </body>
+</html>

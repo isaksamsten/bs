@@ -11,9 +11,11 @@ public class BsCodeData {
 	public Node code;
 	public Stack stack;
 	public Node lastEval;
+	public int arity;
 
 	public BsCodeData(List<String> arguments, Node code) {
 		this.arguments = arguments;
 		this.code = code;
+		this.arity = arguments.size();
 	}
 }
