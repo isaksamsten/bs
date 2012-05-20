@@ -44,9 +44,16 @@ public class BsJavaClass extends BsAbstractProto {
 		}
 	}
 
+	/**
+	 * TODO: Fix -> delegate to original?
+	 * 
+	 * @param self
+	 * @param args
+	 * @return
+	 */
 	@BsRuntimeMessage(name = "proxy", arity = -1)
 	public BsObject proxy(BsObject self, final BsObject... args) {
-		BsJavaData data = self.value();
+		final BsJavaData data = self.value();
 		if (!data.cls.isInterface()
 				|| !Modifier.isAbstract(data.cls.getModifiers())) {
 			return BsError.javaError("Can't create a proxy from non interface");
@@ -71,19 +78,14 @@ public class BsJavaClass extends BsAbstractProto {
 								}
 							}
 
-							return v;
+							return ReflectionUtils.getValue(v.value());
 						} else {
-							BsObject v = ReflectionUtils.createBsObject(me)
-									.invoke(method.getName(),
-											ReflectionUtils.getValues(arg));
-
-							if (v.isError()) {
-								if (method.getReturnType().equals(Void.TYPE)) {
-									Bs.breakError(v);
-								}
+							try {
+								return method.invoke(me, arg);
+							} catch (Exception e) {
+								e.printStackTrace();
+								return null;
 							}
-
-							return v;
 						}
 					}
 				}));
