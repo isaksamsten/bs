@@ -32,14 +32,22 @@ public class BsWriter extends BsObject {
 	@BsRuntimeMessage(name = "print", arity = 1)
 	public BsObject print(BsObject self, BsObject... args) {
 		PrintStream writer = self.value();
-		writer.print(Bs.asString(args[0].invoke("toString")));
+		BsObject toString = args[0].invoke("toString");
+		if (toString.isError()) {
+			return toString;
+		}
+		writer.print(Bs.asString(toString));
 		return self;
 	}
 
 	@BsRuntimeMessage(name = "println", arity = 1, aliases = { "<<" })
 	public BsObject println(BsObject self, BsObject... args) {
 		PrintStream writer = self.value();
-		writer.println(Bs.asString(args[0].invoke("toString")));
+		BsObject toString = args[0].invoke("toString");
+		if (toString.isError()) {
+			return toString;
+		}
+		writer.println(Bs.asString(toString));
 		return self;
 	}
 
@@ -53,7 +61,11 @@ public class BsWriter extends BsObject {
 
 		Object[] str = new Object[args.length];
 		for (int n = 1; n < str.length; n++) {
-			str[n] = Bs.asString(args[n].invoke("toString"));
+			BsObject toString = args[0].invoke("toString");
+			if (toString.isError()) {
+				return toString;
+			}
+			str[n] = Bs.asString(toString);
 		}
 
 		writer.format(Bs.asString(args[0]), str);

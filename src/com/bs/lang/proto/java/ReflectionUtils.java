@@ -198,7 +198,7 @@ public final class ReflectionUtils {
 		return ctor;
 	}
 
-	public static Object[] getValues(BsObject[] args, int offset) {
+	public static Object[] createJavaObjects(BsObject[] args, int offset) {
 		Object[] arguments = new Object[args.length - offset];
 		for (int n = offset; n < args.length; n++) {
 			Object value = args[n].value();
@@ -212,7 +212,11 @@ public final class ReflectionUtils {
 		return arguments;
 	}
 
-	public static BsObject[] getValues(Object[] args) {
+	public static Object[] createJavaObjects(BsObject[] o) {
+		return createJavaObjects(o, 0);
+	}
+
+	public static BsObject[] createBsObjects(Object[] args) {
 		if (args == null) {
 			return new BsObject[0];
 		}

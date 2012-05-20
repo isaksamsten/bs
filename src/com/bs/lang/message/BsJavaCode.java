@@ -3,6 +3,7 @@ package com.bs.lang.message;
 import java.lang.reflect.Method;
 
 import com.bs.interpreter.stack.Stack;
+import com.bs.lang.BsException;
 import com.bs.lang.BsObject;
 import com.bs.lang.proto.BsError;
 import com.bs.parser.tree.Node;
@@ -24,6 +25,9 @@ public class BsJavaCode implements BsCode {
 		try {
 			return (BsObject) method.invoke(invoker, self, args);
 		} catch (Exception e) {
+			if (e.getCause() instanceof BsException) {
+				throw (BsException) e.getCause();
+			}
 			e.printStackTrace();
 			return BsError.javaError(e.getMessage());
 		}

@@ -63,7 +63,7 @@ public class bs {
 		options.addOption(loadPath);
 		options.addOption(eval);
 
-		args = new String[] { "Reflection.bs" };
+//		args = new String[] { "Reflection.bs" };
 
 		try {
 			Bs.init();

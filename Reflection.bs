@@ -1,6 +1,28 @@
 java.lang.Runnable := import("java.lang.Runnable").
 java.lang.Thread := import("java.lang.Thread").
 
-x := java.lang.Runnable proxy :run, { System puts "isak".}.
-System puts x.
+x := java.lang.Runnable proxy :run, { 
+	System puts "isak".
+}, :toString, { 
+	return("Runnable proxy"). 
+}.
+
+t := java.lang.Thread new 1 -- 20.
+
+try({
+  System puts x.
+}) catch(Error, { | e |
+  System puts e getMessage.
+}).
+
+AbstractTester := import("com.bs.lang.AbstractTester").
+System puts AbstractTester.
+m := AbstractTester proxy :test, {
+   System puts "mouse clicked".
+}.
+
+m test.
+
+
+
 

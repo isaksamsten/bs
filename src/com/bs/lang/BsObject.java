@@ -225,20 +225,24 @@ public class BsObject implements StackFrame {
 	}
 
 	public BsObject invoke(String message, BsObject... args) {
-		BsMessage msg = getMessage(message);
-		BsObject obj = null;
-		if (msg != null) {
-			obj = msg.invoke(this, args);
-		} else if ((msg = getMessage(Bs.METHOD_MISSING)) != null) {
-			args = ArrayUtils.add(args, 0, BsString.clone(message));
-			obj = msg.invoke(this, args);
-		}
+		try {
+			BsMessage msg = getMessage(message);
+			BsObject obj = null;
+			if (msg != null) {
+				obj = msg.invoke(this, args);
+			} else if ((msg = getMessage(Bs.METHOD_MISSING)) != null) {
+				args = ArrayUtils.add(args, 0, BsString.clone(message));
+				obj = msg.invoke(this, args);
+			}
 
-		if (obj != null) {
-			return obj;
-		}
+			if (obj != null) {
+				return obj;
+			}
 
-		return BsError.nameError(message, this);
+			return BsError.nameError(message, this);
+		} catch (BsException e) {
+			return e.getError();
+		}
 	}
 
 	@Override

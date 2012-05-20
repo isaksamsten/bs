@@ -4,6 +4,8 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.Proxy;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.apache.commons.lang3.reflect.ConstructorUtils;
 import org.apache.commons.lang3.reflect.MethodUtils;
@@ -11,6 +13,7 @@ import org.apache.commons.lang3.reflect.MethodUtils;
 import com.bs.lang.Bs;
 import com.bs.lang.BsAbstractProto;
 import com.bs.lang.BsConst;
+import com.bs.lang.BsException;
 import com.bs.lang.BsObject;
 import com.bs.lang.annot.BsRuntimeMessage;
 import com.bs.lang.message.BsCode;
@@ -27,7 +30,7 @@ public class BsJavaClass extends BsAbstractProto {
 		String name = Bs.asString(args[0]);
 		BsJavaData data = self.value();
 
-		Object[] arguments = ReflectionUtils.getValues(args, 1);
+		Object[] arguments = ReflectionUtils.createJavaObjects(args, 1);
 		if (arguments == null) {
 			return BsError
 					.javaError("Unsupported type in invokation (is it really a Java type?)");
@@ -54,14 +57,23 @@ public class BsJavaClass extends BsAbstractProto {
 	@BsRuntimeMessage(name = "proxy", arity = -1)
 	public BsObject proxy(BsObject self, final BsObject... args) {
 		final BsJavaData data = self.value();
-		if (!data.cls.isInterface()
-				|| !Modifier.isAbstract(data.cls.getModifiers())) {
+		if (!data.cls.isInterface()) {
 			return BsError.javaError("Can't create a proxy from non interface");
+		} else if (args.length % 2 != 0) {
+			return BsError.raise("Method require an even number of arguments");
 		}
-		final String methodName = Bs.asString(args[0]);
-		final BsCode code = args[1].value();
 
-		// code.cloneStack();
+		final Map<String, BsCode> toHandle = new HashMap<String, BsCode>();
+		for (int n = 0; n < args.length; n += 2) {
+			String methodName = Bs.asString(args[n]);
+			BsCode code = args[n + 1].value();
+
+			if (methodName == null || code == null)
+				return BsError.raise("Unexpected parameter to 'proxy'");
+
+			toHandle.put(methodName, code);
+		}
+
 		Object obj = data.cls.cast(Proxy.newProxyInstance(
 				data.cls.getClassLoader(), new Class[] { data.cls },
 				new InvocationHandler() {
@@ -69,23 +81,19 @@ public class BsJavaClass extends BsAbstractProto {
 					@Override
 					public Object invoke(Object me, Method method, Object[] arg)
 							throws Throwable {
-						if (method.getName().equals(methodName)) {
-							BsObject v = code.invoke(args[1],
-									ReflectionUtils.getValues(arg));
+						if (toHandle.containsKey(method.getName())) {
+							BsObject v = toHandle.get(method.getName()).invoke(
+									args[1],
+									ReflectionUtils.createBsObjects(arg));
 							if (v.isError()) {
-								if (method.getReturnType().equals(Void.TYPE)) {
-									Bs.breakError(v);
-								}
+								throw new BsException(v);
 							}
 
 							return ReflectionUtils.getValue(v.value());
 						} else {
-							try {
-								return method.invoke(me, arg);
-							} catch (Exception e) {
-								e.printStackTrace();
-								return null;
-							}
+							throw new BsException(BsError.raise(
+									"Method '%s' not defined for proxy",
+									method.getName()));
 						}
 					}
 				}));
@@ -102,7 +110,7 @@ public class BsJavaClass extends BsAbstractProto {
 					.javaError("Can't instantiate an interface or abstract class");
 		}
 		try {
-			Object[] arguments = ReflectionUtils.getValues(args, 0);
+			Object[] arguments = ReflectionUtils.createJavaObjects(args);
 			if (arguments == null) {
 				return BsError
 						.javaError("Unsupported type in invokation (is it really a Java type?)");
