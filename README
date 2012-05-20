@@ -1,0 +1,32 @@
+ bs - http://isakkarlsson.github.com/bs
+   ==================================
+
+Download:
+  https://github.com/isakkarlsson/bs/downloads
+
+Requirements:
+  - Java SE 7 (Would work with Java SE 6 if Character#compareTo(Character) wasn't used).
+
+External dependencies:
+  - Apache Commons Lang
+  - Apache Commons IO
+  - Apache Commons Collections
+
+Usage:
+  java -jar bs.jar [option] [file]
+   -e,--eval <eval>           Evaluate code and exit
+   -h,--help                  Print this message
+   -l,--loadPath <loadPath>   Append <loadPath> to the load path
+
+License:
+  BSD (New BSD License)
+  
+Contact:
+  Isak Karlsson (isak.karlsson@gmail.com)
+  
+Help:
+  Fork, commit and create a pull request.
+  
+ 
+
+  
