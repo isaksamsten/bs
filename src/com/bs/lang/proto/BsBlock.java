@@ -90,7 +90,7 @@ public class BsBlock extends BsAbstractProto {
 
 			w = self.invoke("call");
 			if (w.isBreakingContext()) {
-				return last;
+				return w;
 			}
 		}
 
