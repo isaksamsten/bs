@@ -70,7 +70,7 @@ public class BsCompiler {
 	}
 
 	public BsObject compile(Reader reader, Stack stack) {
-		Node node = parse(reader, stack);
+		Node node = parse(reader);
 		if (message.hasError()) {
 			return message.error;
 		}
@@ -120,7 +120,7 @@ public class BsCompiler {
 	 * @param reader
 	 * @return
 	 */
-	public Node parse(Reader reader, Stack stack) {
+	public Node parse(Reader reader) {
 		Scanner scanner = new BsScanner(reader);
 
 		Tokenizer tokenizer = new BsTokenizer(scanner,

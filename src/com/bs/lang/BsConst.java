@@ -1,5 +1,6 @@
 package com.bs.lang;
 
+import com.bs.lang.proto.BsAst;
 import com.bs.lang.proto.BsBlock;
 import com.bs.lang.proto.BsBool;
 import com.bs.lang.proto.BsChar;
@@ -68,5 +69,6 @@ public final class BsConst {
 	public static final BsObject JavaClass = new BsJavaClass();
 	public static final BsObject Future = new BsFuture();
 	public static final BsObject Thread = new BsThread();
+	public static final BsObject Ast = new BsAst();
 
 }

@@ -48,7 +48,7 @@ public class BsJavaClass extends BsAbstractProto {
 	}
 
 	/**
-	 * TODO: Fix -> delegate to original?
+	 * 
 	 * 
 	 * @param self
 	 * @param args

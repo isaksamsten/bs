@@ -44,6 +44,7 @@ public final class Bs {
 		builtin.setSlot(Proto);
 		builtin.setSlot(Nil);
 		builtin.setSlot(BsConst.System);
+		builtin.setSlot(BsConst.Ast);
 
 		/*
 		 * Literal types
@@ -255,7 +256,7 @@ public final class Bs {
 		BsCompiler compiler = new BsCompiler();
 		Node node;
 		try {
-			node = compiler.parse(new FileReader(file), stack);
+			node = compiler.parse(new FileReader(file));
 			if (compiler.hasError()) {
 				return compiler.error();
 			} else {
@@ -269,7 +270,7 @@ public final class Bs {
 
 	public static BsObject evalRepl(String code, Stack stack) {
 		BsCompiler compile = new BsCompiler();
-		Node node = compile.parse(new StringReader(code), stack);
+		Node node = compile.parse(new StringReader(code));
 		if (compile.hasError()) {
 			return compile.error();
 		} else {
