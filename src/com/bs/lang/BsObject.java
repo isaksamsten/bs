@@ -64,7 +64,7 @@ public class BsObject implements StackFrame {
 	private Map<String, BsMessageData> messages = new HashMap<String, BsMessageData>();
 	private Map<String, BsObject> slots = new HashMap<String, BsObject>();
 
-	private Class<?> klass;
+	private Class<?> cls;
 
 	private boolean isReturning;
 
@@ -81,7 +81,7 @@ public class BsObject implements StackFrame {
 	protected BsObject(BsObject prototype, String name, Class<?> me) {
 		this.name = name;
 		this.prototype = prototype;
-		this.klass = me;
+		this.cls = me;
 		this.isReturning = false;
 		this.isBreaking = false;
 		id = ID++;
@@ -92,11 +92,12 @@ public class BsObject implements StackFrame {
 	 * annotation and add them to the list of methods for this prototype
 	 */
 	protected void initRuntimeMethods() {
-		Method[] methods = klass.getMethods();
+		Method[] methods = cls.getMethods();
 		for (Method m : methods) {
 			BsRuntimeMessage brm = m.getAnnotation(BsRuntimeMessage.class);
 			if (brm != null) {
-				BsJavaCode proxy = new BsJavaCode(this, m);
+				BsJavaCode proxy = new BsJavaCode(this, m, brm.name(),
+						brm.types());
 
 				addMessage(brm.name(), brm.arity(), proxy);
 				for (String alias : brm.aliases()) {
@@ -131,6 +132,16 @@ public class BsObject implements StackFrame {
 			return true;
 		} else if (prototype != null) {
 			return prototype.instanceOf(obj);
+		} else {
+			return false;
+		}
+	}
+
+	public boolean instanceOf(Class<?> cls) {
+		if (this.cls == cls) {
+			return true;
+		} else if (prototype != null) {
+			return prototype.instanceOf(cls);
 		} else {
 			return false;
 		}
@@ -292,5 +303,4 @@ public class BsObject implements StackFrame {
 	public void setPrototype(BsObject bsObject) {
 		this.prototype = bsObject;
 	}
-
 }

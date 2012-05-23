@@ -24,11 +24,8 @@ public class BsString extends BsAbstractProto {
 		return BsObject.value(BsConst.Number, self.value().toString().length());
 	}
 
-	@BsRuntimeMessage(name = "+", arity = 1)
+	@BsRuntimeMessage(name = "+", arity = 1, types = { BsString.class })
 	public BsObject concat(BsObject self, BsObject... args) {
-		if (!args[0].instanceOf(BsConst.String)) {
-			return BsError.typeError("+", args[0], BsConst.String);
-		}
 		String me = Bs.asString(self);
 		String other = Bs.asString(args[0]);
 		return BsString.clone(me + other);
@@ -52,12 +49,8 @@ public class BsString extends BsAbstractProto {
 		}
 	}
 
-	@BsRuntimeMessage(name = "compareTo", arity = 1, aliases = { "<=>" })
+	@BsRuntimeMessage(name = "compareTo", arity = 1, aliases = { "<=>" }, types = { BsString.class })
 	public BsObject compareTo(BsObject self, BsObject... args) {
-		if (!args[0].instanceOf(BsConst.String)) {
-			return BsError.typeError("compareTo", args[0], BsConst.String);
-		}
-
 		return BsNumber
 				.clone(Bs.asString(self).compareTo(Bs.asString(args[0])));
 	}

@@ -14,7 +14,7 @@ public class ModuleAst implements Loadable {
 	@Override
 	public BsObject getModule() {
 		BsObject ast = BsModule.create("ast");
-		ast.setSlot(Const.AST);
+		ast.setSlot(ModuleConst.AST);
 
 		return ast;
 	}

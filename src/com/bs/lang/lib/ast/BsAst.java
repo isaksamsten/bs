@@ -19,7 +19,6 @@ public class BsAst extends BsAbstractProto {
 
 	public BsAst() {
 		super(BsConst.Proto, "Ast", BsAst.class);
-		initRuntimeMethods();
 	}
 
 	@BsRuntimeMessage(name = "compile", arity = 1)

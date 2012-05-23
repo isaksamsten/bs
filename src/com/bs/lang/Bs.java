@@ -20,6 +20,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.StringReader;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -31,10 +32,28 @@ import com.bs.interpreter.BsCompiler;
 import com.bs.interpreter.BsInterpreter;
 import com.bs.interpreter.stack.BsStack;
 import com.bs.interpreter.stack.Stack;
+import com.bs.lang.builtin.BsBool;
+import com.bs.lang.builtin.BsEnumerable;
 import com.bs.lang.builtin.BsError;
+import com.bs.lang.builtin.BsFalse;
+import com.bs.lang.builtin.BsFuture;
 import com.bs.lang.builtin.BsList;
 import com.bs.lang.builtin.BsModule;
+import com.bs.lang.builtin.BsNil;
+import com.bs.lang.builtin.BsNumber;
+import com.bs.lang.builtin.BsProto;
 import com.bs.lang.builtin.BsString;
+import com.bs.lang.builtin.BsSymbol;
+import com.bs.lang.builtin.BsSystem;
+import com.bs.lang.builtin.BsThread;
+import com.bs.lang.builtin.BsTrue;
+import com.bs.lang.builtin.io.BsFile;
+import com.bs.lang.builtin.io.BsIO;
+import com.bs.lang.builtin.io.BsReader;
+import com.bs.lang.builtin.io.BsWriter;
+import com.bs.lang.builtin.java.BsJava;
+import com.bs.lang.builtin.java.BsJavaClass;
+import com.bs.lang.builtin.java.BsJavaInstance;
 import com.bs.lang.lib.Loadable;
 import com.bs.lang.lib.modules.ModuleAst;
 import com.bs.parser.tree.Node;
@@ -42,6 +61,8 @@ import com.bs.parser.tree.Node;
 public final class Bs {
 
 	private static BsObject builtin;
+	private static Map<Class<?>, BsObject> prototypes = new HashMap<Class<?>, BsObject>();
+	private static Map<String, Loadable> loadable = new HashMap<String, Loadable>();
 
 	public static void init() {
 		builtin = BsModule.create("builtin");
@@ -101,7 +122,58 @@ public final class Bs {
 		addLoadable(new ModuleAst());
 	}
 
-	private static Map<String, Loadable> loadable = new HashMap<String, Loadable>();
+	// prototypes.put(BsProto.class, Proto);
+	// prototypes.put(BsNil.class, Nil);
+	// prototypes.put(BsSystem.class, BsConst.System);
+	//
+	// /*
+	// * Literal types
+	// */
+	// prototypes.put(BsSymbol.class, Symbol);
+	// prototypes.put(BsString.class, BsConst.String);
+	// prototypes.put(BsList.class, List);
+	// prototypes.put(BsNumber.class, Number);
+	// prototypes.put(BsBool.class, Bool);
+	// prototypes.put(BsTrue.class, True);
+	// prototypes.put(BsFalse.class, False);
+	//
+	// prototypes.put(BsModule.class, Module);
+	// prototypes.put(BsEnumerable.class, Enumerable);
+	//
+	// prototypes.put(BsThread.class, BsConst.Thread);
+	// prototypes.put(BsFuture.class, BsConst.Future);
+	//
+	// /*
+	// * Java interop
+	// */
+	// prototypes.put(BsJava.class, BsConst.Java);
+	// prototypes.put(BsJavaInstance.class, BsConst.JavaInstance);
+	// prototypes.put(BsJavaClass.class, BsConst.JavaClass);
+	//
+	// /*
+	// * IO
+	// */
+	// prototypes.put(BsIO.class, BsConst.IO);
+	// prototypes.put(BsReader.class, BsConst.Reader);
+	// prototypes.put(BsWriter.class, BsConst.Writer);
+	// prototypes.put(BsFile.class, BsConst.File);
+	//
+	// /*
+	// * Errors
+	// */
+	// prototypes.put(BsError.class, Error);
+	//
+	// for (BsObject obj : prototypes.values()) {
+	// builtin.setSlot(obj);
+	// }
+	//
+	// builtin.setSlot(SyntaxError);
+	// builtin.setSlot(NameError);
+	// builtin.setSlot(TypeError);
+	// builtin.setSlot(BsConst.IOError);
+	// builtin.setSlot(BsConst.JavaError);
+	// builtin.setSlot(BsConst.CloneError);
+	// builtin.setSlot(BsConst.SubTypeError);
 
 	/**
 	 * Check is obj is the same object (reference) as BsConst.True
@@ -184,6 +256,14 @@ public final class Bs {
 	 */
 	public static BsObject builtin() {
 		return builtin;
+	}
+
+	public static void addPrototype(Class<?> me, BsObject proto) {
+		prototypes.put(me, proto);
+	}
+
+	public static BsObject findPrototype(Class<?> cls) {
+		return prototypes.get(cls);
 	}
 
 	/**
@@ -282,6 +362,48 @@ public final class Bs {
 		} else {
 			return eval(node, stack);
 		}
+	}
+
+	/**
+	 * Check if args..n instanceOf check..n
+	 * 
+	 * @param args
+	 * @param check
+	 * @return
+	 */
+	public static int checkTypes(BsObject[] args, BsObject... check) {
+		int max = args.length;
+		if (max < check.length)
+			max = check.length;
+
+		for (int n = 0; n < max; n++) {
+			if (!args[n].instanceOf(check[n])) {
+				return n;
+			}
+		}
+
+		return -1;
+	}
+
+	/**
+	 * Check if args..n instanceOf check..n
+	 * 
+	 * @param args
+	 * @param check
+	 * @return
+	 */
+	public static int checkTypes(BsObject[] args, Class<?>... check) {
+		int max = args.length;
+		if (max < check.length)
+			max = check.length;
+
+		for (int n = 0; n < max; n++) {
+			if (!args[n].instanceOf(check[n])) {
+				return n;
+			}
+		}
+
+		return -1;
 	}
 
 	/**

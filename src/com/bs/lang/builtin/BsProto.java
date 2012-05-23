@@ -122,16 +122,6 @@ public class BsProto extends BsAbstractProto {
 		return self;
 	}
 
-	@BsRuntimeMessage(name = "new", arity = -1)
-	public BsObject new_(BsObject self, BsObject... args) {
-		return BsConst.Java.invoke("new", args);
-	}
-
-	@BsRuntimeMessage(name = "import", arity = -1)
-	public BsObject static_(BsObject self, BsObject... args) {
-		return BsConst.Java.invoke("import", args);
-	}
-
 	@BsRuntimeMessage(name = "nil?", arity = 0)
 	public BsObject isNil(BsObject self, BsObject... args) {
 		return BsConst.False;
@@ -165,16 +155,9 @@ public class BsProto extends BsAbstractProto {
 		return self;
 	}
 
-	@BsRuntimeMessage(name = "setMethod", arity = 2, aliases = { "<<=" })
+	@BsRuntimeMessage(name = "setMethod", arity = 2, aliases = { "<<=" }, types = {
+			BsSymbol.class, BsBlock.class })
 	public BsObject addMethod(BsObject self, BsObject... args) {
-		if (!args[0].instanceOf(BsConst.Symbol)) {
-			return BsError.typeError("setMethod", args[0].getPrototype(),
-					BsConst.String);
-		}
-		if (!args[1].instanceOf(BsConst.Block)) {
-			return BsError.typeError("setMethod", args[1].getPrototype(),
-					BsConst.Block);
-		}
 		BsCode code = args[1].value();
 		if (!(code instanceof BsBlockCode)) {
 			return BsError.typeError("Cannot add an already bound method");
@@ -193,20 +176,20 @@ public class BsProto extends BsAbstractProto {
 		}
 	}
 
-	@BsRuntimeMessage(name = "getMethod", arity = 1, aliases = { "=>>" })
+	@BsRuntimeMessage(name = "getMethod", arity = 1, aliases = { "=>>" }, types = { BsString.class })
 	public BsObject getMethod(BsObject self, BsObject... args) {
 		BsMessage code = self.getMessage(Bs.asString(args[0]));
 
 		return BsBlock.create(code);
 	}
 
-	@BsRuntimeMessage(name = "futureSend", arity = -1)
+	@BsRuntimeMessage(name = "futureSend", arity = 1)
 	public BsObject sendFuture(BsObject self, BsObject... args) {
 		if (!args[0].instanceOf(BsConst.Symbol)) {
 			return BsError.typeError("futureSend", args[0], BsConst.Symbol);
 		}
-		BsMessage code = self.getMessage(Bs.asString(args[0]));
 
+		BsMessage code = self.getMessage(Bs.asString(args[0]));
 		args = ArrayUtils.subarray(args, 1, args.length); // remove symbol
 		return BsBlock.create(code).invoke("futureCall", args);
 	}

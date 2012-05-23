@@ -49,12 +49,19 @@ public class BsModule extends BsAbstractProto {
 				+ Bs.asString(self.getSlot(FILE_NAME)) + ">");
 	}
 
+	@BsRuntimeMessage(name = "import", arity = 1, types = { BsString.class })
+	public BsObject static_(BsObject self, BsObject... args) {
+		BsObject javaImport = BsConst.Java.invoke("import", args);
+
+		return javaImport;
+	}
+
 	@BsRuntimeMessage(name = "load", arity = 1)
 	public BsObject load(BsObject self, BsObject... args) {
 		if (!args[0].instanceOf(BsConst.String)) {
 			return BsError.typeError("load", args[0], BsConst.String);
 		}
-		
+
 		String moduleName = Bs.asString(args[0]);
 		Loadable loadable = Bs.findLoadable(moduleName);
 		if (loadable != null) {
