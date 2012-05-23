@@ -12,6 +12,7 @@ import com.bs.lang.BsAbstractProto;
 import com.bs.lang.BsConst;
 import com.bs.lang.BsObject;
 import com.bs.lang.annot.BsRuntimeMessage;
+import com.bs.lang.builtin.java.BsJavaData;
 import com.bs.lang.lib.Loadable;
 
 public class BsModule extends BsAbstractProto {
@@ -52,6 +53,9 @@ public class BsModule extends BsAbstractProto {
 	@BsRuntimeMessage(name = "import", arity = 1, types = { BsString.class })
 	public BsObject static_(BsObject self, BsObject... args) {
 		BsObject javaImport = BsConst.Java.invoke("import", args);
+		BsJavaData data = javaImport.value();
+		String name = data.cls.getName();
+		self.setSlot(name, javaImport);
 
 		return javaImport;
 	}
