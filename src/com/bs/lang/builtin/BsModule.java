@@ -53,6 +53,10 @@ public class BsModule extends BsAbstractProto {
 	@BsRuntimeMessage(name = "import", arity = 1, types = { BsString.class })
 	public BsObject static_(BsObject self, BsObject... args) {
 		BsObject javaImport = BsConst.Java.invoke("import", args);
+		if (javaImport.isError()) {
+			return javaImport;
+		}
+
 		BsJavaData data = javaImport.value();
 		String name = data.cls.getName();
 		self.setSlot(name, javaImport);

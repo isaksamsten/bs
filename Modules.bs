@@ -1,10 +1,17 @@
 System puts Module loadPath.
 
 
-Person := load("Person.bs").
+load("Person").
+# Person is loaded as: Person
 
-p := Person Person; clone("isak").
+load("Person.bs"). #same as above
 
-Async := load("Async.bs").
+import("java.io.File").
+import("java.util.ArrayList").
 
-System puts Async.
+# use them as above.
+f := java.io.File new "/".
+a := java.util.ArrayList new.
+
+a add "Hello world".
+files := f listFiles.
