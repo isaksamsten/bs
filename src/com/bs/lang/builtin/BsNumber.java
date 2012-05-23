@@ -19,7 +19,7 @@ public class BsNumber extends BsAbstractProto {
 		super(BsConst.Comparable, "Number", BsNumber.class);
 	}
 
-	@BsRuntimeMessage(name = "+", arity = 1)
+	@BsRuntimeMessage(name = "+", arity = 1, types = { BsNumber.class })
 	public BsObject add(BsObject self, BsObject... args) {
 		Number lhs = self.value();
 		Number rhs = args[0].value();
@@ -28,7 +28,7 @@ public class BsNumber extends BsAbstractProto {
 		return clone(result);
 	}
 
-	@BsRuntimeMessage(name = "-", arity = 1)
+	@BsRuntimeMessage(name = "-", arity = 1, types = { BsNumber.class })
 	public BsObject subtract(BsObject self, BsObject... args) {
 		Number lhs = self.value();
 		Number rhs = args[0].value();
@@ -37,7 +37,7 @@ public class BsNumber extends BsAbstractProto {
 		return clone(result);
 	}
 
-	@BsRuntimeMessage(name = "*", arity = 1)
+	@BsRuntimeMessage(name = "*", arity = 1, types = { BsNumber.class })
 	public BsObject multiply(BsObject self, BsObject... args) {
 		Number lhs = self.value();
 		Number rhs = args[0].value();
@@ -46,7 +46,7 @@ public class BsNumber extends BsAbstractProto {
 		return clone(result);
 	}
 
-	@BsRuntimeMessage(name = "/", arity = 1)
+	@BsRuntimeMessage(name = "/", arity = 1, types = { BsNumber.class })
 	public BsObject divide(BsObject self, BsObject... args) {
 		Number lhs = self.value();
 		Number rhs = args[0].value();
@@ -55,7 +55,7 @@ public class BsNumber extends BsAbstractProto {
 		return clone(result);
 	}
 
-	@BsRuntimeMessage(name = "%", arity = 1)
+	@BsRuntimeMessage(name = "%", arity = 1, types = { BsNumber.class })
 	public BsObject modulo(BsObject self, BsObject... args) {
 		Number lhs = self.value();
 		Number rhs = args[0].value();
@@ -74,7 +74,7 @@ public class BsNumber extends BsAbstractProto {
 		return clone(Bs.asNumber(self).intValue() + 1);
 	}
 
-	@BsRuntimeMessage(name = "--", arity = 1)
+	@BsRuntimeMessage(name = "--", arity = 1, types = { BsNumber.class })
 	public BsObject range(BsObject self, BsObject... args) {
 		if (!args[0].instanceOf(BsConst.Number)) {
 			return BsError.typeError("--", args[0], BsConst.Number);
@@ -83,7 +83,7 @@ public class BsNumber extends BsAbstractProto {
 		return BsRange.clone(Bs.asNumber(self), Bs.asNumber(args[0]));
 	}
 
-	@BsRuntimeMessage(name = "compareTo", arity = 1, aliases = { "<=>" })
+	@BsRuntimeMessage(name = "compareTo", arity = 1, aliases = { "<=>" }, types = { BsNumber.class })
 	public BsObject compareTo(BsObject self, BsObject... args) {
 		if (!args[0].instanceOf(BsConst.Number)) {
 			return BsError.typeError("compareTo", args[0], BsConst.String);

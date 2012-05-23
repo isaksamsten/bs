@@ -19,39 +19,23 @@ public class BsEnumerable extends BsAbstractProto {
 		return BsError.raise("Subclass implementation");
 	}
 
-	@BsRuntimeMessage(name = "map", arity = 1)
+	@BsRuntimeMessage(name = "map", arity = 1, types = { BsBlock.class })
 	public BsObject map(BsObject self, BsObject... args) {
-		if (!args[0].instanceOf(BsConst.Block)) {
-			return BsError.typeError("map", args[0], BsConst.Block);
-		}
-
 		return each("list << block call e.", self, args[0]);
 	}
 
-	@BsRuntimeMessage(name = "filter", arity = 1)
+	@BsRuntimeMessage(name = "filter", arity = 1, types = { BsBlock.class })
 	public BsObject filter(BsObject self, BsObject... args) {
-		if (!args[0].instanceOf(BsConst.Block)) {
-			return BsError.typeError("filter", args[0], BsConst.Block);
-		}
-
 		return each("(block call e) ifTrue { list << e. }.", self, args[0]);
 	}
 
-	@BsRuntimeMessage(name = "any?", arity = 1)
+	@BsRuntimeMessage(name = "any?", arity = 1, types = { BsBlock.class })
 	public BsObject any(BsObject self, BsObject... args) {
-		if (!args[0].instanceOf(BsConst.Block)) {
-			return BsError.typeError("any?", args[0], BsConst.Block);
-		}
-
 		return each("(block call e) ifTrue { return(True). }.", self, args[0]);
 	}
 
-	@BsRuntimeMessage(name = "all?", arity = 1)
+	@BsRuntimeMessage(name = "all?", arity = 1, types = { BsBlock.class })
 	public BsObject all(BsObject self, BsObject... args) {
-		if (!args[0].instanceOf(BsConst.Block)) {
-			return BsError.typeError("any?", args[0], BsConst.Block);
-		}
-
 		return each("(block call e) ifFalse { return(False). }.", self, args[0]);
 	}
 

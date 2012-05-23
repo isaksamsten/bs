@@ -10,7 +10,9 @@ import com.bs.lang.BsObject;
 import com.bs.lang.annot.BsProto;
 import com.bs.lang.annot.BsRuntimeMessage;
 import com.bs.lang.builtin.BsError;
+import com.bs.lang.builtin.BsString;
 import com.bs.lang.builtin.java.BsJavaData;
+import com.bs.lang.builtin.java.BsJavaInstance;
 import com.bs.lang.builtin.java.ReflectionUtils;
 import com.bs.parser.tree.Node;
 
@@ -21,26 +23,15 @@ public class BsAst extends BsAbstractProto {
 		super(BsConst.Proto, "Ast", BsAst.class);
 	}
 
-	@BsRuntimeMessage(name = "compile", arity = 1)
+	@BsRuntimeMessage(name = "compile", arity = 1, types = { BsString.class })
 	public BsObject compile(BsObject self, BsObject... args) {
-		int checkTypes = checkTypes(args, BsConst.String);
-		if (checkTypes > 0) {
-			return BsError.typeError("compile", args[checkTypes],
-					BsConst.String);
-		}
-
 		BsCompiler compiler = new BsCompiler();
 		Node node = compiler.parse(new StringReader(Bs.asString(args[0])));
 		return ReflectionUtils.createBsObject(node);
 	}
 
-	@BsRuntimeMessage(name = "execute", arity = 1)
+	@BsRuntimeMessage(name = "execute", arity = 1, types = { BsJavaInstance.class })
 	public BsObject execute(BsObject self, BsObject... args) {
-		int c = checkTypes(args, BsConst.JavaInstance);
-		if (c > 0) {
-			return BsError.typeError("execute", args[c], BsConst.JavaInstance);
-		}
-
 		BsJavaData node = args[0].value();
 		if (node == null || !(node.instance instanceof Node)) {
 			return BsError.typeError("Excpected a 'Node'");

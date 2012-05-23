@@ -51,26 +51,19 @@ public class BsList extends BsAbstractProto {
 		return self;
 	}
 
-	@BsRuntimeMessage(name = "addAll", arity = 1, aliases = { "++" })
+	@BsRuntimeMessage(name = "addAll", arity = 1, aliases = { "++" }, types = { BsList.class })
 	public BsObject addAll(BsObject self, BsObject... args) {
-		if (!args[0].instanceOf(BsConst.List)) {
-			return BsError.typeError("addAll", args[0], BsConst.List);
-		}
-
 		List<BsObject> value = self.value();
 		List<BsObject> other = args[0].value();
 		value.addAll(other);
 		return self;
 	}
 
-	@BsRuntimeMessage(name = "insert", arity = 2)
+	@BsRuntimeMessage(name = "insert", arity = 2, types = { BsNumber.class,
+			BsProto.class })
 	public BsObject insert(BsObject self, BsObject... args) {
-		if (!args[0].instanceOf(BsConst.Number)) {
-			return BsError.typeError("insert", args[0], BsConst.Number);
-		}
-
 		List<BsObject> value = self.value();
-		value.add(Bs.asNumber(args[0]).intValue(), args[0]);
+		value.add(Bs.asNumber(args[0]).intValue(), args[1]);
 		return self;
 	}
 

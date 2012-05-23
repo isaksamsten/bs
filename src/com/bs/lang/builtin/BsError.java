@@ -176,22 +176,15 @@ public class BsError extends BsAbstractProto {
 		return self.getSlot(STACK_TRACE);
 	}
 
-	@BsRuntimeMessage(name = "setMessage", arity = 1)
+	@BsRuntimeMessage(name = "setMessage", arity = 1, types = { BsString.class })
 	public BsObject setMessage(BsObject self, BsObject... args) {
 		self.setSlot(MESSAGE, args[0]);
 		return self;
 	}
 
-	@BsRuntimeMessage(name = "catch", arity = 2)
+	@BsRuntimeMessage(name = "catch", arity = 2, types = { BsError.class,
+			BsBlock.class })
 	public BsObject catch_(BsObject self, BsObject... args) {
-		if (!args[0].instanceOf(BsConst.Error)) {
-			return typeError("catch", args[0], BsConst.Symbol);
-		}
-
-		if (!args[1].instanceOf(BsConst.Block)) {
-			return typeError("catch", args[1], BsConst.Block);
-		}
-
 		BsObject type = self.getPrototype();
 		if (type.instanceOf(args[0]) && !Bs.asBoolean(args[1].getSlot(CAUGHT))) {
 			int arity = ((BsCode) args[1].value()).getArity();
@@ -210,22 +203,13 @@ public class BsError extends BsAbstractProto {
 		return self;
 	}
 
-	@BsRuntimeMessage(name = "raise", arity = 1)
+	@BsRuntimeMessage(name = "raise", arity = 1, types = { BsString.class })
 	public BsObject raise(BsObject self, BsObject... args) {
-		if (!args[0].instanceOf(BsConst.String)) {
-			return BsError.typeError("raise", args[0].getPrototype(),
-					BsConst.String);
-		}
 		return BsError.raise(self, Bs.asString(args[0]));
 	}
 
-	@BsRuntimeMessage(name = "clone", arity = 1)
+	@BsRuntimeMessage(name = "clone", arity = 1, types = { BsSymbol.class })
 	public BsObject clone(BsObject self, BsObject... args) {
-		if (!args[0].instanceOf(BsConst.Symbol)) {
-			return BsError.typeError("clone", args[0].getPrototype(),
-					BsConst.Symbol);
-		}
-
 		return clone(Bs.asString(args[0]));
 	}
 

@@ -30,21 +30,13 @@ public class BsChar extends BsAbstractProto {
 		return clone((char) (c - 1));
 	}
 
-	@BsRuntimeMessage(name = "--", arity = 1)
+	@BsRuntimeMessage(name = "--", arity = 1, types = { BsChar.class })
 	public BsObject range(BsObject self, BsObject... args) {
-		if (!args[0].instanceOf(BsConst.Char)) {
-			return BsError.typeError("--", args[0], BsConst.Number);
-		}
-
 		return BsRange.clone(self, args[0]);
 	}
 
-	@BsRuntimeMessage(name = "compareTo", arity = 1, aliases = { "<=>" })
+	@BsRuntimeMessage(name = "compareTo", arity = 1, aliases = { "<=>" }, types = { BsChar.class })
 	public BsObject compareTo(BsObject self, BsObject... args) {
-		if (!args[0].instanceOf(BsConst.Char)) {
-			return BsError.typeError("compareTo", args[0], BsConst.String);
-		}
-
 		return BsNumber.clone(Character.compare(Bs.asCharacter(self),
 				Bs.asCharacter(args[0])));
 	}
