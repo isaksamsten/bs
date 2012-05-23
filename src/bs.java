@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
+import java.util.Date;
 import java.util.List;
 import java.util.jar.JarEntry;
 import java.util.jar.JarInputStream;
@@ -42,6 +43,8 @@ import com.bs.util.PrintStreamMessageListener;
 
 public class bs {
 
+	private static final String VERSION = "version";
+
 	private static final String LOADABLE = "loadable";
 
 	private static final String EVAL = "eval";
@@ -50,8 +53,13 @@ public class bs {
 
 	private static final String LOAD_PATH = "loadPath";
 
+	private static final String VERSION_ID = "0.5";
+
 	private static Option help = new Option("h", HELP, false,
 			"Print this message");
+
+	private static Option version = new Option("v", VERSION, false,
+			"Show the version");
 
 	// @formatter:off
 
@@ -81,6 +89,7 @@ public class bs {
 	public static void main(String[] args) throws FileNotFoundException {
 		Options options = new Options();
 		options.addOption(help);
+		options.addOption(version);
 		options.addOption(loadPath);
 		options.addOption(loadable);
 		options.addOption(eval);
@@ -95,6 +104,10 @@ public class bs {
 
 			if (line.hasOption(HELP)) {
 				help(options);
+			}
+
+			if (line.hasOption(VERSION)) {
+				version();
 			}
 
 			if (line.hasOption(LOAD_PATH)) {
@@ -123,6 +136,13 @@ public class bs {
 
 	}
 
+	private static void version() {
+		System.out.println("bs (bullshit lang) " + VERSION_ID);
+		System.out.println("Copyright (C) 2012+ Isak Karlsson");
+		System.out.println("License BSD");
+		System.exit(1);
+	}
+
 	private static void loadable(String filename) {
 		File file = new File(filename);
 
@@ -133,7 +153,8 @@ public class bs {
 			is = new JarInputStream(new FileInputStream(file));
 			JarEntry entry;
 			while ((entry = is.getNextJarEntry()) != null) {
-				if (entry.getName().endsWith(".class") && !entry.getName().contains("/")) {
+				if (entry.getName().endsWith(".class")
+						&& !entry.getName().contains("/")) {
 					Class<?> cls = Class.forName(
 							FilenameUtils.removeExtension(entry.getName()),
 							false, loader);
