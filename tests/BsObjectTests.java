@@ -6,9 +6,9 @@ import org.junit.Test;
 import com.bs.lang.Bs;
 import com.bs.lang.BsConst;
 import com.bs.lang.BsObject;
-import com.bs.lang.proto.BsNumber;
-import com.bs.lang.proto.BsString;
-import com.bs.lang.proto.BsSymbol;
+import com.bs.lang.builtin.BsNumber;
+import com.bs.lang.builtin.BsString;
+import com.bs.lang.builtin.BsSymbol;
 
 public class BsObjectTests {
 

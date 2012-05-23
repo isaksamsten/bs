@@ -8,13 +8,13 @@ import org.apache.commons.lang3.ArrayUtils;
 
 import com.bs.interpreter.stack.StackFrame;
 import com.bs.lang.annot.BsRuntimeMessage;
+import com.bs.lang.builtin.BsError;
+import com.bs.lang.builtin.BsString;
 import com.bs.lang.message.BsCodeData;
 import com.bs.lang.message.BsJavaCode;
 import com.bs.lang.message.BsMessage;
 import com.bs.lang.message.BsMessageCode;
 import com.bs.lang.message.BsMessageData;
-import com.bs.lang.proto.BsError;
-import com.bs.lang.proto.BsString;
 
 /**
  * 

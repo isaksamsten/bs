@@ -1,6 +1,6 @@
 package com.bs.lang;
 
-import com.bs.lang.proto.BsError;
+import com.bs.lang.builtin.BsError;
 
 public class BsException extends Error {
 

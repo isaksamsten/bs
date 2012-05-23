@@ -12,11 +12,4 @@ public @interface BsProto {
 	 * @return
 	 */
 	String name();
-
-	/**
-	 * Should it be a global (i.e. reside in builtins)?
-	 * 
-	 * @return
-	 */
-	boolean global() default true;
 }

@@ -1,7 +1,15 @@
+import java.io.ByteArrayInputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLClassLoader;
 import java.util.List;
+import java.util.jar.JarEntry;
+import java.util.jar.JarInputStream;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
@@ -11,14 +19,16 @@ import org.apache.commons.cli.OptionBuilder;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 import org.apache.commons.cli.PosixParser;
+import org.apache.commons.io.FilenameUtils;
 
 import com.bs.interpreter.stack.BsStack;
 import com.bs.interpreter.stack.Stack;
 import com.bs.lang.Bs;
 import com.bs.lang.BsConst;
 import com.bs.lang.BsObject;
-import com.bs.lang.proto.BsModule;
-import com.bs.lang.proto.BsString;
+import com.bs.lang.builtin.BsModule;
+import com.bs.lang.builtin.BsString;
+import com.bs.lang.lib.Loadable;
 import com.bs.parser.StatementsParser;
 import com.bs.parser.source.BsScanner;
 import com.bs.parser.source.BsTokenizer;
@@ -31,6 +41,8 @@ import com.bs.util.MessageHandler;
 import com.bs.util.PrintStreamMessageListener;
 
 public class bs {
+
+	private static final String LOADABLE = "loadable";
 
 	private static final String EVAL = "eval";
 
@@ -47,7 +59,7 @@ public class bs {
 	private static Option loadPath = OptionBuilder.withArgName(LOAD_PATH)
 			.isRequired(false).hasArg()
 			.withDescription("Append <loadPath> to the load path")
-			.withLongOpt(LOAD_PATH).create('l');
+			.withLongOpt(LOAD_PATH).create('p');
 
 	@SuppressWarnings("static-access")
 	private static Option eval = OptionBuilder.withArgName(EVAL)
@@ -55,15 +67,25 @@ public class bs {
 			.withDescription("Evaluate code and exit").withLongOpt(EVAL)
 			.create('e');
 
+	@SuppressWarnings("static-access")
+	private static Option loadable = OptionBuilder
+			.withArgName(LOADABLE)
+			.isRequired(false)
+			.hasArg()
+			.withDescription(
+					"Add all instances of 'Loadable' as loadable modules")
+			.withLongOpt(LOADABLE).create('l');
+
 	// @formatter:on
 
 	public static void main(String[] args) throws FileNotFoundException {
 		Options options = new Options();
 		options.addOption(help);
 		options.addOption(loadPath);
+		options.addOption(loadable);
 		options.addOption(eval);
 
-//		args = new String[] { "Reflection.bs" };
+		// args = new String[] { "Reflection.bs" };
 
 		try {
 			Bs.init();
@@ -83,6 +105,10 @@ public class bs {
 				eval(line.getOptionValue(EVAL));
 			}
 
+			if (line.hasOption(LOADABLE)) {
+				loadable(line.getOptionValue(LOADABLE));
+			}
+
 			List<?> rest = line.getArgList();
 
 			if (rest.size() > 0) {
@@ -93,6 +119,34 @@ public class bs {
 
 		} catch (ParseException e) {
 			help(options);
+		}
+
+	}
+
+	private static void loadable(String filename) {
+		File file = new File(filename);
+
+		JarInputStream is;
+		try {
+			ClassLoader loader = URLClassLoader.newInstance(new URL[] { file
+					.toURI().toURL() });
+			is = new JarInputStream(new FileInputStream(file));
+			JarEntry entry;
+			while ((entry = is.getNextJarEntry()) != null) {
+				if (entry.getName().endsWith(".class") && !entry.getName().contains("/")) {
+					Class<?> cls = Class.forName(
+							FilenameUtils.removeExtension(entry.getName()),
+							false, loader);
+					for (Class<?> i : cls.getInterfaces()) {
+						if (i.equals(Loadable.class)) {
+							Loadable l = (Loadable) cls.newInstance();
+							Bs.addLoadable(l);
+						}
+					}
+				}
+			}
+		} catch (Exception e) {
+			System.out.println(e.getMessage());
 		}
 
 	}

@@ -1,32 +1,31 @@
 package com.bs.lang;
 
-import com.bs.lang.proto.BsAst;
-import com.bs.lang.proto.BsBlock;
-import com.bs.lang.proto.BsBool;
-import com.bs.lang.proto.BsChar;
-import com.bs.lang.proto.BsComparable;
-import com.bs.lang.proto.BsEnumerable;
-import com.bs.lang.proto.BsError;
-import com.bs.lang.proto.BsFalse;
-import com.bs.lang.proto.BsFuture;
-import com.bs.lang.proto.BsList;
-import com.bs.lang.proto.BsModule;
-import com.bs.lang.proto.BsNil;
-import com.bs.lang.proto.BsNumber;
-import com.bs.lang.proto.BsProto;
-import com.bs.lang.proto.BsRange;
-import com.bs.lang.proto.BsString;
-import com.bs.lang.proto.BsSymbol;
-import com.bs.lang.proto.BsSystem;
-import com.bs.lang.proto.BsThread;
-import com.bs.lang.proto.BsTrue;
-import com.bs.lang.proto.io.BsFile;
-import com.bs.lang.proto.io.BsIO;
-import com.bs.lang.proto.io.BsReader;
-import com.bs.lang.proto.io.BsWriter;
-import com.bs.lang.proto.java.BsJava;
-import com.bs.lang.proto.java.BsJavaClass;
-import com.bs.lang.proto.java.BsJavaInstance;
+import com.bs.lang.builtin.BsBlock;
+import com.bs.lang.builtin.BsBool;
+import com.bs.lang.builtin.BsChar;
+import com.bs.lang.builtin.BsComparable;
+import com.bs.lang.builtin.BsEnumerable;
+import com.bs.lang.builtin.BsError;
+import com.bs.lang.builtin.BsFalse;
+import com.bs.lang.builtin.BsFuture;
+import com.bs.lang.builtin.BsList;
+import com.bs.lang.builtin.BsModule;
+import com.bs.lang.builtin.BsNil;
+import com.bs.lang.builtin.BsNumber;
+import com.bs.lang.builtin.BsProto;
+import com.bs.lang.builtin.BsRange;
+import com.bs.lang.builtin.BsString;
+import com.bs.lang.builtin.BsSymbol;
+import com.bs.lang.builtin.BsSystem;
+import com.bs.lang.builtin.BsThread;
+import com.bs.lang.builtin.BsTrue;
+import com.bs.lang.builtin.io.BsFile;
+import com.bs.lang.builtin.io.BsIO;
+import com.bs.lang.builtin.io.BsReader;
+import com.bs.lang.builtin.io.BsWriter;
+import com.bs.lang.builtin.java.BsJava;
+import com.bs.lang.builtin.java.BsJavaClass;
+import com.bs.lang.builtin.java.BsJavaInstance;
 
 public final class BsConst {
 
@@ -69,6 +68,4 @@ public final class BsConst {
 	public static final BsObject JavaClass = new BsJavaClass();
 	public static final BsObject Future = new BsFuture();
 	public static final BsObject Thread = new BsThread();
-	public static final BsObject Ast = new BsAst();
-
 }

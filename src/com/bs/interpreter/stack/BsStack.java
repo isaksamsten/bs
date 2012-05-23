@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 import com.bs.lang.Bs;
 import com.bs.lang.BsObject;
-import com.bs.lang.proto.BsError;
+import com.bs.lang.builtin.BsError;
 
 public class BsStack implements Stack {
 

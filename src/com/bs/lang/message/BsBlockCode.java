@@ -6,8 +6,8 @@ import java.util.List;
 import com.bs.interpreter.stack.Stack;
 import com.bs.lang.Bs;
 import com.bs.lang.BsObject;
-import com.bs.lang.proto.BsError;
-import com.bs.lang.proto.BsList;
+import com.bs.lang.builtin.BsError;
+import com.bs.lang.builtin.BsList;
 import com.bs.parser.tree.Node;
 
 public class BsBlockCode implements BsCode {

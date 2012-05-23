@@ -20,7 +20,9 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.StringReader;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.tuple.Pair;
@@ -29,10 +31,12 @@ import com.bs.interpreter.BsCompiler;
 import com.bs.interpreter.BsInterpreter;
 import com.bs.interpreter.stack.BsStack;
 import com.bs.interpreter.stack.Stack;
-import com.bs.lang.proto.BsError;
-import com.bs.lang.proto.BsList;
-import com.bs.lang.proto.BsModule;
-import com.bs.lang.proto.BsString;
+import com.bs.lang.builtin.BsError;
+import com.bs.lang.builtin.BsList;
+import com.bs.lang.builtin.BsModule;
+import com.bs.lang.builtin.BsString;
+import com.bs.lang.lib.Loadable;
+import com.bs.lang.lib.modules.ModuleAst;
 import com.bs.parser.tree.Node;
 
 public final class Bs {
@@ -44,7 +48,6 @@ public final class Bs {
 		builtin.setSlot(Proto);
 		builtin.setSlot(Nil);
 		builtin.setSlot(BsConst.System);
-		builtin.setSlot(BsConst.Ast);
 
 		/*
 		 * Literal types
@@ -91,11 +94,14 @@ public final class Bs {
 		builtin.setSlot(BsConst.SubTypeError);
 
 		// Fields in the Module proto.
-
 		List<BsObject> path = new ArrayList<BsObject>();
 		path.add(BsString.clone("."));
 		Module.setSlot(BsModule.LOAD_PATH, BsList.create(path));
+
+		addLoadable(new ModuleAst());
 	}
+
+	private static Map<String, Loadable> loadable = new HashMap<String, Loadable>();
 
 	/**
 	 * Check is obj is the same object (reference) as BsConst.True
@@ -326,6 +332,18 @@ public final class Bs {
 		breakError(value, true);
 	}
 
+	public static synchronized void addLoadable(Loadable load) {
+		loadable.put(load.getName(), load);
+	}
+
+	public static synchronized Loadable findLoadable(String name) {
+		if (loadable.containsKey(name)) {
+			return loadable.get(name);
+		} else {
+			return null;
+		}
+	}
+
 	public static File findModule(List<BsObject> loadPath, BsObject fileName) {
 		for (BsObject obj : loadPath) {
 			String path = Bs.asString(obj);
@@ -333,8 +351,11 @@ public final class Bs {
 			if (path == null || file == null) {
 				return null;
 			}
-			File filePath = new File(FilenameUtils.getFullPath(FilenameUtils
-					.concat(path, file)));
+			if (!FilenameUtils.getExtension(file).equals("bs")) {
+				file += ".bs";
+			}
+			String f = FilenameUtils.concat(path, file);
+			File filePath = new File(f);
 			if (filePath.exists()) {
 				return filePath;
 			}

@@ -5,7 +5,7 @@ import java.lang.reflect.Method;
 import com.bs.interpreter.stack.Stack;
 import com.bs.lang.BsException;
 import com.bs.lang.BsObject;
-import com.bs.lang.proto.BsError;
+import com.bs.lang.builtin.BsError;
 import com.bs.parser.tree.Node;
 
 public class BsJavaCode implements BsCode {
