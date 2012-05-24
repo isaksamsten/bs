@@ -1,13 +1,9 @@
-import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
-import java.io.IOException;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
-import java.util.Date;
 import java.util.List;
 import java.util.jar.JarEntry;
 import java.util.jar.JarInputStream;
@@ -94,7 +90,7 @@ public class bs {
 		options.addOption(loadable);
 		options.addOption(eval);
 
-		// args = new String[] { "Reflection.bs" };
+		 args = new String[] { "Reflection.bs" };
 
 		try {
 			Bs.init();

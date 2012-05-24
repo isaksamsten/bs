@@ -94,7 +94,8 @@ public class BsNumber extends BsAbstractProto {
 
 	@BsRuntimeMessage(name = "toString", arity = 0)
 	public BsObject toString(BsObject self, BsObject... args) {
-		return BsString.clone(Bs.asNumber(self).toString());
+		Number num = Bs.asNumber(self);
+		return BsString.clone(num != null ? num.toString() : "NaN");
 	}
 
 	/**

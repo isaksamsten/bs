@@ -124,7 +124,7 @@ public class BsInterpreter implements Interpreter {
 		for (Node n : node.childrens()) {
 			last = (BsObject) interpret(n);
 			if (last.isError()) {
-				Bs.updateError(last, node);
+//				Bs.updateError(last, node);
 				return last;
 			}
 			if (last.isReturning()) {

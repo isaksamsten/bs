@@ -122,59 +122,6 @@ public final class Bs {
 		addLoadable(new ModuleAst());
 	}
 
-	// prototypes.put(BsProto.class, Proto);
-	// prototypes.put(BsNil.class, Nil);
-	// prototypes.put(BsSystem.class, BsConst.System);
-	//
-	// /*
-	// * Literal types
-	// */
-	// prototypes.put(BsSymbol.class, Symbol);
-	// prototypes.put(BsString.class, BsConst.String);
-	// prototypes.put(BsList.class, List);
-	// prototypes.put(BsNumber.class, Number);
-	// prototypes.put(BsBool.class, Bool);
-	// prototypes.put(BsTrue.class, True);
-	// prototypes.put(BsFalse.class, False);
-	//
-	// prototypes.put(BsModule.class, Module);
-	// prototypes.put(BsEnumerable.class, Enumerable);
-	//
-	// prototypes.put(BsThread.class, BsConst.Thread);
-	// prototypes.put(BsFuture.class, BsConst.Future);
-	//
-	// /*
-	// * Java interop
-	// */
-	// prototypes.put(BsJava.class, BsConst.Java);
-	// prototypes.put(BsJavaInstance.class, BsConst.JavaInstance);
-	// prototypes.put(BsJavaClass.class, BsConst.JavaClass);
-	//
-	// /*
-	// * IO
-	// */
-	// prototypes.put(BsIO.class, BsConst.IO);
-	// prototypes.put(BsReader.class, BsConst.Reader);
-	// prototypes.put(BsWriter.class, BsConst.Writer);
-	// prototypes.put(BsFile.class, BsConst.File);
-	//
-	// /*
-	// * Errors
-	// */
-	// prototypes.put(BsError.class, Error);
-	//
-	// for (BsObject obj : prototypes.values()) {
-	// builtin.setSlot(obj);
-	// }
-	//
-	// builtin.setSlot(SyntaxError);
-	// builtin.setSlot(NameError);
-	// builtin.setSlot(TypeError);
-	// builtin.setSlot(BsConst.IOError);
-	// builtin.setSlot(BsConst.JavaError);
-	// builtin.setSlot(BsConst.CloneError);
-	// builtin.setSlot(BsConst.SubTypeError);
-
 	/**
 	 * Check is obj is the same object (reference) as BsConst.True
 	 * 
@@ -321,14 +268,6 @@ public final class Bs {
 	public static BsObject eval(Node node, Stack stack) {
 		BsInterpreter i = new BsInterpreter(stack);
 		return (BsObject) i.interpret(node);
-	}
-
-	public static Pair<Node, BsObject> evalYield(Node node, Stack stack) {
-		BsInterpreter i = new BsInterpreter(stack);
-		BsObject ret = (BsObject) i.interpret(node);
-		Pair<Node, BsObject> pair = Pair.of(i.lastNode(), ret);
-
-		return pair;
 	}
 
 	/**
