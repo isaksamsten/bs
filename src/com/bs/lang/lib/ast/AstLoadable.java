@@ -1,10 +1,11 @@
-package com.bs.lang.lib.modules;
+package com.bs.lang.lib.ast;
 
 import com.bs.lang.BsObject;
 import com.bs.lang.builtin.BsModule;
 import com.bs.lang.lib.Loadable;
+import com.bs.lang.lib.modules.ModuleConst;
 
-public class ModuleAst implements Loadable {
+public class AstLoadable implements Loadable {
 
 	@Override
 	public String getName() {

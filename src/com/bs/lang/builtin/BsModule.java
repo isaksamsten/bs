@@ -71,7 +71,7 @@ public class BsModule extends BsAbstractProto {
 		}
 
 		String moduleName = Bs.asString(args[0]);
-		Loadable loadable = Bs.findLoadable(moduleName);
+		Loadable loadable = Bs.findModule(moduleName);
 		if (loadable != null) {
 			BsObject module = loadable.getModule();
 			self.setSlot(loadable.getName(), module);

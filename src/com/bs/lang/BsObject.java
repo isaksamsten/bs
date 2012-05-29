@@ -3,6 +3,7 @@ package com.bs.lang;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.commons.lang3.ArrayUtils;
 
@@ -105,6 +106,10 @@ public class BsObject implements StackFrame {
 				}
 			}
 		}
+	}
+	
+	public Set<String> getMessages() {
+		return messages.keySet();
 	}
 
 	public long id() {

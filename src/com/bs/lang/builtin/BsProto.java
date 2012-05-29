@@ -1,5 +1,10 @@
 package com.bs.lang.builtin;
 
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 import org.apache.commons.lang3.ArrayUtils;
 
 import com.bs.lang.Bs;
@@ -7,6 +12,8 @@ import com.bs.lang.BsAbstractProto;
 import com.bs.lang.BsConst;
 import com.bs.lang.BsObject;
 import com.bs.lang.annot.BsRuntimeMessage;
+import com.bs.lang.builtin.java.BsJavaData;
+import com.bs.lang.builtin.java.ReflectionUtils;
 import com.bs.lang.message.BsBlockCode;
 import com.bs.lang.message.BsCode;
 import com.bs.lang.message.BsMessage;
@@ -176,11 +183,27 @@ public class BsProto extends BsAbstractProto {
 		}
 	}
 
-	@BsRuntimeMessage(name = "getMethod", arity = 1, aliases = { "=>>" }, types = { BsString.class })
+	@BsRuntimeMessage(name = "getMessage", arity = 1, aliases = { "=>>" }, types = { BsString.class })
 	public BsObject getMethod(BsObject self, BsObject... args) {
 		BsMessage code = self.getMessage(Bs.asString(args[0]));
 
 		return BsBlock.create(code);
+	}
+
+	@BsRuntimeMessage(name = "getMessages", aliases = "=>?", arity = 0)
+	public BsObject methods(BsObject self, BsObject... args) {
+		List<BsObject> messages = new ArrayList<BsObject>();
+		for (String m : self.getMessages()) {
+			messages.add(BsSymbol.get(m));
+		}
+
+		return BsList.create(messages);
+	}
+
+	@BsRuntimeMessage(name = "send", aliases = "=>", arity = -1)
+	public BsObject call(BsObject self, BsObject... args) {
+		return self.invoke(Bs.asString(args[0]),
+				ArrayUtils.subarray(args, 1, args.length));
 	}
 
 	@BsRuntimeMessage(name = "futureSend", arity = 1)

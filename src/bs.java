@@ -90,7 +90,7 @@ public class bs {
 		options.addOption(loadable);
 		options.addOption(eval);
 
-		 args = new String[] { "Reflection.bs" };
+//		 args = new String[] { "Reflection.bs" };
 
 		try {
 			Bs.init();
@@ -157,7 +157,7 @@ public class bs {
 					for (Class<?> i : cls.getInterfaces()) {
 						if (i.equals(Loadable.class)) {
 							Loadable l = (Loadable) cls.newInstance();
-							Bs.addLoadable(l);
+							Bs.addModule(l);
 						}
 					}
 				}

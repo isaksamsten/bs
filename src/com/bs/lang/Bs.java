@@ -55,7 +55,7 @@ import com.bs.lang.builtin.java.BsJava;
 import com.bs.lang.builtin.java.BsJavaClass;
 import com.bs.lang.builtin.java.BsJavaInstance;
 import com.bs.lang.lib.Loadable;
-import com.bs.lang.lib.modules.ModuleAst;
+import com.bs.lang.lib.ast.AstLoadable;
 import com.bs.parser.tree.Node;
 
 public final class Bs {
@@ -119,7 +119,7 @@ public final class Bs {
 		path.add(BsString.clone("."));
 		Module.setSlot(BsModule.LOAD_PATH, BsList.create(path));
 
-		addLoadable(new ModuleAst());
+		addModule(new AstLoadable());
 	}
 
 	/**
@@ -393,11 +393,11 @@ public final class Bs {
 		breakError(value, true);
 	}
 
-	public static synchronized void addLoadable(Loadable load) {
+	public static synchronized void addModule(Loadable load) {
 		loadable.put(load.getName(), load);
 	}
 
-	public static synchronized Loadable findLoadable(String name) {
+	public static synchronized Loadable findModule(String name) {
 		if (loadable.containsKey(name)) {
 			return loadable.get(name);
 		} else {

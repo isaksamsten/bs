@@ -34,7 +34,6 @@ public class BsList extends BsAbstractProto {
 	@BsRuntimeMessage(name = "toString", arity = 0)
 	public BsObject toString(BsObject self, BsObject... args) {
 		ArrayList<BsObject> value = self.value();
-
 		return BsString.clone(value.toString());
 	}
 
